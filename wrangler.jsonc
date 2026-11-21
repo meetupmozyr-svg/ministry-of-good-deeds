@@ -12,7 +12,7 @@
     {
       "binding": "DB",
       "database_name": "ministry-of-good-deeds",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "a3a12445-49d9-4a2a-85e0-60c7d1f8f37a"
     }
   ],
   "observability": { "enabled": true }
