@@ -910,9 +910,9 @@ function render() {
       ${pageHeader("Карта Министерства", "Выберите нужную дверь — все пространства открыты без обязательных заданий.", false)}
       <div class="map-scene">
         ${sceneImg("assets/scenes/map-ministry.png", "map.jpg", "Библиотека слева, мастерская справа и бюро добрых дел внизу")}
-        <a class="room-label lib" href="#library">${ICONS.book}<span>Библиотека</span></a>
-        <a class="room-label work" href="#workshop">${ICONS.spark}<span>Мастерская</span></a>
-        <a class="room-label bureau" href="#bureau">${ICONS.mail}<span>Бюро добрых дел</span></a>
+<a class="room-label lib" href="#library"><span class="map-pin" aria-hidden="true">✦</span><span>Библиотека</span></a>
+        <a class="room-label work" href="#workshop"><span class="map-pin" aria-hidden="true">✦</span><span>Мастерская</span></a>
+        <a class="room-label bureau" href="#bureau"><span class="map-pin" aria-hidden="true">✦</span><span>Бюро добрых дел</span></a>
       </div>
       <div class="room-list">
         <a class="room-card" href="#library">
