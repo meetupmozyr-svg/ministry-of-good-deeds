@@ -1,5 +1,13 @@
 const encoder = new TextEncoder();
 
+const ALLOWED_RANKS = new Set([
+  "Новичок",
+  "Хранитель тепла",
+  "Архивариус чудес",
+  "Мастер тёплых писем",
+  "Маяк поддержки"
+]);
+
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status,
   headers: {
@@ -61,7 +69,7 @@ async function validateTelegramInitData(initData, botToken) {
 }
 
 async function telegramCall(env, method, payload) {
-  if (!env.BOT_TOKEN) return;
+  if (!env.BOT_TOKEN) return false;
   const res = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/${method}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -69,7 +77,9 @@ async function telegramCall(env, method, payload) {
   });
   if (!res.ok) {
     console.error("Telegram API error:", method, res.status, await res.text());
+    return false;
   }
+  return true;
 }
 
 async function ensureUser(env, user) {
@@ -96,6 +106,19 @@ function validMaterialId(value) {
   return /^[a-z0-9_-]{1,80}$/i.test(id) ? id : "";
 }
 
+async function solveFirstRiddle(env, user) {
+  await ensureUserExists(env, user);
+  const id = String(user.id);
+  const res = await env.DB.prepare("INSERT OR IGNORE INTO progress (telegram_id, task_id) VALUES (?, 'first-riddle')")
+    .bind(id).run();
+  const newlySolved = (res.meta?.changes || 0) > 0;
+  if (newlySolved) {
+    await env.DB.prepare("UPDATE users SET points=points+10, updated_at=CURRENT_TIMESTAMP WHERE telegram_id=?")
+      .bind(id).run();
+  }
+  return newlySolved;
+}
+
 async function api(request, env) {
   const user = await validateTelegramInitData(request.headers.get("X-Telegram-Init-Data"), env.BOT_TOKEN);
   if (!user) return json({ error: "Telegram authorization required" }, 401);
@@ -118,13 +141,29 @@ async function api(request, env) {
   if (request.method === "POST" && url.pathname === "/api/profile") {
     const body = await parseJsonBody(request);
     if (!body) return json({ error: "Invalid JSON" }, 400);
-    const displayName = typeof body.displayName === "string" ? body.displayName.trim().slice(0, 40) : "";
-    if (!displayName) return json({ error: "Укажите имя" }, 400);
+
+    const hasName = typeof body.displayName === "string";
+    const hasRank = typeof body.rank === "string";
+    if (!hasName && !hasRank) return json({ error: "Nothing to update" }, 400);
+
+    const displayName = hasName ? body.displayName.trim().slice(0, 40) : null;
+    if (hasName && !displayName) return json({ error: "Укажите имя" }, 400);
+
+    const rank = hasRank ? body.rank.trim() : null;
+    if (hasRank && !ALLOWED_RANKS.has(rank)) return json({ error: "Invalid rank" }, 400);
 
     await ensureUserExists(env, user);
-    await env.DB.prepare("UPDATE users SET display_name=?, updated_at=CURRENT_TIMESTAMP WHERE telegram_id=?")
-      .bind(displayName, id).run();
-    return json({ ok: true, displayName });
+    if (hasName && hasRank) {
+      await env.DB.prepare("UPDATE users SET display_name=?, rank=?, updated_at=CURRENT_TIMESTAMP WHERE telegram_id=?")
+        .bind(displayName, rank, id).run();
+    } else if (hasName) {
+      await env.DB.prepare("UPDATE users SET display_name=?, updated_at=CURRENT_TIMESTAMP WHERE telegram_id=?")
+        .bind(displayName, id).run();
+    } else {
+      await env.DB.prepare("UPDATE users SET rank=?, updated_at=CURRENT_TIMESTAMP WHERE telegram_id=?")
+        .bind(rank, id).run();
+    }
+    return json({ ok: true, displayName, rank });
   }
 
   if (request.method === "POST" && url.pathname === "/api/riddle") {
@@ -133,16 +172,10 @@ async function api(request, env) {
     const answer = typeof body.answer === "string"
       ? body.answer.trim().toLocaleUpperCase("ru-RU").replaceAll("Ё", "Е")
       : "";
-    if (answer !== "СНЕЖИНКА") return json({ ok: false, message: "Попробуй ещё раз." });
-
-    await ensureUserExists(env, user);
-    const res = await env.DB.prepare("INSERT OR IGNORE INTO progress (telegram_id, task_id) VALUES (?, 'first-riddle')")
-      .bind(id).run();
-    const newlySolved = (res.meta?.changes || 0) > 0;
-    if (newlySolved) {
-      await env.DB.prepare("UPDATE users SET points=points+10, updated_at=CURRENT_TIMESTAMP WHERE telegram_id=?")
-        .bind(id).run();
+    if (answer !== "СНЕЖИНКА" && answer !== "СНЕГ") {
+      return json({ ok: false, message: "Попробуй ещё раз." });
     }
+    const newlySolved = await solveFirstRiddle(env, user);
     return json({
       ok: true,
       message: "Верно! Первая загадка разгадана.",
@@ -187,20 +220,95 @@ async function handleTelegram(request, env) {
   const update = await parseJsonBody(request);
   if (!update) return new Response("Bad Request", { status: 400 });
 
+  const appUrl = (env.APP_URL || new URL(request.url).origin).trim().replace(/\/+$/, "");
+
+  const cq = update.callback_query;
+  if (cq) {
+    const data = cq.data || "";
+    const chatId = cq.message?.chat?.id;
+    const messageId = cq.message?.message_id;
+
+    if (data === "riddle:start") {
+      await telegramCall(env, "answerCallbackQuery", { callback_query_id: cq.id });
+      if (chatId) {
+        await telegramCall(env, "sendMessage", {
+          chat_id: chatId,
+          text: "❄ *Зимняя загадка Министерства*\n\nЧто тает на ладони?",
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "Снег", callback_data: "riddle:ans:snow" }],
+              [{ text: "Ветер", callback_data: "riddle:ans:wind" }],
+              [{ text: "Свет", callback_data: "riddle:ans:light" }]
+            ]
+          }
+        });
+      }
+    } else if (data === "riddle:ans:snow") {
+      await solveFirstRiddle(env, cq.from);
+      await telegramCall(env, "answerCallbackQuery", {
+        callback_query_id: cq.id,
+        text: "Верно! Отметка добавлена в ваш профиль."
+      });
+      if (chatId && messageId) {
+        await telegramCall(env, "editMessageText", {
+          chat_id: chatId,
+          message_id: messageId,
+          text: "✅ *Получилось!*\n\nСнег тает на ладони, а в вашем пропуске появилась отметка о первой зимней загадке.",
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [[{ text: "▣ Открыть мой пропуск", web_app: { url: `${appUrl}/#pass` } }]]
+          }
+        });
+      }
+    } else if (data === "riddle:ans:wind" || data === "riddle:ans:light") {
+      await telegramCall(env, "answerCallbackQuery", {
+        callback_query_id: cq.id,
+        text: "Почти! Подумайте о том, что падает с неба зимой."
+      });
+    } else {
+      await telegramCall(env, "answerCallbackQuery", { callback_query_id: cq.id });
+    }
+    return new Response("ok");
+  }
+
   const message = update.message;
   if (message?.text?.startsWith("/start")) {
-    const appUrl = (env.APP_URL || new URL(request.url).origin).trim();
-    await telegramCall(env, "sendMessage", {
+    const caption = "Добро пожаловать!\n\nВы в Министерстве добрых дел — новогоднем пространстве для педагогов. Здесь — идеи, материалы и вдохновение для тёплых дел.";
+    const replyMarkup = {
+      inline_keyboard: [
+        [{ text: "🚪 Войти", web_app: { url: appUrl } }],
+        [{ text: "❄ Зимняя загадка", callback_data: "riddle:start" }]
+      ]
+    };
+
+    const sentPhoto = await telegramCall(env, "sendPhoto", {
       chat_id: message.chat.id,
-      text: "Добро пожаловать в Министерство добрых дел! Открой свой пропуск и начни знакомство.",
-      reply_markup: { inline_keyboard: [[{ text: "Открыть Министерство", web_app: { url: appUrl } }]] }
+      photo: `${appUrl}/hall.jpg`,
+      caption,
+      reply_markup: replyMarkup
     });
+
+    if (!sentPhoto) {
+      await telegramCall(env, "sendMessage", {
+        chat_id: message.chat.id,
+        text: caption,
+        reply_markup: replyMarkup
+      });
+    }
   } else if (message?.text?.startsWith("/help")) {
     await telegramCall(env, "sendMessage", {
       chat_id: message.chat.id,
-      text: "Нажми кнопку «Открыть Министерство», чтобы перейти в Mini App."
+      text: "Нажмите «Войти», чтобы открыть Министерство, или попробуйте зимнюю загадку прямо здесь.",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🚪 Войти", web_app: { url: appUrl } }],
+          [{ text: "❄ Зимняя загадка", callback_data: "riddle:start" }]
+        ]
+      }
     });
   }
+
   return new Response("ok");
 }
 
