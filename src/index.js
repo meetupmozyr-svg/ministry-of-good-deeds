@@ -97,24 +97,24 @@ async function assetExists(env, appUrl, path) {
 }
 
 async function sendWelcomeBanner(env, chatId, appUrl, caption, replyMarkup) {
-  const candidates = [
-    "assets/banners/telegram-welcome-banner.jpg",
-    "assets/banners/telegram-welcome-banner.png",
-    "assets/banners/telegram-welcome-banner.webp",
-    "assets/scenes/hall.jpg",
-    "hall.jpg"
-  ];
-  for (const path of candidates) {
-    if (env.ASSETS && !(await assetExists(env, appUrl, path))) continue;
-    const ok = await telegramCall(env, "sendPhoto", {
-      chat_id: chatId,
-      photo: `${appUrl}/${path}`,
-      caption,
-      parse_mode: "HTML",
-      reply_markup: replyMarkup
-    });
-    if (ok) return true;
-  }
+  const ok = await telegramCall(env, "sendPhoto", {
+    chat_id: chatId,
+    photo: `${appUrl}/assets/banners/telegram-welcome-banner.jpg`,
+    caption,
+    parse_mode: "HTML",
+    reply_markup: replyMarkup
+  });
+  if (ok) return true;
+
+  const fallback = await telegramCall(env, "sendPhoto", {
+    chat_id: chatId,
+    photo: `${appUrl}/hall.jpg`,
+    caption,
+    parse_mode: "HTML",
+    reply_markup: replyMarkup
+  });
+  if (fallback) return true;
+
   return telegramCall(env, "sendMessage", {
     chat_id: chatId,
     text: caption,
@@ -371,19 +371,37 @@ async function handleTelegram(request, env) {
     return new Response("ok");
   }
 
-  const message = update.message;
+const message = update.message;
   if (message?.text?.startsWith("/start") || message?.text?.startsWith("/help")) {
-    const caption =
-      "✨ <b>Министерство добрых дел</b>\n\n" +
-      "Перед вами — тёплые двери нашего зимнего ведомства для преподавателей.\n\n" +
-      "Чтобы зажечь фонари в Холле, <b>подберите ключ-загадку</b> — или пропустите её и загляните сразу внутрь.";
-    const replyMarkup = {
-      inline_keyboard: [
-        [{ text: "🗝 Разгадать ключ и войти", callback_data: "riddle:start" }],
-        [{ text: "Пропустить → Войти сразу", web_app: { url: appUrl } }]
-      ]
-    };
-    await sendWelcomeBanner(env, message.chat.id, appUrl, caption, replyMarkup);
+    const userId = String(message.from?.id || "");
+    const solved = await env.DB.prepare("SELECT 1 FROM progress WHERE telegram_id = ? AND task_id = 'first-riddle'")
+      .bind(userId)
+      .first();
+
+    if (solved) {
+      const caption =
+        "✨ <b>С возвращением в Министерство!</b>\n\n" +
+        "Двери согреты и открыты, а залы и материалы ждут вас. Загляните внутрь или откройте свой личный пропуск.";
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "🚪 Войти в Министерство", web_app: { url: appUrl } }],
+          [{ text: "▣ Мой пропуск", web_app: { url: `${appUrl}/#pass` } }]
+        ]
+      };
+      await sendWelcomeBanner(env, message.chat.id, appUrl, caption, replyMarkup);
+    } else {
+      const caption =
+        "✨ <b>Министерство добрых дел</b>\n\n" +
+        "Перед вами — тёплые двери нашего зимнего ведомства для преподавателей.\n\n" +
+        "Чтобы зажечь фонари в Холле, <b>подберите ключ-загадку</b> — или пропустите её и загляните сразу внутрь.";
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "🗝 Разгадать ключ и войти", callback_data: "riddle:start" }],
+          [{ text: "Пропустить → Войти сразу", web_app: { url: appUrl } }]
+        ]
+      };
+      await sendWelcomeBanner(env, message.chat.id, appUrl, caption, replyMarkup);
+    }
   }
 
   return new Response("ok");
