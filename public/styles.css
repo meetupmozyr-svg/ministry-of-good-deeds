@@ -25,6 +25,12 @@ html,body{overflow-x:clip}
 body{margin:0;min-height:100dvh}
 body.is-gated .bottom-nav{display:none}
 body.is-gated main{padding-bottom:36px}
+body.is-pass{
+  background-image:url("assets/pass/pass-desk-bg.webp"),url("assets/pass/pass-desk-bg.png"),url("assets/textures/forest-green-texture.webp"),radial-gradient(circle at top,#215042 0%,var(--bg) 62%,#102922 100%);
+  background-size:cover,cover,380px 380px,cover;
+  background-position:center top,center top,0 0,center;
+  background-repeat:no-repeat,no-repeat,repeat,no-repeat;
+}
 button,input{font:inherit}
 button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 button{cursor:pointer;border:0}
@@ -147,7 +153,7 @@ main{max-width:980px;margin:auto;padding:14px 18px calc(116px + env(safe-area-in
 .hero-scrim .intro{max-width:28rem;margin:8px auto 0;color:#ece1cc;font-size:.95rem}
 .hero-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
 
-/* Seamless Dissolving Room Hero (Library / Workshop / Bureau) */
+/* Seamless Dissolving Room Hero */
 .room-hero{position:relative;margin-bottom:4px}
 .room-hero-media{
   position:relative;height:clamp(310px,46vw,430px);
@@ -296,23 +302,21 @@ input[type=search],input[type=text]{
 
 /* Lanyard Pass */
 .pass-layout{display:grid;grid-template-columns:minmax(270px,360px) 1fr;gap:22px;align-items:start}
-.pass-wrap{display:flex;flex-direction:column;align-items:center;padding-top:14px}
-.pass-lanyard-strap{
-  width:42px;height:36px;border-radius:10px 10px 4px 4px;
-  background:linear-gradient(180deg,#8b2b39 0%,#b43e4f 100%);
-  box-shadow:0 6px 14px rgba(0,0,0,.35);
-  margin-bottom:-18px;position:relative;z-index:3;
-  display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;
-}
-.pass-lanyard-clip{width:18px;height:8px;border-radius:4px;background:#e6c88a;border:1px solid #8f6b32}
+.pass-wrap{display:flex;flex-direction:column;align-items:center;padding-top:0}
 .pass-bow-img{
-  width:68px;height:68px;object-fit:contain;margin-bottom:-24px;position:relative;z-index:4;
+  width:64px;height:64px;object-fit:contain;margin-bottom:-24px;position:relative;z-index:4;
   filter:drop-shadow(0 4px 10px rgba(0,0,0,.32));
 }
 .pass-card{
-  position:relative;width:100%;max-width:360px;margin:0 auto;border-radius:26px;padding:24px 22px 30px;text-align:center;
+  position:relative;width:100%;max-width:360px;margin:0 auto;border-radius:26px;padding:24px 22px 28px;text-align:center;
   background:var(--parchment-bg);background-size:cover,320px 320px,cover;background-repeat:no-repeat,repeat,no-repeat;
   color:var(--ink);border:1.5px solid #cfa96e;box-shadow:0 22px 46px rgba(5,16,13,.46);overflow:hidden;
+}
+.pass-card.has-pass-bg{
+  background-image:url("assets/pass/pass-card-bg.webp"),url("assets/pass/pass-card-bg.png"),var(--parchment-bg);
+  background-size:100% 100%,100% 100%,cover;
+  background-repeat:no-repeat;
+  padding-top:42px;
 }
 .pass-card::before{
   content:"";position:absolute;inset:10px;border-radius:18px;
@@ -322,6 +326,10 @@ input[type=search],input[type=text]{
   content:"";position:absolute;inset:14px;border-radius:15px;
   border:1px dashed rgba(181,142,83,.25);pointer-events:none;
 }
+.pass-card.has-pass-bg::before,
+.pass-card.has-pass-bg::after,
+.pass-card.has-pass-bg .pass-slot,
+.pass-card.has-pass-bg .pass-laurel{display:none}
 .pass-slot{
   width:54px;height:12px;border-radius:999px;margin:0 auto 12px;
   background:#1c3d32;border:2px solid #cfa96e;box-shadow:inset 0 2px 4px rgba(0,0,0,.35);
