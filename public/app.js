@@ -12,6 +12,7 @@ const demo = !initData;
 const DEMO_KEY = "ministry-warm-letters-demo-v1";
 const TITLE_KEY = "ministry-pass-title-v1";
 const GATE_KEY = "ministry-gate-open-v1";
+const ONBOARD_KEY = "ministry-pass-onboarded-v1";
 
 const resources = [
   { id: "tutoriko-lab", title: "Лаборатория Tutoriko", category: "Для разных уроков", tag: "Все предметы", access: "Бесплатно", accessTone: "free", description: "Интерактивные симуляции и тренажёры по математике, физике, биологии, химии, информатике, обществознанию, английскому и русскому.", url: "https://lab.tutoriko.ru/", terms: "Открывается без регистрации. Не путать с платформой Tutoriko для репетиторов (там отдельные тарифы).", termsUrl: "https://lab.tutoriko.ru/" },
@@ -147,6 +148,8 @@ let state = { name: "Гость", saved: [], completed: [], title: loadSavedTitl
 let loaded = demo;
 let loadError = false;
 let gateOpen = loadGateOpen();
+let passOnboarded = loadPassOnboarded();
+let onboardStep = "intro"; // "intro" | "quiz" | "done"
 let gateHint = "";
 let filter = "Все";
 let search = "";
@@ -161,6 +164,15 @@ function loadGateOpen() {
 function saveGateOpen() {
   gateOpen = true;
   try { localStorage.setItem(GATE_KEY, "1"); } catch {}
+}
+
+function loadPassOnboarded() {
+  try { return localStorage.getItem(ONBOARD_KEY) === "1"; } catch { return false; }
+}
+
+function savePassOnboarded() {
+  passOnboarded = true;
+  try { localStorage.setItem(ONBOARD_KEY, "1"); } catch {}
 }
 
 function loadSavedTitle() {
@@ -252,6 +264,10 @@ function passNumber() {
   return `№ ${String(tgId).slice(-6).padStart(6, "0")}`;
 }
 
+function sceneImg(primary, fallback, alt, cls = "", priority = false) {
+  return `<img${cls ? ` class="${cls}"` : ""} src="${primary}" alt="${esc(alt)}"${priority ? ' fetchpriority="high"' : ""} onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${fallback}';}">`;
+}
+
 function snowflakeSvg() {
   return `<svg class="gate-snowflake" viewBox="0 0 48 48" fill="none" aria-hidden="true">
     <path d="M24 4v40M6.7 14l34.6 20M41.3 14L6.7 34" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
@@ -292,6 +308,36 @@ function optionalSceneBanner(path, pillLabel) {
     <img src="${path}" alt="" onload="this.parentElement.hidden=false" onerror="this.parentElement.remove()">
     <span class="scene-pill">${pillLabel}</span>
   </div>`;
+}
+
+function passCardHtml() {
+  const riddleDone = state.completed.includes("first-riddle");
+  const meta = getRoleMeta(state.title);
+  return `<article class="pass-card">
+    <div class="pass-hanger" aria-hidden="true">
+      <div class="pass-ribbon-top"></div>
+      <div class="pass-slot"></div>
+    </div>
+    <div class="pass-title-main">Пропуск</div>
+    <div class="pass-subtitle">Министерство добрых дел</div>
+    <div class="pass-portrait-row">
+      ${laurelSvg()}
+      <div class="pass-arch" aria-hidden="true">
+        <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" onerror="this.hidden=true">
+        <span class="pass-emoji">${esc(meta.emoji)}</span>
+      </div>
+      ${laurelSvg("right")}
+    </div>
+    <h2>${esc(state.name)}</h2>
+    <span class="rank-ribbon">${esc(meta.emoji)} ${esc(state.title)}</span>
+    <p class="pass-role-desc">${esc(meta.desc)}</p>
+    <p class="pass-num">${esc(passNumber())}</p>
+    <div class="pass-bottom-row">
+      ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
+    </div>
+    <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.hidden=true" onerror="this.remove()">
+    ${postmarkSvg()}
+  </article>`;
 }
 
 function roundRectPath(ctx, x, y, w, h, r) {
@@ -501,6 +547,22 @@ async function downloadPassPng() {
   }
 }
 
+function renderQuizMarkup(stepIdx, skipId = "skip-quiz") {
+  const item = quizQuestions[stepIdx];
+  const dots = quizQuestions.map((_, i) =>
+    `<span class="quiz-dot ${i < stepIdx ? "done" : i === stepIdx ? "active" : ""}"></span>`
+  ).join("");
+  return `<div class="quiz-head">
+    <span class="eyebrow-dark">Вопрос ${stepIdx + 1} из ${quizQuestions.length}</span>
+    <div class="quiz-dots" aria-hidden="true">${dots}</div>
+  </div>
+  <p class="quiz-q">${esc(item.q)}</p>
+  <div class="quiz-options">
+    ${item.options.map((opt, idx) => `<button type="button" class="quiz-option" data-quiz-choice="${idx}">${esc(opt.label)}</button>`).join("")}
+  </div>
+  <div class="actions" style="justify-content:center"><button type="button" class="button secondary" id="${skipId}">Пропустить</button></div>`;
+}
+
 function renderQuizSection() {
   const meta = getRoleMeta(state.title);
   if (quizStep === null) {
@@ -514,21 +576,20 @@ function renderQuizSection() {
       <div class="actions"><button type="button" class="button red" id="start-quiz">Пройти викторину (6 вопросов)</button></div>
     </div>`;
   }
-  const item = quizQuestions[quizStep];
-  const dots = quizQuestions.map((_, i) =>
-    `<span class="quiz-dot ${i < quizStep ? "done" : i === quizStep ? "active" : ""}"></span>`
-  ).join("");
-  return `<div class="quiz-box">
-    <div class="quiz-head">
-      <span class="eyebrow-dark">Вопрос ${quizStep + 1} из ${quizQuestions.length}</span>
-      <div class="quiz-dots" aria-hidden="true">${dots}</div>
-    </div>
-    <p class="quiz-q">${esc(item.q)}</p>
-    <div class="quiz-options">
-      ${item.options.map((opt, idx) => `<button type="button" class="quiz-option" data-quiz-choice="${idx}">${esc(opt.label)}</button>`).join("")}
-    </div>
-    <div class="actions"><button type="button" class="button secondary" id="skip-quiz">Пропустить</button></div>
-  </div>`;
+  return `<div class="quiz-box">${renderQuizMarkup(quizStep)}</div>`;
+}
+
+function computeQuizWinner(answers) {
+  const scores = {};
+  const lastIndex = {};
+  answers.forEach((role, stepIdx) => {
+    scores[role] = (scores[role] || 0) + 1;
+    lastIndex[role] = stepIdx;
+  });
+  const winner = Object.keys(scores).sort((a, b) =>
+    (scores[b] - scores[a]) || (lastIndex[b] - lastIndex[a])
+  )[0] || "warm";
+  return roleTitleByKey[winner] || "Хранитель тепла";
 }
 
 function shouldShowGate() {
@@ -542,7 +603,7 @@ function renderGate() {
   main.innerHTML = `<div class="shell">
     <section class="gate-stage">
       <div class="gate-banner">
-        <img class="gate-bg" src="hall.jpg" alt="Волшебные двери приёмной Министерства добрых дел" fetchpriority="high">
+        ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Волшебные двери приёмной Министерства добрых дел", "gate-bg", true)}
         ${optionalDecorImg("assets/decorations/paper-snowflake.png", "decor-corner tl")}
         ${optionalDecorImg("assets/decorations/paper-snowflake.png", "decor-corner tr")}
         <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
@@ -581,7 +642,7 @@ function renderGate() {
       gateHint = "";
       saveGateOpen();
       render();
-      toast("Двери открыты! Ключ принят ✨");
+      toast("Двери открыты! Оформите свой пропуск ✨");
     });
   });
 
@@ -595,6 +656,134 @@ function renderGate() {
   }
 }
 
+function renderOnboarding() {
+  document.body.classList.add("is-gated");
+
+  if (onboardStep === "quiz") {
+    main.innerHTML = `<div class="shell">
+      <section class="card-panel onboard-card">
+        <div class="section-head">
+          <h2>Ваше звание в Министерстве</h2>
+          <span class="eyebrow-dark">Пропуск</span>
+        </div>
+        ${renderQuizMarkup(quizStep ?? 0, "onboard-skip-quiz")}
+      </section>
+    </div>`;
+
+    document.querySelector("#onboard-skip-quiz").addEventListener("click", () => {
+      quizStep = null;
+      quizAnswers = [];
+      onboardStep = "done";
+      render();
+    });
+
+    document.querySelectorAll("[data-quiz-choice]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const idx = Number(btn.dataset.quizChoice);
+        const picked = quizQuestions[quizStep ?? 0]?.options[idx]?.role;
+        if (picked) quizAnswers.push(picked);
+        if ((quizStep ?? 0) + 1 < quizQuestions.length) {
+          quizStep = (quizStep ?? 0) + 1;
+          render();
+        } else {
+          const newTitle = computeQuizWinner(quizAnswers);
+          const meta = getRoleMeta(newTitle);
+          state.title = newTitle;
+          saveTitleLocal(newTitle);
+          quizStep = null;
+          quizAnswers = [];
+          onboardStep = "done";
+          render();
+          if (!demo) {
+            try { await api("/api/profile", "POST", { rank: newTitle }); } catch {}
+          }
+          toast(`Вы получили звание: ${meta.emoji} ${newTitle}`);
+        }
+      });
+    });
+    return;
+  }
+
+  if (onboardStep === "done") {
+    main.innerHTML = `<div class="shell">
+      <div class="page-head">
+        <h1>Ваш пропуск готов!</h1>
+        <p class="intro">Сохраните карточку на память или сразу отправляйтесь на карту Министерства.</p>
+      </div>
+      <div class="pass-wrap">
+        ${passCardHtml()}
+        <div class="onboard-actions">
+          <button type="button" class="button red" id="onboard-enter-map">◇ На карту Министерства</button>
+          <button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button>
+          <button type="button" class="button secondary" id="onboard-enter-hall">⌂ В Главный холл</button>
+        </div>
+      </div>
+    </div>`;
+
+    document.querySelector("#download-pass").addEventListener("click", downloadPassPng);
+    document.querySelector("#onboard-enter-map").addEventListener("click", () => {
+      savePassOnboarded();
+      location.hash = "#map";
+      render();
+    });
+    document.querySelector("#onboard-enter-hall").addEventListener("click", () => {
+      savePassOnboarded();
+      location.hash = "#hall";
+      render();
+    });
+    return;
+  }
+
+  // onboardStep === "intro"
+  main.innerHTML = `<div class="shell">
+    <section class="gate-stage">
+      <div class="gate-banner">
+        ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Приёмная Министерства добрых дел", "gate-bg", true)}
+        <span class="gate-key-badge">▣ Личный пропуск · ${esc(passNumber())}</span>
+      </div>
+      <div class="gate-body">
+        <h1>Оформите ваш пропуск</h1>
+        <p class="intro">Добро пожаловать внутрь! Ответьте на 6 быстрых зимних вопросов, чтобы получить свой уникальный значок и номер сотрудника — или пропустите пока этот шаг.</p>
+        <form id="onboard-name-form" class="onboard-form">
+          <label for="onboard-name">Как подписать ваш пропуск?</label>
+          <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
+          <div class="onboard-actions">
+            <button type="submit" class="button red">✨ Пройти викторину и получить ID</button>
+            <button type="button" class="button secondary" id="onboard-skip-all">Пропустить и войти в Холл</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>`;
+
+  document.querySelector("#onboard-name-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const name = document.querySelector("#onboard-name").value.trim().slice(0, 40);
+    if (!name) {
+      toast("Введите имя для пропуска.");
+      return;
+    }
+    if (name !== state.name) {
+      state.name = name;
+      if (demo) {
+        persistDemo();
+      } else {
+        try { await api("/api/profile", "POST", { displayName: name }); } catch {}
+      }
+    }
+    quizStep = 0;
+    quizAnswers = [];
+    onboardStep = "quiz";
+    render();
+  });
+
+  document.querySelector("#onboard-skip-all").addEventListener("click", () => {
+    savePassOnboarded();
+    location.hash = "#hall";
+    render();
+  });
+}
+
 function render() {
   const gateState = shouldShowGate();
   if (gateState === "loading") {
@@ -606,6 +795,10 @@ function render() {
     renderGate();
     return;
   }
+  if (!passOnboarded) {
+    renderOnboarding();
+    return;
+  }
 
   document.body.classList.remove("is-gated");
   const page = route();
@@ -615,7 +808,7 @@ function render() {
   if (page === "hall") {
     main.innerHTML = `<div class="shell">
       <section class="hero-stage">
-        <img class="hero-bg" src="hall.jpg" alt="Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном" fetchpriority="high">
+        ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном", "hero-bg", true)}
         ${optionalDecorImg("assets/decorations/evergreen-sprig.png", "decor-corner tl")}
         ${optionalDecorImg("assets/decorations/evergreen-sprig.png", "decor-corner tr")}
         <div class="hero-scrim">
@@ -641,7 +834,7 @@ function render() {
     main.innerHTML = `<div class="shell">
       ${pageHeader("Карта Министерства", "Выберите нужную дверь — все пространства открыты без обязательных заданий.", false)}
       <div class="map-scene">
-        <img src="map.jpg" alt="Библиотека слева, мастерская справа и бюро добрых дел внизу">
+        ${sceneImg("assets/scenes/map-ministry.png", "map.jpg", "Библиотека слева, мастерская справа и бюро добрых дел внизу")}
         <a class="room-label lib" href="#library">📖 Библиотека</a>
         <a class="room-label work" href="#workshop">✨ Мастерская</a>
         <a class="room-label bureau" href="#bureau">✉ Бюро добрых дел</a>
@@ -656,7 +849,7 @@ function render() {
     main.innerHTML = `<div class="shell">
       ${pageHeader("Библиотека находок", "38 интерактивных веб-ресурсов по школьным предметам и языкам — с честными заметками о лицензиях.")}
       <div class="scene-banner">
-        <img src="library.jpg" alt="Книжные полки, зелёная книга и золотая лампа в библиотеке">
+        ${sceneImg("assets/scenes/library-interior.png", "library.jpg", "Книжные полки, зелёная книга и золотая лампа в библиотеке")}
         <span class="scene-pill">📖 Библиотека · 38 находок</span>
         <button class="button red book-button" id="open-book">Открыть книгу находок</button>
       </div>
@@ -691,39 +884,15 @@ function render() {
     renderResults(true);
   } else if (page === "pass") {
     const riddleDone = state.completed.includes("first-riddle");
-    const meta = getRoleMeta(state.title);
     main.innerHTML = `<div class="shell">
       ${pageHeader("Личный пропуск", "Ваша карта сотрудника Министерства.")}
       <div class="pass-layout">
         <div class="pass-wrap">
-          <article class="pass-card">
-            <div class="pass-hanger" aria-hidden="true">
-              <div class="pass-ribbon-top"></div>
-              <div class="pass-slot"></div>
-            </div>
-            <div class="pass-title-main">Пропуск</div>
-            <div class="pass-subtitle">Министерство добрых дел</div>
-            <div class="pass-portrait-row">
-              ${laurelSvg()}
-              <div class="pass-arch" aria-hidden="true">
-                <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" onerror="this.hidden=true">
-                <span class="pass-emoji">${esc(meta.emoji)}</span>
-              </div>
-              ${laurelSvg("right")}
-            </div>
-            <h2>${esc(state.name)}</h2>
-            <span class="rank-ribbon">${esc(meta.emoji)} ${esc(state.title)}</span>
-            <p class="pass-role-desc">${esc(meta.desc)}</p>
-            <p class="pass-num">${esc(passNumber())}</p>
-            <div class="pass-bottom-row">
-              ${riddleDone
-                ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>`
-                : `<button type="button" class="button secondary" id="replay-riddle-btn">🗝 Разгадать загадку входа</button>`}
-            </div>
-            <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.hidden=true" onerror="this.remove()">
-            ${postmarkSvg()}
-          </article>
-          <div class="actions"><button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button></div>
+          ${passCardHtml()}
+          <div class="actions">
+            <button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button>
+            ${!riddleDone ? `<button type="button" class="button secondary" id="replay-riddle-btn">🗝 Загадка входа</button>` : ""}
+          </div>
         </div>
         <div class="card-panel">
           <form id="name-form" class="form-box">
@@ -895,17 +1064,7 @@ function bindActions() {
         quizStep += 1;
         render();
       } else {
-        const scores = {};
-        const lastIndex = {};
-        quizAnswers.forEach((role, stepIdx) => {
-          scores[role] = (scores[role] || 0) + 1;
-          lastIndex[role] = stepIdx;
-        });
-        const winner = Object.keys(scores).sort((a, b) =>
-          (scores[b] - scores[a]) || (lastIndex[b] - lastIndex[a])
-        )[0] || "warm";
-
-        const newTitle = roleTitleByKey[winner] || "Хранитель тепла";
+        const newTitle = computeQuizWinner(quizAnswers);
         const meta = getRoleMeta(newTitle);
         state.title = newTitle;
         saveTitleLocal(newTitle);
