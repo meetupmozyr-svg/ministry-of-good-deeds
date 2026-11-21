@@ -351,6 +351,7 @@ function passCardHtml() {
     </div>
 <h2>${esc(state.name)}</h2>
     <span class="rank-ribbon">${esc(meta.emoji)} ${esc(state.title)}</span>
+    <p class="pass-role-desc">${esc(meta.desc)}</p>
     <p class="pass-num">${esc(passNumber())}</p>
     <p class="pass-season">ЗИМА · 2026/2027</p>
 
