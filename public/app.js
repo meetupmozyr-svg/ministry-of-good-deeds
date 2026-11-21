@@ -11,6 +11,7 @@ const initData = tg?.initData || "";
 const demo = !initData;
 const DEMO_KEY = "ministry-warm-letters-demo-v1";
 const TITLE_KEY = "ministry-pass-title-v1";
+const GATE_KEY = "ministry-gate-open-v1";
 
 const resources = [
   { id: "tutoriko-lab", title: "Лаборатория Tutoriko", category: "Для разных уроков", tag: "Все предметы", access: "Бесплатно", accessTone: "free", description: "Интерактивные симуляции и тренажёры по математике, физике, биологии, химии, информатике, обществознанию, английскому и русскому.", url: "https://lab.tutoriko.ru/", terms: "Открывается без регистрации. Не путать с платформой Tutoriko для репетиторов (там отдельные тарифы).", termsUrl: "https://lab.tutoriko.ru/" },
@@ -56,6 +57,16 @@ const resources = [
   { id: "pame-greek", title: "Pame! Modern Greek", category: "Языки", tag: "Греческий", access: "Бесплатно", accessTone: "free", description: "Открытый учебник современного греческого для начинающих: диалоги, аудио и упражнения.", url: "https://pressbooks.cuny.edu/moderngreek1/", terms: "Открытый доступ к электронной книге.", termsUrl: "https://pressbooks.cuny.edu/moderngreek1/" }
 ];
 
+const entranceRiddle = {
+  text: "Оно не боится ни вьюги, ни расстояний, приходит без почты на зимний урок, не прячется в ящик и в яркую бумагу — но дарит крылья и тёплый огонёк. Чем щедрее им делятся, тем больше его становится. Что открывает двери Министерства?",
+  options: [
+    { id: "snow", label: "❄ Снежинка на варежке", hint: "Красиво, но на тёплой ладони снежинка растает, а наш ключ только крепнет!" },
+    { id: "kindness", label: "✨ Доброе слово и участие" },
+    { id: "gift", label: "📦 Подарок под ёлкой", hint: "Коробку открывают один раз, а этот подарок умножается, когда им делятся через экран!" },
+    { id: "chimes", label: "🕰 Бой курантов", hint: "Куранты бьют в полночь, а этот ключ согревает уроки круглый год." }
+  ]
+};
+
 const quizQuestions = [
   {
     q: "Что для вас самое важное в зимнем занятии?",
@@ -96,11 +107,22 @@ const roleTitles = {
 let state = { name: "Гость", saved: [], completed: [], title: loadSavedTitle() };
 let loaded = demo;
 let loadError = false;
+let gateOpen = loadGateOpen();
+let gateHint = "";
 let filter = "Все";
 let search = "";
 let quizStep = null;
 let quizAnswers = [];
 let toastTimer;
+
+function loadGateOpen() {
+  try { return localStorage.getItem(GATE_KEY) === "1"; } catch { return false; }
+}
+
+function saveGateOpen() {
+  gateOpen = true;
+  try { localStorage.setItem(GATE_KEY, "1"); } catch {}
+}
 
 function loadSavedTitle() {
   try {
@@ -118,9 +140,10 @@ function saveTitleLocal(title) {
 if (demo) {
   try {
     const data = JSON.parse(localStorage.getItem(DEMO_KEY) || "null");
-    if (data && typeof data.name === "string" && Array.isArray(data.saved)) {
+    if (data && typeof data.name === "string") {
       state.name = data.name.slice(0, 40) || "Гость";
-      state.saved = data.saved.filter(x => typeof x === "string");
+      if (Array.isArray(data.saved)) state.saved = data.saved.filter(x => typeof x === "string");
+      if (Array.isArray(data.completed)) state.completed = data.completed.filter(x => typeof x === "string");
     }
   } catch {}
 }
@@ -143,7 +166,11 @@ function toast(message) {
 
 function persistDemo() {
   try {
-    localStorage.setItem(DEMO_KEY, JSON.stringify({ name: state.name, saved: state.saved }));
+    localStorage.setItem(DEMO_KEY, JSON.stringify({
+      name: state.name,
+      saved: state.saved,
+      completed: state.completed
+    }));
     return true;
   } catch {
     toast("Браузер не разрешает хранение.");
@@ -395,7 +422,80 @@ function renderQuizSection() {
   </div>`;
 }
 
+function shouldShowGate() {
+  if (gateOpen || state.completed.includes("first-riddle")) return false;
+  if (!demo && !loaded && !loadError) return "loading";
+  return true;
+}
+
+function renderGate() {
+  document.body.classList.add("is-gated");
+  main.innerHTML = `<div class="shell">
+    <section class="gate-stage">
+      <div class="gate-banner">
+        <img src="hall.jpg" alt="Волшебные двери приёмной Министерства добрых дел" fetchpriority="high">
+        <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
+      </div>
+      <div class="gate-body">
+        <h1>Тайна зимнего входа</h1>
+        <p class="intro">Чтобы зажечь фонари в Холле и открыть комнаты, подберите ключ-отгадку.</p>
+        <blockquote class="gate-riddle">${esc(entranceRiddle.text)}</blockquote>
+        <div class="gate-options">
+          ${entranceRiddle.options.map(opt => `<button type="button" class="gate-option" data-gate-choice="${esc(opt.id)}">${esc(opt.label)}</button>`).join("")}
+        </div>
+        ${gateHint ? `<p class="gate-hint" role="status">${esc(gateHint)}</p>` : ""}
+        <button type="button" class="gate-skip" id="gate-skip-btn">Пропустить загадку и войти</button>
+      </div>
+    </section>
+  </div>`;
+
+  document.querySelectorAll("[data-gate-choice]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.gateChoice;
+      const picked = entranceRiddle.options.find(o => o.id === id);
+      if (!picked) return;
+      if (id !== "kindness") {
+        gateHint = picked.hint || "Попробуйте другой вариант!";
+        render();
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "Открываем двери…";
+      if (!demo) {
+        try { await api("/api/riddle", "POST", { choice: "kindness" }); } catch {}
+      }
+      if (!state.completed.includes("first-riddle")) state.completed.push("first-riddle");
+      if (demo) persistDemo();
+      gateHint = "";
+      saveGateOpen();
+      render();
+      toast("Двери открыты! Ключ принят ✨");
+    });
+  });
+
+  const skipBtn = document.querySelector("#gate-skip-btn");
+  if (skipBtn) {
+    skipBtn.addEventListener("click", () => {
+      gateHint = "";
+      saveGateOpen();
+      render();
+    });
+  }
+}
+
 function render() {
+  const gateState = shouldShowGate();
+  if (gateState === "loading") {
+    document.body.classList.add("is-gated");
+    main.innerHTML = `<div class="shell"><div class="card-panel"><p class="intro">Приоткрываем двери Министерства…</p></div></div>`;
+    return;
+  }
+  if (gateState === true) {
+    renderGate();
+    return;
+  }
+
+  document.body.classList.remove("is-gated");
   const page = route();
   const active = ["library", "workshop", "bureau"].includes(page) ? "map" : page;
   document.querySelectorAll("[data-nav]").forEach(a => a.setAttribute("aria-current", a.dataset.nav === active ? "page" : "false"));
@@ -497,7 +597,9 @@ function render() {
             <span class="rank-ribbon">${esc(state.title)}</span>
             <p class="pass-num">${esc(passNumber())}</p>
             <div class="pass-bottom-row">
-              ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
+              ${riddleDone
+                ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>`
+                : `<button type="button" class="button secondary" id="replay-riddle-btn">🗝 Разгадать загадку входа</button>`}
             </div>
             ${postmarkSvg()}
           </article>
@@ -635,6 +737,15 @@ function bindActions() {
   const dlBtn = document.querySelector("#download-pass");
   if (dlBtn) dlBtn.addEventListener("click", downloadPassPng);
 
+  const replayBtn = document.querySelector("#replay-riddle-btn");
+  if (replayBtn) {
+    replayBtn.addEventListener("click", () => {
+      gateOpen = false;
+      try { localStorage.removeItem(GATE_KEY); } catch {}
+      render();
+    });
+  }
+
   const startQuiz = document.querySelector("#start-quiz");
   if (startQuiz) {
     startQuiz.addEventListener("click", () => {
@@ -746,12 +857,14 @@ async function loadProfile() {
     const data = await api("/api/me");
     const dbRank = data.profile?.rank;
     const validRank = dbRank && Object.values(roleTitles).includes(dbRank) ? dbRank : state.title;
+    const completed = Array.isArray(data.completed) ? data.completed : [];
+    if (completed.includes("first-riddle")) saveGateOpen();
     state = {
       ...state,
       name: data.profile?.display_name || "Гость",
       title: validRank,
       saved: Array.isArray(data.saved) ? data.saved : [],
-      completed: Array.isArray(data.completed) ? data.completed : []
+      completed
     };
     loaded = true;
     loadError = false;
@@ -772,7 +885,7 @@ async function loadProfile() {
     retry.textContent = "Повторить";
     retry.addEventListener("click", loadProfile);
     mode.append(msg, retry);
-    if (route() === "saved") renderResults(true);
+    render();
     toast(err.message);
   }
 }
