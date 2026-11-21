@@ -82,6 +82,29 @@ async function telegramCall(env, method, payload) {
   return true;
 }
 
+async function editBotCard(env, cq, text, replyMarkup) {
+  const chatId = cq.message?.chat?.id;
+  const messageId = cq.message?.message_id;
+  if (!chatId || !messageId) return false;
+
+  if (cq.message?.photo) {
+    return telegramCall(env, "editMessageCaption", {
+      chat_id: chatId,
+      message_id: messageId,
+      caption: text,
+      parse_mode: "HTML",
+      reply_markup: replyMarkup
+    });
+  }
+  return telegramCall(env, "editMessageText", {
+    chat_id: chatId,
+    message_id: messageId,
+    text,
+    parse_mode: "HTML",
+    reply_markup: replyMarkup
+  });
+}
+
 async function ensureUser(env, user) {
   await env.DB.prepare(`
     INSERT INTO users (telegram_id, first_name, username, display_name)
@@ -169,16 +192,19 @@ async function api(request, env) {
   if (request.method === "POST" && url.pathname === "/api/riddle") {
     const body = await parseJsonBody(request);
     if (!body) return json({ error: "Invalid JSON" }, 400);
+    const choice = typeof body.choice === "string" ? body.choice.trim().toLowerCase() : "";
     const answer = typeof body.answer === "string"
       ? body.answer.trim().toLocaleUpperCase("ru-RU").replaceAll("Ё", "Е")
       : "";
-    if (answer !== "СНЕЖИНКА" && answer !== "СНЕГ") {
-      return json({ ok: false, message: "Попробуй ещё раз." });
+
+    const isCorrect = choice === "kindness" || answer === "ДОБРОЕ СЛОВО" || answer === "СНЕЖИНКА";
+    if (!isCorrect) {
+      return json({ ok: false, message: "Почти! Этот ключ умножается, когда им делятся на уроке." });
     }
     const newlySolved = await solveFirstRiddle(env, user);
     return json({
       ok: true,
-      message: "Верно! Первая загадка разгадана.",
+      message: "Дверь открыта! Ключ принят — добро пожаловать в Министерство.",
       pointsAwarded: newlySolved ? 10 : 0
     });
   }
@@ -212,6 +238,27 @@ async function api(request, env) {
   return json({ error: "Not found" }, 404);
 }
 
+const RIDDLE_TEXT =
+  "🗝 <b>Ключ от дверей Министерства</b>\n\n" +
+  "<i>Оно не боится ни вьюги, ни расстояний,\n" +
+  "приходит без почты на зимний урок,\n" +
+  "не прячется в ящик и в яркую бумагу —\n" +
+  "но дарит крылья и тёплый огонёк.\n" +
+  "Чем щедрее им делятся, тем больше его становится.</i>\n\n" +
+  "Что открывает наши двери?";
+
+function riddleKeyboard(appUrl) {
+  return {
+    inline_keyboard: [
+      [{ text: "❄ Снежинка на варежке", callback_data: "riddle:ans:snow" }],
+      [{ text: "✨ Доброе слово и участие", callback_data: "riddle:ans:kindness" }],
+      [{ text: "📦 Подарок под ёлкой", callback_data: "riddle:ans:gift" }],
+      [{ text: "🕰 Бой курантов", callback_data: "riddle:ans:chimes" }],
+      [{ text: "Пропустить загадку →", callback_data: "riddle:skip" }]
+    ]
+  };
+}
+
 async function handleTelegram(request, env) {
   const supplied = request.headers.get("X-Telegram-Bot-Api-Secret-Token");
   if (!env.TELEGRAM_WEBHOOK_SECRET || !supplied || !timingSafeEqualStr(supplied, env.TELEGRAM_WEBHOOK_SECRET)) {
@@ -225,46 +272,57 @@ async function handleTelegram(request, env) {
   const cq = update.callback_query;
   if (cq) {
     const data = cq.data || "";
-    const chatId = cq.message?.chat?.id;
-    const messageId = cq.message?.message_id;
 
     if (data === "riddle:start") {
       await telegramCall(env, "answerCallbackQuery", { callback_query_id: cq.id });
-      if (chatId) {
-        await telegramCall(env, "sendMessage", {
-          chat_id: chatId,
-          text: "❄ *Зимняя загадка Министерства*\n\nЧто тает на ладони?",
-          parse_mode: "Markdown",
-          reply_markup: {
-            inline_keyboard: [
-              [{ text: "Снег", callback_data: "riddle:ans:snow" }],
-              [{ text: "Ветер", callback_data: "riddle:ans:wind" }],
-              [{ text: "Свет", callback_data: "riddle:ans:light" }]
-            ]
-          }
-        });
-      }
-    } else if (data === "riddle:ans:snow") {
+      await editBotCard(env, cq, RIDDLE_TEXT, riddleKeyboard(appUrl));
+    } else if (data === "riddle:ans:kindness") {
       await solveFirstRiddle(env, cq.from);
       await telegramCall(env, "answerCallbackQuery", {
         callback_query_id: cq.id,
-        text: "Верно! Отметка добавлена в ваш профиль."
+        text: "Ключ подошёл! Дверь открыта ✨"
       });
-      if (chatId && messageId) {
-        await telegramCall(env, "editMessageText", {
-          chat_id: chatId,
-          message_id: messageId,
-          text: "✅ *Получилось!*\n\nСнег тает на ладони, а в вашем пропуске появилась отметка о первой зимней загадке.",
-          parse_mode: "Markdown",
-          reply_markup: {
-            inline_keyboard: [[{ text: "▣ Открыть мой пропуск", web_app: { url: `${appUrl}/#pass` } }]]
-          }
-        });
-      }
-    } else if (data === "riddle:ans:wind" || data === "riddle:ans:light") {
+      await editBotCard(
+        env,
+        cq,
+        "✅ <b>Дверь согрелась и открылась!</b>\n\nДоброе слово действительно не знает расстояний. В вашем пропуске зажглась отметка хранителя — добро пожаловать внутрь.",
+        {
+          inline_keyboard: [
+            [{ text: "🚪 Войти в Министерство", web_app: { url: appUrl } }],
+            [{ text: "▣ Посмотреть мой пропуск", web_app: { url: `${appUrl}/#pass` } }]
+          ]
+        }
+      );
+    } else if (data === "riddle:skip") {
       await telegramCall(env, "answerCallbackQuery", {
         callback_query_id: cq.id,
-        text: "Почти! Подумайте о том, что падает с неба зимой."
+        text: "Проходим по тихому пропуску…"
+      });
+      await editBotCard(
+        env,
+        cq,
+        "🚪 <b>Вход свободен</b>\n\nВы всегда можете вернуться к загадке позже, а все комнаты Министерства уже ждут вас.",
+        {
+          inline_keyboard: [
+            [{ text: "🚪 Войти в Министерство", web_app: { url: appUrl } }],
+            [{ text: "🗝 Вернуться к загадке", callback_data: "riddle:start" }]
+          ]
+        }
+      );
+    } else if (data === "riddle:ans:snow") {
+      await telegramCall(env, "answerCallbackQuery", {
+        callback_query_id: cq.id,
+        text: "Красиво! Но снежинка растает на ладони, а наш ключ только крепнет."
+      });
+    } else if (data === "riddle:ans:gift") {
+      await telegramCall(env, "answerCallbackQuery", {
+        callback_query_id: cq.id,
+        text: "Коробку можно открыть однажды, а этот подарок не кончается, когда им делятся!"
+      });
+    } else if (data === "riddle:ans:chimes") {
+      await telegramCall(env, "answerCallbackQuery", {
+        callback_query_id: cq.id,
+        text: "Куранты бьют в полночь, а наш ключ согревает любой урок круглый год."
       });
     } else {
       await telegramCall(env, "answerCallbackQuery", { callback_query_id: cq.id });
@@ -273,12 +331,15 @@ async function handleTelegram(request, env) {
   }
 
   const message = update.message;
-  if (message?.text?.startsWith("/start")) {
-    const caption = "Добро пожаловать!\n\nВы в Министерстве добрых дел — новогоднем пространстве для педагогов. Здесь — идеи, материалы и вдохновение для тёплых дел.";
+  if (message?.text?.startsWith("/start") || message?.text?.startsWith("/help")) {
+    const caption =
+      "✨ <b>Министерство добрых дел</b>\n\n" +
+      "Перед вами — тёплые двери нашего зимнего ведомства для преподавателей.\n\n" +
+      "Чтобы зажечь фонари в Холле, <b>подберите ключ-загадку</b> — или пропустите её и загляните сразу внутрь.";
     const replyMarkup = {
       inline_keyboard: [
-        [{ text: "🚪 Войти", web_app: { url: appUrl } }],
-        [{ text: "❄ Зимняя загадка", callback_data: "riddle:start" }]
+        [{ text: "🗝 Разгадать ключ и войти", callback_data: "riddle:start" }],
+        [{ text: "Пропустить → Войти сразу", web_app: { url: appUrl } }]
       ]
     };
 
@@ -286,6 +347,7 @@ async function handleTelegram(request, env) {
       chat_id: message.chat.id,
       photo: `${appUrl}/hall.jpg`,
       caption,
+      parse_mode: "HTML",
       reply_markup: replyMarkup
     });
 
@@ -293,20 +355,10 @@ async function handleTelegram(request, env) {
       await telegramCall(env, "sendMessage", {
         chat_id: message.chat.id,
         text: caption,
+        parse_mode: "HTML",
         reply_markup: replyMarkup
       });
     }
-  } else if (message?.text?.startsWith("/help")) {
-    await telegramCall(env, "sendMessage", {
-      chat_id: message.chat.id,
-      text: "Нажмите «Войти», чтобы открыть Министерство, или попробуйте зимнюю загадку прямо здесь.",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🚪 Войти", web_app: { url: appUrl } }],
-          [{ text: "❄ Зимняя загадка", callback_data: "riddle:start" }]
-        ]
-      }
-    });
   }
 
   return new Response("ok");
