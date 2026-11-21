@@ -378,4 +378,36 @@ async function handleTelegram(request, env) {
       "Перед вами — тёплые двери нашего зимнего ведомства для преподавателей.\n\n" +
       "Чтобы зажечь фонари в Холле, <b>подберите ключ-загадку</b> — или пропустите её и загляните сразу внутрь.";
     const replyMarkup = {
-      inl
+      inline_keyboard: [
+        [{ text: "🗝 Разгадать ключ и войти", callback_data: "riddle:start" }],
+        [{ text: "Пропустить → Войти сразу", web_app: { url: appUrl } }]
+      ]
+    };
+    await sendWelcomeBanner(env, message.chat.id, appUrl, caption, replyMarkup);
+  }
+
+  return new Response("ok");
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/api/")) {
+      try {
+        return await api(request, env);
+      } catch (e) {
+        console.error("API error:", e);
+        return json({ error: "Internal error" }, 500);
+      }
+    }
+    if (url.pathname === "/telegram/webhook" && request.method === "POST") {
+      try {
+        return await handleTelegram(request, env);
+      } catch (e) {
+        console.error("Webhook error:", e);
+        return new Response("Webhook error", { status: 500 });
+      }
+    }
+    return env.ASSETS.fetch(request);
+  }
+};
