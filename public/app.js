@@ -127,6 +127,7 @@ if (demo) {
 
 const main = document.querySelector("#main");
 const mode = document.querySelector("#mode");
+const modal = document.querySelector("#png-modal");
 
 function esc(value) {
   return String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -175,14 +176,37 @@ function route() {
   return ["hall", "map", "library", "workshop", "bureau", "saved", "pass"].includes(candidate) ? candidate : "hall";
 }
 
-function pageHeader(title, subtitle) {
-  return `<div class="page-head"><a class="back" href="#map">← На карту Министерства</a><h1>${title}</h1>${subtitle ? `<p class="intro">${subtitle}</p>` : ""}</div>`;
+function pageHeader(title, subtitle, showBack = true) {
+  return `<div class="page-head">${showBack ? '<a class="back" href="#map">← На карту Министерства</a>' : ""}<h1>${title}</h1>${subtitle ? `<p class="intro">${subtitle}</p>` : ""}</div>`;
 }
 
 function passNumber() {
   const tgId = tg?.initDataUnsafe?.user?.id;
   if (!tgId) return "№ 001024";
   return `№ ${String(tgId).slice(-6).padStart(6, "0")}`;
+}
+
+function laurelSvg(extraClass = "") {
+  return `<svg class="pass-laurel ${extraClass}" viewBox="0 0 40 72" fill="none" aria-hidden="true">
+    <path d="M32 64C18 52 14 34 22 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="14" cy="50" rx="6" ry="3.2" transform="rotate(-25 14 50)" fill="currentColor"/>
+    <ellipse cx="11" cy="37" rx="6" ry="3.2" transform="rotate(-15 11 37)" fill="currentColor"/>
+    <ellipse cx="12" cy="24" rx="6" ry="3.2" transform="rotate(-5 12 24)" fill="currentColor"/>
+    <ellipse cx="18" cy="12" rx="5.5" ry="3" transform="rotate(20 18 12)" fill="currentColor"/>
+    <ellipse cx="26" cy="44" rx="5.5" ry="3" transform="rotate(25 26 44)" fill="currentColor"/>
+    <ellipse cx="24" cy="30" rx="5.5" ry="3" transform="rotate(20 24 30)" fill="currentColor"/>
+  </svg>`;
+}
+
+function postmarkSvg() {
+  return `<svg class="pass-postmark" viewBox="0 0 110 74" fill="none" aria-hidden="true">
+    <path d="M6 28 Q 20 22, 34 28 T 62 28" stroke="#9d3443" stroke-width="2" stroke-linecap="round"/>
+    <path d="M6 38 Q 20 32, 34 38 T 62 38" stroke="#9d3443" stroke-width="2" stroke-linecap="round"/>
+    <path d="M6 48 Q 20 42, 34 48 T 62 48" stroke="#9d3443" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="76" cy="37" r="28" stroke="#9d3443" stroke-width="2" stroke-dasharray="5 4"/>
+    <circle cx="76" cy="37" r="21" stroke="#9d3443" stroke-width="1.2"/>
+    <text x="76" y="45" text-anchor="middle" fill="#9d3443" font-size="24" font-family="Georgia,serif">❄</text>
+  </svg>`;
 }
 
 function roundRectPath(ctx, x, y, w, h, r) {
@@ -193,6 +217,42 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.arcTo(x, y + h, x, y, r);
   ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
+}
+
+function closePngModal() {
+  modal.hidden = true;
+  modal.innerHTML = "";
+}
+
+function openPngModal(dataUrl, blob) {
+  const canShare = typeof navigator.share === "function" && typeof File === "function";
+  modal.innerHTML = `<div class="modal-card">
+    <h2 id="png-modal-title">Ваш пропуск готов</h2>
+    <img src="${dataUrl}" alt="Пропуск в Министерство добрых дел">
+    <p class="note">На телефоне: нажмите и удерживайте картинку, чтобы сохранить в Фото.</p>
+    <div class="modal-actions">
+      ${canShare ? '<button type="button" class="button red" id="share-pass-btn">Поделиться / Сохранить</button>' : ""}
+      <button type="button" class="button secondary" id="close-modal-btn">Закрыть</button>
+    </div>
+  </div>`;
+  modal.hidden = false;
+
+  const shareBtn = document.querySelector("#share-pass-btn");
+  if (shareBtn) {
+    shareBtn.addEventListener("click", async () => {
+      try {
+        const file = new File([blob], "ministry-pass.png", { type: "image/png" });
+        if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+          toast("Удерживайте картинку выше, чтобы сохранить.");
+          return;
+        }
+        await navigator.share({ files: [file], title: "Мой пропуск · Министерство добрых дел" });
+      } catch (err) {
+        if (err?.name !== "AbortError") toast("Удерживайте картинку выше, чтобы сохранить.");
+      }
+    });
+  }
+  document.querySelector("#close-modal-btn").addEventListener("click", closePngModal);
 }
 
 function downloadPassPng() {
@@ -209,7 +269,7 @@ function downloadPassPng() {
   ctx.fillRect(0, 0, 900, 1240);
 
   ctx.fillStyle = "#9d3443";
-  roundRectPath(ctx, 412, 58, 76, 80, 18);
+  roundRectPath(ctx, 412, 48, 76, 86, 18);
   ctx.fill();
 
   const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
@@ -228,75 +288,95 @@ function downloadPassPng() {
   roundRectPath(ctx, 134, 142, 632, 982, 32);
   ctx.stroke();
 
-  ctx.fillStyle = "rgba(30,58,49,0.2)";
-  roundRectPath(ctx, 396, 174, 108, 20, 10);
+  ctx.fillStyle = "#23463a";
+  roundRectPath(ctx, 386, 174, 128, 22, 11);
   ctx.fill();
 
   ctx.textAlign = "center";
-  ctx.fillStyle = "#9d3443";
-  ctx.font = "bold 22px sans-serif";
-  ctx.fillText("ПРОПУСК · МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 265);
+  ctx.fillStyle = "#1e3a31";
+  ctx.font = "54px Georgia, serif";
+  ctx.fillText("Пропуск", 450, 265);
 
-  ctx.beginPath();
-  ctx.arc(450, 435, 116, 0, Math.PI * 2);
-  ctx.fillStyle = "#e4d5b7";
+  ctx.fillStyle = "#665b4c";
+  ctx.font = "bold 20px sans-serif";
+  ctx.fillText("МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 305);
+
+  ctx.save();
+  roundRectPath(ctx, 336, 345, 228, 255, 114);
+  const archGrad = ctx.createLinearGradient(0, 345, 0, 600);
+  archGrad.addColorStop(0, "#e7d8b9");
+  archGrad.addColorStop(1, "#d7c39c");
+  ctx.fillStyle = archGrad;
   ctx.fill();
   ctx.strokeStyle = "#c59d62";
   ctx.lineWidth = 4;
   ctx.stroke();
+  ctx.restore();
 
   ctx.fillStyle = "#1e3a31";
-  ctx.font = "92px Georgia, serif";
-  ctx.fillText((state.name || "Г").slice(0, 1).toUpperCase(), 450, 468);
+  ctx.font = "102px Georgia, serif";
+  ctx.fillText((state.name || "Г").slice(0, 1).toUpperCase(), 450, 505);
 
   ctx.fillStyle = "#1e3a31";
   ctx.font = "56px Georgia, serif";
-  ctx.fillText((state.name || "Гость").slice(0, 24), 450, 645);
+  ctx.fillText((state.name || "Гость").slice(0, 24), 450, 685);
 
   ctx.fillStyle = "#9d3443";
-  roundRectPath(ctx, 225, 695, 450, 68, 34);
+  roundRectPath(ctx, 215, 730, 470, 68, 34);
   ctx.fill();
 
   ctx.fillStyle = "#fff9ee";
   ctx.font = "bold 30px sans-serif";
-  ctx.fillText(state.title, 450, 739);
+  ctx.fillText(state.title, 450, 774);
 
   ctx.fillStyle = "#665b4c";
   ctx.font = "30px Georgia, serif";
-  ctx.fillText(passNumber(), 450, 845);
+  ctx.fillText(passNumber(), 450, 868);
+
+  if (state.completed.includes("first-riddle")) {
+    ctx.fillStyle = "#e2f0d9";
+    roundRectPath(ctx, 250, 905, 400, 44, 22);
+    ctx.fill();
+    ctx.fillStyle = "#214b2d";
+    ctx.font = "bold 21px sans-serif";
+    ctx.fillText("❄ Первая загадка разгадана", 450, 934);
+  }
 
   ctx.fillStyle = "#665b4c";
-  ctx.font = "bold 22px sans-serif";
-  ctx.fillText("ЗИМА · 2026", 450, 1055);
+  ctx.font = "bold 20px sans-serif";
+  ctx.fillText("ЗИМА · 2026", 450, 1080);
 
   ctx.save();
-  ctx.translate(640, 975);
-  ctx.rotate(-0.2);
+  ctx.translate(650, 1005);
+  ctx.rotate(-0.18);
   ctx.strokeStyle = "rgba(157,52,67,0.55)";
   ctx.lineWidth = 4;
   ctx.setLineDash([10, 6]);
   ctx.beginPath();
-  ctx.arc(0, 0, 66, 0, Math.PI * 2);
+  ctx.arc(0, 0, 62, 0, Math.PI * 2);
   ctx.stroke();
-  ctx.fillStyle = "rgba(157,52,67,0.7)";
-  ctx.font = "48px Georgia, serif";
+  ctx.fillStyle = "rgba(157,52,67,0.72)";
+  ctx.font = "46px Georgia, serif";
   ctx.fillText("❄", 0, 16);
   ctx.restore();
 
+  const dataUrl = canvas.toDataURL("image/png");
   canvas.toBlob(blob => {
     if (!blob) {
       toast("Не удалось создать PNG.");
       return;
     }
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ministry-pass.png";
-    document.body.append(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
-    toast("Пропуск сохранён в PNG");
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ministry-pass.png";
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    } catch {}
+    openPngModal(dataUrl, blob);
   }, "image/png");
 }
 
@@ -327,9 +407,9 @@ function render() {
         <div class="hero-scrim">
           <span class="eyebrow">Бюро тёплых писем</span>
           <h1>Добро пожаловать,<br>коллега.</h1>
-          <p class="intro">Здесь собраны 38 полезных ресурсов для уроков, праздничные идеи и тёплые инициативы. Начните с любой двери.</p>
+          <p class="intro">38 полезных находок, идеи к празднику и тёплые дела.</p>
           <div class="hero-actions">
-            <a class="button red" href="#map">◇ Карта Министерства</a>
+            <a class="button red" href="#map">◇ Карта</a>
             <a class="button secondary" href="#pass">Мой пропуск</a>
           </div>
         </div>
@@ -345,7 +425,7 @@ function render() {
     </div>`;
   } else if (page === "map") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("У каждого дела<br>есть своя комната", "Выберите нужную дверь — все пространства открыты без обязательных заданий.")}
+      ${pageHeader("Карта Министерства", "Выберите нужную дверь — все пространства открыты без обязательных заданий.", false)}
       <div class="map-scene">
         <img src="map.jpg" alt="Библиотека слева, мастерская справа и бюро добрых дел внизу">
         <a class="room-label lib" href="#library">📖 Библиотека</a>
@@ -391,26 +471,35 @@ function render() {
     });
   } else if (page === "saved") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Ваши полезные находки", demo ? "В демо подборка хранится в этом браузере." : "Материалы, сохранённые в вашем профиле Telegram.")}
+      ${pageHeader("Сохранённое", demo ? "В демо подборка хранится в этом браузере." : "Материалы, сохранённые в вашем профиле Telegram.")}
       <section class="card-panel"><div id="results" class="resource-grid"></div></section>
     </div>`;
     renderResults(true);
   } else if (page === "pass") {
     const riddleDone = state.completed.includes("first-riddle");
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Личный пропуск", "Вы уже часть Министерства. Здесь нет экзаменов — только тёплая атмосфера.")}
+      ${pageHeader("Личный пропуск", "Ваша карта сотрудника Министерства.")}
       <div class="pass-layout">
         <div class="pass-wrap">
-          <div class="lanyard-strap" aria-hidden="true"></div>
           <article class="pass-card">
-            <div class="pass-clasp" aria-hidden="true"></div>
-            <span class="eyebrow-dark">Пропуск · Министерство добрых дел</span>
-            <div class="pass-crest" aria-hidden="true"><span class="pass-initial">${esc((state.name || "Г").slice(0, 1).toUpperCase())}</span></div>
+            <div class="pass-hanger" aria-hidden="true">
+              <div class="pass-ribbon-top"></div>
+              <div class="pass-slot"></div>
+            </div>
+            <div class="pass-title-main">Пропуск</div>
+            <div class="pass-subtitle">Министерство добрых дел</div>
+            <div class="pass-portrait-row">
+              ${laurelSvg()}
+              <div class="pass-arch" aria-hidden="true"><span class="pass-initial">${esc((state.name || "Г").slice(0, 1).toUpperCase())}</span></div>
+              ${laurelSvg("right")}
+            </div>
             <h2>${esc(state.name)}</h2>
             <span class="rank-ribbon">${esc(state.title)}</span>
             <p class="pass-num">${esc(passNumber())}</p>
-            ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
-            <div class="pass-stamp" aria-hidden="true">❄</div>
+            <div class="pass-bottom-row">
+              ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
+            </div>
+            ${postmarkSvg()}
           </article>
           <div class="actions"><button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button></div>
         </div>
@@ -591,6 +680,13 @@ function bindActions() {
   });
 }
 
+modal.addEventListener("click", e => {
+  if (e.target === modal) closePngModal();
+});
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !modal.hidden) closePngModal();
+});
+
 main.addEventListener("click", async event => {
   const category = event.target.closest("[data-filter]");
   if (category) {
@@ -682,6 +778,7 @@ async function loadProfile() {
 }
 
 window.addEventListener("hashchange", () => {
+  closePngModal();
   render();
   window.scrollTo(0, 0);
   main.focus({ preventScroll: true });
