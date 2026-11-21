@@ -21,6 +21,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+html,body{overflow-x:clip}
 body{margin:0;min-height:100dvh}
 body.is-gated .bottom-nav{display:none}
 body.is-gated main{padding-bottom:36px}
@@ -45,6 +46,7 @@ img{max-width:100%;display:block}
   background:rgba(251,244,230,.12);color:#fff7e6;border:1px solid var(--line);
   border-radius:16px;padding:10px 18px;font-size:.86rem;
   display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  position:relative;z-index:5;
 }
 .mode:empty{display:none}
 .mode-retry{background:#f7efdf;color:var(--green);padding:6px 14px;border-radius:999px;font-weight:600;font-size:.82rem;min-height:36px}
@@ -65,6 +67,20 @@ main{max-width:980px;margin:auto;padding:14px 18px calc(116px + env(safe-area-in
 .decor-corner.tr{top:8px;right:8px;transform:scaleX(-1)}
 .decor-inline{width:34px;height:34px;object-fit:contain;flex-shrink:0}
 .decor-star{width:28px;height:28px;object-fit:contain;margin:0 auto 6px}
+
+/* Large framing evergreen branches overlapping frame & screen corners */
+.hero-frame,.gate-frame{position:relative}
+.hero-branch{
+  position:absolute;
+  width:clamp(145px,24vw,240px);
+  height:auto;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:3;
+  filter:drop-shadow(0 10px 22px rgba(5,18,14,.48));
+}
+.hero-branch.tl{top:-26px;left:-34px;transform:rotate(-8deg)}
+.hero-branch.tr{top:-26px;right:-34px;transform:scaleX(-1) rotate(-8deg)}
 
 /* Entrance Gate & Pass Onboarding */
 .gate-stage{
@@ -129,7 +145,7 @@ main{max-width:980px;margin:auto;padding:14px 18px calc(116px + env(safe-area-in
   color:#fcf5e7;
 }
 .hero-scrim .eyebrow{color:#ecc786;display:block;margin-bottom:6px}
-.hero-scrim h1{text-shadow:0 3px 18px rgba(0,0,0,.55)}
+.hero-scrim h1{text-shadow:0 3px 18px rgba(0,0,0,.55);overflow-wrap:anywhere}
 .hero-scrim .intro{max-width:28rem;margin:8px auto 0;color:#ece1cc;font-size:.95rem}
 .hero-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
 
@@ -252,7 +268,7 @@ input[type=search],input[type=text]{
 .soon .status{display:inline-block;padding:3px 11px;border-radius:999px;background:#f5e5dc;color:var(--red);font-size:.78rem;font-weight:650;margin-bottom:8px}
 .soon p{color:var(--muted)}
 
-/* Lanyard Pass (Refined Cream Badge) */
+/* Lanyard Pass */
 .pass-layout{display:grid;grid-template-columns:minmax(270px,360px) 1fr;gap:22px;align-items:start}
 .pass-wrap{display:flex;flex-direction:column;align-items:center;padding-top:14px}
 .pass-lanyard-strap{
@@ -262,9 +278,7 @@ input[type=search],input[type=text]{
   margin-bottom:-18px;position:relative;z-index:3;
   display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;
 }
-.pass-lanyard-clip{
-  width:18px;height:8px;border-radius:4px;background:#e6c88a;border:1px solid #8f6b32;
-}
+.pass-lanyard-clip{width:18px;height:8px;border-radius:4px;background:#e6c88a;border:1px solid #8f6b32}
 .pass-bow-img{
   width:68px;height:68px;object-fit:contain;margin-bottom:-24px;position:relative;z-index:4;
   filter:drop-shadow(0 4px 10px rgba(0,0,0,.32));
@@ -291,7 +305,6 @@ input[type=search],input[type=text]{
 .pass-portrait-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px auto 10px}
 .pass-laurel{width:38px;height:64px;color:#b89050;opacity:.9;flex-shrink:0}
 .pass-laurel.right{transform:scaleX(-1)}
-.pass-laurel-img{width:170px;height:146px;object-fit:contain;position:absolute;pointer-events:none;opacity:.85}
 .pass-arch{
   position:relative;width:112px;height:126px;border-radius:56px 56px 20px 20px;
   background:linear-gradient(180deg,#ebe0c8 0%,#dfd0af 100%);
@@ -398,6 +411,9 @@ input[type=search],input[type=text]{
   main{padding:10px 12px calc(110px + env(safe-area-inset-bottom))}
   .hero-stage{min-height:440px;border-radius:24px}
   .hero-scrim{padding:155px 18px 20px}
+  .hero-branch{width:clamp(135px,36vw,175px)}
+  .hero-branch.tl{top:-20px;left:-28px}
+  .hero-branch.tr{top:-20px;right:-28px}
   .notice-grid,.room-list,.resource-grid{grid-template-columns:1fr}
   .card-panel{padding:18px;border-radius:20px}
   .decor-corner{width:56px;height:56px}
