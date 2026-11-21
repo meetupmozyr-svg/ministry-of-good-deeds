@@ -86,6 +86,43 @@ async function telegramCall(env, method, payload) {
   return true;
 }
 
+async function assetExists(env, appUrl, path) {
+  if (!env.ASSETS) return false;
+  try {
+    const res = await env.ASSETS.fetch(new Request(`${appUrl}/${path}`, { method: "HEAD" }));
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function sendWelcomeBanner(env, chatId, appUrl, caption, replyMarkup) {
+  const candidates = [
+    "assets/banners/telegram-welcome-banner.jpg",
+    "assets/banners/telegram-welcome-banner.png",
+    "assets/banners/telegram-welcome-banner.webp",
+    "assets/scenes/hall.jpg",
+    "hall.jpg"
+  ];
+  for (const path of candidates) {
+    if (env.ASSETS && !(await assetExists(env, appUrl, path))) continue;
+    const ok = await telegramCall(env, "sendPhoto", {
+      chat_id: chatId,
+      photo: `${appUrl}/${path}`,
+      caption,
+      parse_mode: "HTML",
+      reply_markup: replyMarkup
+    });
+    if (ok) return true;
+  }
+  return telegramCall(env, "sendMessage", {
+    chat_id: chatId,
+    text: caption,
+    parse_mode: "HTML",
+    reply_markup: replyMarkup
+  });
+}
+
 async function editBotCard(env, cq, text, replyMarkup) {
   const chatId = cq.message?.chat?.id;
   const messageId = cq.message?.message_id;
@@ -289,11 +326,11 @@ async function handleTelegram(request, env) {
       await editBotCard(
         env,
         cq,
-        "✅ <b>Дверь согрелась и открылась!</b>\n\nДоброе слово действительно не знает расстояний. В вашем пропуске зажглась отметка хранителя — добро пожаловать внутрь.",
+        "✅ <b>Дверь согрелась и открылась!</b>\n\nДоброе слово действительно не знает расстояний. Теперь загляните внутрь и оформите свой личный пропуск.",
         {
           inline_keyboard: [
-            [{ text: "🚪 Войти в Министерство", web_app: { url: appUrl } }],
-            [{ text: "▣ Посмотреть мой пропуск", web_app: { url: `${appUrl}/#pass` } }]
+            [{ text: "🚪 Войти и получить пропуск", web_app: { url: appUrl } }],
+            [{ text: "▣ Мой пропуск", web_app: { url: `${appUrl}/#pass` } }]
           ]
         }
       );
@@ -305,7 +342,7 @@ async function handleTelegram(request, env) {
       await editBotCard(
         env,
         cq,
-        "🚪 <b>Вход свободен</b>\n\nВы всегда можете вернуться к загадке позже, а все комнаты Министерства уже ждут вас.",
+        "🚪 <b>Вход свободен</b>\n\nВы всегда можете вернуться к загадке позже, а внутри вас уже ждёт оформление личного пропуска.",
         {
           inline_keyboard: [
             [{ text: "🚪 Войти в Министерство", web_app: { url: appUrl } }],
@@ -341,52 +378,4 @@ async function handleTelegram(request, env) {
       "Перед вами — тёплые двери нашего зимнего ведомства для преподавателей.\n\n" +
       "Чтобы зажечь фонари в Холле, <b>подберите ключ-загадку</b> — или пропустите её и загляните сразу внутрь.";
     const replyMarkup = {
-      inline_keyboard: [
-        [{ text: "🗝 Разгадать ключ и войти", callback_data: "riddle:start" }],
-        [{ text: "Пропустить → Войти сразу", web_app: { url: appUrl } }]
-      ]
-    };
-
-    const sentPhoto = await telegramCall(env, "sendPhoto", {
-      chat_id: message.chat.id,
-      photo: `${appUrl}/hall.jpg`,
-      caption,
-      parse_mode: "HTML",
-      reply_markup: replyMarkup
-    });
-
-    if (!sentPhoto) {
-      await telegramCall(env, "sendMessage", {
-        chat_id: message.chat.id,
-        text: caption,
-        parse_mode: "HTML",
-        reply_markup: replyMarkup
-      });
-    }
-  }
-
-  return new Response("ok");
-}
-
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    if (url.pathname.startsWith("/api/")) {
-      try {
-        return await api(request, env);
-      } catch (e) {
-        console.error("API error:", e);
-        return json({ error: "Internal error" }, 500);
-      }
-    }
-    if (url.pathname === "/telegram/webhook" && request.method === "POST") {
-      try {
-        return await handleTelegram(request, env);
-      } catch (e) {
-        console.error("Webhook error:", e);
-        return new Response("Webhook error", { status: 500 });
-      }
-    }
-    return env.ASSETS.fetch(request);
-  }
-};
+      inl
