@@ -1006,4 +1006,211 @@ function renderResults(savedOnly = false) {
     return;
   }
 
-  const query = search.trim().toLo
+  const query = search.trim().toLocaleLowerCase("ru-RU");
+  const list = resources.filter(r =>
+    (!savedOnly || state.saved.includes(r.id)) &&
+    (savedOnly || filter === "Все" || r.category === filter) &&
+    (savedOnly || !query || `${r.title} ${r.description} ${r.tag} ${r.access} ${r.terms}`.toLocaleLowerCase("ru-RU").includes(query))
+  );
+
+  const countEl = document.querySelector("#result-count");
+  if (countEl) countEl.textContent = `Показано ${list.length} из ${resources.length}`;
+
+  target.innerHTML = list.length
+    ? list.map(r => card(r, savedOnly)).join("")
+    : `<div class="empty"><h2>${savedOnly ? "Пока ни одной находки" : "Ничего не нашлось"}</h2><p>${savedOnly ? "Загляните в библиотеку и сохраните то, что пригодится на уроках." : "Попробуйте изменить запрос или выбрать раздел «Все»."}</p>${savedOnly ? '<div class="actions"><a class="button" href="#library">В библиотеку</a></div>' : ""}</div>`;
+}
+
+function bindActions() {
+  const form = document.querySelector("#name-form");
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const name = document.querySelector("#display-name").value.trim().slice(0, 40);
+      if (!name) {
+        toast("Введите имя.");
+        return;
+      }
+      const b = form.querySelector("button");
+      b.disabled = true;
+      try {
+        if (!demo) await api("/api/profile", "POST", { displayName: name });
+        state.name = name;
+        if (demo) persistDemo();
+        render();
+        toast("Имя сохранено");
+      } catch (err) {
+        toast(err.message);
+        b.disabled = false;
+      }
+    });
+  }
+
+  const dlBtn = document.querySelector("#download-pass");
+  if (dlBtn) dlBtn.addEventListener("click", downloadPassPng);
+
+  const replayBtn = document.querySelector("#replay-riddle-btn");
+  if (replayBtn) {
+    replayBtn.addEventListener("click", () => {
+      gateOpen = false;
+      try { localStorage.removeItem(GATE_KEY); } catch {}
+      render();
+    });
+  }
+
+  const startQuiz = document.querySelector("#start-quiz");
+  if (startQuiz) {
+    startQuiz.addEventListener("click", () => {
+      quizStep = 0;
+      quizAnswers = [];
+      render();
+    });
+  }
+
+  const skipQuiz = document.querySelector("#skip-quiz");
+  if (skipQuiz) {
+    skipQuiz.addEventListener("click", () => {
+      quizStep = null;
+      quizAnswers = [];
+      render();
+    });
+  }
+
+  document.querySelectorAll("[data-quiz-choice]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const idx = Number(btn.dataset.quizChoice);
+      const picked = quizQuestions[quizStep]?.options[idx]?.role;
+      if (picked) quizAnswers.push(picked);
+      if (quizStep + 1 < quizQuestions.length) {
+        quizStep += 1;
+        render();
+      } else {
+        const newTitle = computeQuizWinner(quizAnswers);
+        const meta = getRoleMeta(newTitle);
+        state.title = newTitle;
+        saveTitleLocal(newTitle);
+        quizStep = null;
+        quizAnswers = [];
+        render();
+        if (!demo) {
+          try { await api("/api/profile", "POST", { rank: newTitle }); } catch {}
+        }
+        toast(`Ваше звание: ${meta.emoji} ${newTitle}`);
+      }
+    });
+  });
+}
+
+modal.addEventListener("click", e => {
+  if (e.target === modal) closePngModal();
+});
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !modal.hidden) closePngModal();
+});
+
+main.addEventListener("click", async event => {
+  const category = event.target.closest("[data-filter]");
+  if (category) {
+    filter = category.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach(el => el.setAttribute("aria-pressed", el.dataset.filter === filter));
+    renderResults();
+    return;
+  }
+
+  const save = event.target.closest("[data-save]");
+  if (save && !save.disabled) {
+    const id = save.dataset.save;
+    save.disabled = true;
+    save.textContent = "Сохраняем…";
+    try {
+      if (!demo) await api("/api/save", "POST", { materialId: id });
+      if (!state.saved.includes(id)) state.saved.push(id);
+      if (demo) persistDemo();
+      renderResults(route() === "saved");
+      toast(demo ? "Добавлено в демо-подборку" : "Добавлено в сохранённое");
+    } catch (err) {
+      save.disabled = false;
+      save.textContent = "Повторить";
+      toast(err.message);
+    }
+    return;
+  }
+
+  const unsave = event.target.closest("[data-unsave]");
+  if (unsave && !unsave.disabled) {
+    const id = unsave.dataset.unsave;
+    unsave.disabled = true;
+    unsave.textContent = "Убираем…";
+    try {
+      if (!demo) await api(`/api/save?materialId=${encodeURIComponent(id)}`, "DELETE");
+      state.saved = state.saved.filter(x => x !== id);
+      if (demo) persistDemo();
+      renderResults(route() === "saved");
+      toast("Убрано из сохранённого");
+    } catch (err) {
+      unsave.disabled = false;
+      unsave.textContent = route() === "saved" ? "Убрать" : "✓ Сохранено";
+      toast(err.message);
+    }
+  }
+});
+
+async function loadProfile() {
+  if (demo) {
+    mode.textContent = "Демо-режим · сохранения остаются только в этом браузере";
+    render();
+    return;
+  }
+  loadError = false;
+  mode.textContent = "Загружаем ваш профиль…";
+  try {
+    const data = await api("/api/me");
+    const dbRank = data.profile?.rank;
+    const validRank = dbRank && roleMeta[dbRank] ? dbRank : state.title;
+    const completed = Array.isArray(data.completed) ? data.completed : [];
+    if (completed.includes("first-riddle")) saveGateOpen();
+    state = {
+      ...state,
+      name: data.profile?.display_name || "Гость",
+      title: validRank,
+      saved: Array.isArray(data.saved) ? data.saved : [],
+      completed
+    };
+    loaded = true;
+    loadError = false;
+    mode.textContent = "";
+    if (document.activeElement?.id === "search") {
+      renderResults(false);
+    } else {
+      render();
+    }
+  } catch (err) {
+    loadError = true;
+    mode.textContent = "";
+    const msg = document.createElement("span");
+    msg.textContent = err.message;
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "mode-retry";
+    retry.textContent = "Повторить";
+    retry.addEventListener("click", loadProfile);
+    mode.append(msg, retry);
+    render();
+    toast(err.message);
+  }
+}
+
+window.addEventListener("hashchange", () => {
+  closePngModal();
+  render();
+  window.scrollTo(0, 0);
+  main.focus({ preventScroll: true });
+});
+
+try {
+  render();
+  loadProfile();
+} catch (err) {
+  mode.textContent = "Ошибка запуска: " + (err?.message || err);
+}
+// END OF APP.JS
