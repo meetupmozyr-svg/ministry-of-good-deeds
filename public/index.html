@@ -4,14 +4,20 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#183b31">
   <title>Министерство добрых дел</title>
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
-  <script src="app.js?v=7" defer></script>
+  <script src="app.js?v=8" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">К содержимому</a>
   <header class="masthead">
-    <a href="#hall" class="brand"><span class="emblem" aria-hidden="true">✳</span><span>Министерство<br>добрых дел</span></a>
+    <a href="#hall" class="brand">
+      <svg class="emblem-svg" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+        <path d="M18 3v30M5 10.5l26 15M31 10.5l-26 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="18" cy="18" r="3.5" fill="currentColor"/>
+      </svg>
+      <span>Министерство<br>добрых дел</span>
+    </a>
     <span class="season">ЗИМА · 2026</span>
   </header>
   <div id="mode" class="mode" role="status"></div>
@@ -20,10 +26,22 @@
     <noscript><div class="shell"><div class="card-panel"><p class="intro">Для работы приложения нужен JavaScript.</p></div></div></noscript>
   </main>
   <nav class="bottom-nav" aria-label="Главная навигация">
-    <a href="#hall" data-nav="hall"><span aria-hidden="true">⌂</span>Холл</a>
-    <a href="#map" data-nav="map"><span aria-hidden="true">◇</span>Карта</a>
-    <a href="#saved" data-nav="saved"><span aria-hidden="true">♧</span>Сохранённое</a>
-    <a href="#pass" data-nav="pass"><span aria-hidden="true">▣</span>Пропуск</a>
+    <a href="#hall" data-nav="hall">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      Холл
+    </a>
+    <a href="#map" data-nav="map">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20V6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 4v13.5M15 6.5V20" stroke="currentColor" stroke-width="1.8"/></svg>
+      Карта
+    </a>
+    <a href="#saved" data-nav="saved">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4V4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      Сохранённое
+    </a>
+    <a href="#pass" data-nav="pass">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10.5" r="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7.5 17a4.5 4.5 0 0 1 9 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      Пропуск
+    </a>
   </nav>
   <div id="png-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="png-modal-title"></div>
   <div id="toast" role="status" aria-live="polite"></div>
