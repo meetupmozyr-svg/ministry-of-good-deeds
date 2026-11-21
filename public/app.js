@@ -145,6 +145,13 @@ function getRoleMeta(title) {
   return roleMeta[title] || roleMeta["Хранитель тепла"];
 }
 
+const ICONS = {
+  map: `<svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20V6.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 4v13.5M15 6.5V20" stroke="currentColor" stroke-width="1.9"/></svg>`,
+  book: `<svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v17H6.5A2.5 2.5 0 0 0 4 22V5.5Zm16 0A2.5 2.5 0 0 0 17.5 3H12v17h5.5a2.5 2.5 0 0 1 2.5 2V5.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>`,
+  spark: `<svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4L12 3Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>`,
+  mail: `<svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.9"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>`
+};
+
 let state = { name: tgFirstName || "Гость", saved: [], completed: [], title: loadSavedTitle() };
 let loaded = demo;
 let loadError = false;
@@ -274,6 +281,20 @@ function sceneImg(primary, fallback, alt, cls = "", priority = false) {
   return `<img${cls ? ` class="${cls}"` : ""} src="${primary}" alt="${esc(alt)}"${priority ? ' fetchpriority="high"' : ""} onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${fallback}';}">`;
 }
 
+function roomHeroHtml(primaryImg, fallbackImg, alt, title, subtitle, actionHtml = "") {
+  return `<section class="room-hero">
+    <div class="room-hero-media">
+      ${sceneImg(primaryImg, fallbackImg, alt, "room-hero-img", true)}
+    </div>
+    <a class="room-back" href="#map">← На карту</a>
+    <div class="room-hero-copy">
+      <h1>${title}</h1>
+      ${subtitle ? `<p class="intro">${subtitle}</p>` : ""}
+      ${actionHtml ? `<div class="room-hero-actions">${actionHtml}</div>` : ""}
+    </div>
+  </section>`;
+}
+
 function decorImg(name, cls) {
   return `<img class="${cls}" src="assets/decorations/${name}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/${name}.webp';}else{this.remove();}">`;
 }
@@ -307,13 +328,6 @@ function postmarkSvg() {
     <circle cx="76" cy="37" r="21" stroke="#9d3443" stroke-width="1.2"/>
     <text x="76" y="45" text-anchor="middle" fill="#9d3443" font-size="24" font-family="Georgia,serif">❄</text>
   </svg>`;
-}
-
-function optionalSceneBanner(path, pillLabel) {
-  return `<div class="scene-banner" hidden>
-    <img src="${path}" alt="" onload="this.parentElement.hidden=false" onerror="this.parentElement.remove()">
-    <span class="scene-pill">${pillLabel}</span>
-  </div>`;
 }
 
 function passCardHtml() {
@@ -621,9 +635,7 @@ function renderGate() {
       <section class="gate-stage">
         <div class="gate-banner">
           ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Волшебные двери приёмной Министерства добрых дел", "gate-bg", true)}
-          ${decorImg("paper-snowflake", "decor-corner tl")}
-          ${decorImg("paper-snowflake", "decor-corner tr")}
-          <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
+          <span class="gate-key-badge">Ключ от дверей Министерства</span>
         </div>
         <div class="gate-body">
           ${snowflakeSvg()}
@@ -732,9 +744,9 @@ function renderOnboarding() {
       <div class="pass-wrap">
         ${passCardHtml()}
         <div class="onboard-actions">
-          <button type="button" class="button red" id="onboard-enter-map">◇ На карту Министерства</button>
-          <button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button>
-          <button type="button" class="button secondary" id="onboard-enter-hall">⌂ В Главный холл</button>
+          <button type="button" class="button red" id="onboard-enter-map">${ICONS.map} На карту Министерства</button>
+          <button type="button" class="button cream" id="download-pass">⬇ Сохранить PNG</button>
+          <button type="button" class="button secondary" id="onboard-enter-hall">В Главный холл</button>
         </div>
       </div>
     </div>`;
@@ -760,7 +772,7 @@ function renderOnboarding() {
       <section class="gate-stage">
         <div class="gate-banner">
           ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Приёмная Министерства добрых дел", "gate-bg", true)}
-          <span class="gate-key-badge">▣ Личный пропуск · ${esc(passNumber())}</span>
+          <span class="gate-key-badge">Личный пропуск · ${esc(passNumber())}</span>
         </div>
         <div class="gate-body">
           ${decorImg("vintage-lantern", "decor-star")}
@@ -770,7 +782,7 @@ function renderOnboarding() {
             <label for="onboard-name">Как подписать ваш пропуск?</label>
             <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
             <div class="onboard-actions">
-              <button type="submit" class="button red">✨ Пройти викторину и получить ID</button>
+              <button type="submit" class="button red">${ICONS.spark} Пройти викторину и получить ID</button>
               <button type="button" class="button secondary" id="onboard-skip-all">Пропустить и войти в Холл</button>
             </div>
           </form>
@@ -844,8 +856,8 @@ function render() {
             <h1>Добро пожаловать,<br>${greetingName}!</h1>
             <p class="intro">38 полезных находок, идеи к празднику и тёплые дела.</p>
             <div class="hero-actions">
-              <a class="button red" href="#map">◇ Карта</a>
-              <a class="button secondary" href="#pass">Мой пропуск</a>
+              <a class="button red" href="#map">${ICONS.map} Карта</a>
+              <a class="button cream" href="#pass">Мой пропуск</a>
             </div>
           </div>
         </section>
@@ -867,26 +879,38 @@ function render() {
       ${pageHeader("Карта Министерства", "Выберите нужную дверь — все пространства открыты без обязательных заданий.", false)}
       <div class="map-scene">
         ${sceneImg("assets/scenes/map-ministry.png", "map.jpg", "Библиотека слева, мастерская справа и бюро добрых дел внизу")}
-        <a class="room-label lib" href="#library">📖 Библиотека</a>
-        <a class="room-label work" href="#workshop">✨ Мастерская</a>
-        <a class="room-label bureau" href="#bureau">✉ Бюро добрых дел</a>
+        <a class="room-label lib" href="#library">${ICONS.book}<span>Библиотека</span></a>
+        <a class="room-label work" href="#workshop">${ICONS.spark}<span>Мастерская</span></a>
+        <a class="room-label bureau" href="#bureau">${ICONS.mail}<span>Бюро добрых дел</span></a>
       </div>
       <div class="room-list">
-        <a class="room-card" href="#library"><h2>Библиотека находок</h2><p>38 проверенных инструментов для уроков</p></a>
-        <a class="room-card" href="#workshop"><h2>Мастерская праздника</h2><p>Занятия, оформление и челлендж Скайхаба</p></a>
-        <a class="room-card" href="#bureau"><h2>Бюро добрых дел</h2><p>Проверенные благотворительные инициативы</p></a>
+        <a class="room-card" href="#library">
+          <div class="room-card-top"><span class="room-card-badge">${ICONS.book}</span><span class="room-card-go">Открыть →</span></div>
+          <h2>Библиотека находок</h2>
+          <p>38 проверенных инструментов для уроков</p>
+        </a>
+        <a class="room-card" href="#workshop">
+          <div class="room-card-top"><span class="room-card-badge">${ICONS.spark}</span><span class="room-card-go">Открыть →</span></div>
+          <h2>Мастерская праздника</h2>
+          <p>Занятия, оформление и челлендж Скайхаба</p>
+        </a>
+        <a class="room-card" href="#bureau">
+          <div class="room-card-top"><span class="room-card-badge">${ICONS.mail}</span><span class="room-card-go">Открыть →</span></div>
+          <h2>Бюро добрых дел</h2>
+          <p>Проверенные благотворительные инициативы</p>
+        </a>
       </div>
     </div>`;
   } else if (page === "library") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Библиотека находок", "38 интерактивных веб-ресурсов по школьным предметам и языкам — с честными заметками о лицензиях.")}
-      <div class="scene-banner">
-        ${sceneImg("assets/scenes/library-interior.png", "library.jpg", "Книжные полки, зелёная книга и золотая лампа в библиотеке")}
-        ${decorImg("paper-snowflake", "decor-corner tl")}
-        ${decorImg("vintage-lantern", "decor-corner tr")}
-        <span class="scene-pill">📖 Библиотека · 38 находок</span>
-        <button class="button red book-button" id="open-book">Открыть книгу находок</button>
-      </div>
+      ${roomHeroHtml(
+        "assets/scenes/library-interior.png",
+        "library.jpg",
+        "Книжные полки, зелёная книга и золотая лампа в библиотеке",
+        "Библиотека находок",
+        "38 интерактивных веб-ресурсов по школьным предметам и языкам — с честными заметками о лицензиях.",
+        `<button class="button red" id="open-book">${ICONS.book} Открыть книгу находок</button>`
+      )}
       <section class="card-panel" id="catalog">
         <label class="search-label" for="search">Найти ресурс</label>
         <input id="search" type="search" placeholder="Название, предмет, язык или «бесплатно»" value="${esc(search)}">
@@ -924,8 +948,8 @@ function render() {
         <div class="pass-wrap">
           ${passCardHtml()}
           <div class="actions">
-            <button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button>
-            ${!riddleDone ? `<button type="button" class="button secondary" id="replay-riddle-btn">🗝 Загадка входа</button>` : ""}
+            <button type="button" class="button cream" id="download-pass">⬇ Сохранить PNG</button>
+            ${!riddleDone ? `<button type="button" class="button secondary" id="replay-riddle-btn">Загадка входа</button>` : ""}
           </div>
         </div>
         <div class="card-panel">
@@ -942,8 +966,13 @@ function render() {
     </div>`;
   } else if (page === "workshop") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Мастерская праздника", "Новогодние занятия, разминки и активности для ваших учеников.")}
-      ${optionalSceneBanner("assets/scenes/workshop-interior.webp", "✨ Мастерская праздника")}
+      ${roomHeroHtml(
+        "assets/scenes/workshop-interior.webp",
+        "assets/scenes/hall.jpg",
+        "Новогодняя мастерская Министерства с лентами, подарками и лампой",
+        "Мастерская праздника",
+        "Новогодние занятия, разминки и активности для ваших учеников."
+      )}
       <section class="card-panel">
         <article class="soon"><span class="status">С 1 декабря · языки</span><h2>Разминки и 8 новых уроков</h2><p>Адвент-разминки и обновлённые рождественские и новогодние уроки для разных уровней, плюс резервная копия на Google-сайте.</p></article>
         <article class="soon"><span class="status">С 1 декабря · начальная школа</span><h2>Комиксы, распечатки и раскраски</h2><p>Тематический поиск подарков и комиксов внутри уроков и карточки с распечатками для праздничных занятий.</p></article>
@@ -953,8 +982,13 @@ function render() {
     </div>`;
   } else if (page === "bureau") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Бюро добрых дел", "Можно подарить не только вещь, но и внимание, время и поддержку.")}
-      ${optionalSceneBanner("assets/scenes/bureau-interior.webp", "✉ Бюро добрых дел")}
+      ${roomHeroHtml(
+        "assets/scenes/bureau-interior.webp",
+        "assets/scenes/hall.jpg",
+        "Бюро тёплых писем с почтовыми ячейками, пером и подарками",
+        "Бюро добрых дел",
+        "Можно подарить не только вещь, но и внимание, время и поддержку."
+      )}
       <section class="card-panel">
         <article class="soon">
           <div class="soon-head"><span class="status">Проверенная инициатива</span>${decorImg("evergreen-sprig", "decor-inline")}</div>
