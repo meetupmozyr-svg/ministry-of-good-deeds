@@ -534,17 +534,34 @@ ctx.textAlign = "center";
     roundRectPath(ctx, 165, 720, 570, 68, 34);
     ctx.fill();
 
-    ctx.fillStyle = "#fff9ee";
+ctx.fillStyle = "#fff9ee";
     ctx.font = "bold 26px sans-serif";
     ctx.fillText(`${meta.emoji} ${state.title}`, 450, 764);
 
-    ctx.fillStyle = "#665b4c";
-    ctx.font = "30px Georgia, serif";
-    ctx.fillText(passNumber(), 450, 855);
+    // Character description on saved PNG
+    ctx.fillStyle = "#5f5445";
+    ctx.font = "20px Georgia, serif";
+    const words = (meta.desc || "").split(" ");
+    let line = "", descY = 822;
+    for (const w of words) {
+      const test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > 480) {
+        ctx.fillText(line, 450, descY);
+        line = w;
+        descY += 28;
+      } else {
+        line = test;
+      }
+    }
+    if (line) ctx.fillText(line, 450, descY);
 
     ctx.fillStyle = "#665b4c";
+    ctx.font = "bold 26px Georgia, serif";
+    ctx.fillText(passNumber(), 450, Math.max(descY + 44, 915));
+
+ctx.fillStyle = "#665b4c";
     ctx.font = "bold 20px sans-serif";
-    ctx.fillText("ЗИМА · 2026", 450, 1080);
+    ctx.fillText("ЗИМА · 2026/2027", 450, 1080);
 
     if (waxSealImg) {
       ctx.save();
