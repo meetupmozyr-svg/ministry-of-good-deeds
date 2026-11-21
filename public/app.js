@@ -811,16 +811,16 @@ function renderOnboarding() {
         </div>
         <div class="gate-body">
           ${decorImg("vintage-lantern", "decor-star")}
-          <h1>Оформите ваш пропуск</h1>
-          <p class="intro">Добро пожаловать внутрь! Пройдите 6 быстрых вопросов, чтобы получить личное звание, значок и номер сотрудника — или пропустите пока этот шаг.</p>
-          <form id="onboard-name-form" class="onboard-form">
-            <label for="onboard-name">Как подписать ваш пропуск?</label>
-            <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
-            <div class="onboard-actions">
-              <button type="submit" class="button red">${ICONS.spark} Пройти викторину и получить ID</button>
-              <button type="button" class="button secondary" id="onboard-skip-all">Пропустить и войти в Холл</button>
-            </div>
-          </form>
+<h1>Оформите свой пропуск</h1>
+        <p class="intro">Добро пожаловать! Ответьте на 6 коротких вопросов, чтобы узнать своё звание в Министерстве и получить именной значок. Если спешите, этот шаг можно пропустить.</p>
+        <form id="onboard-name-form" class="onboard-form">
+          <label for="onboard-name">Как подписать пропуск?</label>
+          <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
+          <div class="onboard-actions">
+            <button type="submit" class="button red">${ICONS.spark} Пройти викторину и получить пропуск</button>
+            <button type="button" class="button secondary" id="onboard-skip-all">Пропустить и войти в Холл</button>
+          </div>
+        </form>
         </div>
       </section>
     </div>
