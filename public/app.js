@@ -339,7 +339,7 @@ function passCardHtml() {
   ${decorImg("burgundy-bow", "pass-bow-img")}
   <article class="pass-card${passBgImg ? " has-pass-bg" : ""}">
     <div class="pass-slot" aria-hidden="true"></div>
-    <div class="pass-title-main">Пропуск</div>
+    <div class="pass-title-main">ПРОПУСК</div>
     <div class="pass-subtitle">Министерство добрых дел</div>
     <div class="pass-portrait-row">
       ${laurelSvg()}
@@ -353,9 +353,7 @@ function passCardHtml() {
     <span class="rank-ribbon">${esc(meta.emoji)} ${esc(state.title)}</span>
     <p class="pass-role-desc">${esc(meta.desc)}</p>
     <p class="pass-num">${esc(passNumber())}</p>
-    <div class="pass-bottom-row">
-      ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
-    </div>
+
     <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.setAttribute('hidden','')" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
     ${postmarkSvg()}
   </article>`;
@@ -495,15 +493,14 @@ async function downloadPassPng() {
       roundRectPath(ctx, 386, 174, 128, 22, 11);
       ctx.fill();
     }
-
-    ctx.textAlign = "center";
+ctx.textAlign = "center";
     ctx.fillStyle = "#1e3a31";
-    ctx.font = "54px Georgia, serif";
-    ctx.fillText("Пропуск", 450, 265);
+    ctx.font = "600 42px Georgia, serif";
+    ctx.fillText("ПРОПУСК", 450, 294);
 
     ctx.fillStyle = "#665b4c";
-    ctx.font = "bold 20px sans-serif";
-    ctx.fillText("МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 305);
+    ctx.font = "bold 17px sans-serif";
+    ctx.fillText("МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 326);
 
     ctx.save();
     roundRectPath(ctx, 336, 345, 228, 255, 114);
@@ -543,15 +540,6 @@ async function downloadPassPng() {
     ctx.fillStyle = "#665b4c";
     ctx.font = "30px Georgia, serif";
     ctx.fillText(passNumber(), 450, 855);
-
-    if (state.completed.includes("first-riddle")) {
-      ctx.fillStyle = "#e2f0d9";
-      roundRectPath(ctx, 250, 895, 400, 44, 22);
-      ctx.fill();
-      ctx.fillStyle = "#214b2d";
-      ctx.font = "bold 21px sans-serif";
-      ctx.fillText("❄ Первая загадка разгадана", 450, 924);
-    }
 
     ctx.fillStyle = "#665b4c";
     ctx.font = "bold 20px sans-serif";
