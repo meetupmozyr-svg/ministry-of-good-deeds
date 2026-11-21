@@ -252,6 +252,14 @@ function passNumber() {
   return `№ ${String(tgId).slice(-6).padStart(6, "0")}`;
 }
 
+function snowflakeSvg() {
+  return `<svg class="gate-snowflake" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <path d="M24 4v40M6.7 14l34.6 20M41.3 14L6.7 34" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M19 8l5 5 5-5M19 40l5-5 5 5M9.5 21l6-3.5-1-6.5M38.5 27l-6 3.5 1 6.5M38.5 21l-6-3.5 1-6.5M9.5 27l6 3.5-1 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="24" cy="24" r="3.5" fill="currentColor"/>
+  </svg>`;
+}
+
 function laurelSvg(extraClass = "") {
   return `<svg class="pass-laurel ${extraClass}" viewBox="0 0 40 72" fill="none" aria-hidden="true">
     <path d="M32 64C18 52 14 34 22 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -275,6 +283,17 @@ function postmarkSvg() {
   </svg>`;
 }
 
+function optionalDecorImg(path, cls) {
+  return `<img class="${cls}" src="${path}" alt="" hidden onload="this.hidden=false" onerror="this.remove()">`;
+}
+
+function optionalSceneBanner(path, pillLabel) {
+  return `<div class="scene-banner" hidden>
+    <img src="${path}" alt="" onload="this.parentElement.hidden=false" onerror="this.parentElement.remove()">
+    <span class="scene-pill">${pillLabel}</span>
+  </div>`;
+}
+
 function roundRectPath(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -285,7 +304,7 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function loadAvatarImage(url) {
+function loadImageOptional(url) {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => resolve(img);
@@ -335,7 +354,10 @@ async function downloadPassPng() {
   if (btn) btn.disabled = true;
   try {
     const meta = getRoleMeta(state.title);
-    const avatarImg = await loadAvatarImage(`avatars/${meta.key}.png`);
+    const [avatarImg, waxSealImg] = await Promise.all([
+      loadImageOptional(`avatars/${meta.key}.png`),
+      loadImageOptional("assets/decorations/wax-seal-snowflake.png")
+    ]);
 
     const canvas = document.createElement("canvas");
     canvas.width = 900;
@@ -434,19 +456,27 @@ async function downloadPassPng() {
     ctx.font = "bold 20px sans-serif";
     ctx.fillText("ЗИМА · 2026", 450, 1080);
 
-    ctx.save();
-    ctx.translate(650, 1005);
-    ctx.rotate(-0.18);
-    ctx.strokeStyle = "rgba(157,52,67,0.55)";
-    ctx.lineWidth = 4;
-    ctx.setLineDash([10, 6]);
-    ctx.beginPath();
-    ctx.arc(0, 0, 62, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.fillStyle = "rgba(157,52,67,0.72)";
-    ctx.font = "46px Georgia, serif";
-    ctx.fillText("❄", 0, 16);
-    ctx.restore();
+    if (waxSealImg) {
+      ctx.save();
+      ctx.translate(645, 1005);
+      ctx.rotate(-0.12);
+      ctx.drawImage(waxSealImg, -72, -72, 144, 144);
+      ctx.restore();
+    } else {
+      ctx.save();
+      ctx.translate(650, 1005);
+      ctx.rotate(-0.18);
+      ctx.strokeStyle = "rgba(157,52,67,0.55)";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([10, 6]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 62, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(157,52,67,0.72)";
+      ctx.font = "46px Georgia, serif";
+      ctx.fillText("❄", 0, 16);
+      ctx.restore();
+    }
 
     const dataUrl = canvas.toDataURL("image/png");
     canvas.toBlob(blob => {
@@ -512,10 +542,13 @@ function renderGate() {
   main.innerHTML = `<div class="shell">
     <section class="gate-stage">
       <div class="gate-banner">
-        <img src="hall.jpg" alt="Волшебные двери приёмной Министерства добрых дел" fetchpriority="high">
+        <img class="gate-bg" src="hall.jpg" alt="Волшебные двери приёмной Министерства добрых дел" fetchpriority="high">
+        ${optionalDecorImg("assets/decorations/paper-snowflake.png", "decor-corner tl")}
+        ${optionalDecorImg("assets/decorations/paper-snowflake.png", "decor-corner tr")}
         <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
       </div>
       <div class="gate-body">
+        ${snowflakeSvg()}
         <h1>Тайна зимнего входа</h1>
         <p class="intro">Чтобы зажечь фонари в Холле и открыть комнаты, подберите ключ-отгадку.</p>
         <blockquote class="gate-riddle">${esc(entranceRiddle.text)}</blockquote>
@@ -582,7 +615,9 @@ function render() {
   if (page === "hall") {
     main.innerHTML = `<div class="shell">
       <section class="hero-stage">
-        <img src="hall.jpg" alt="Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном" fetchpriority="high">
+        <img class="hero-bg" src="hall.jpg" alt="Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном" fetchpriority="high">
+        ${optionalDecorImg("assets/decorations/evergreen-sprig.png", "decor-corner tl")}
+        ${optionalDecorImg("assets/decorations/evergreen-sprig.png", "decor-corner tr")}
         <div class="hero-scrim">
           <span class="eyebrow">Бюро тёплых писем</span>
           <h1>Добро пожаловать,<br>коллега.</h1>
@@ -685,6 +720,7 @@ function render() {
                 ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>`
                 : `<button type="button" class="button secondary" id="replay-riddle-btn">🗝 Разгадать загадку входа</button>`}
             </div>
+            <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.hidden=true" onerror="this.remove()">
             ${postmarkSvg()}
           </article>
           <div class="actions"><button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button></div>
@@ -704,6 +740,7 @@ function render() {
   } else if (page === "workshop") {
     main.innerHTML = `<div class="shell">
       ${pageHeader("Мастерская праздника", "Новогодние занятия, разминки и активности для ваших учеников.")}
+      ${optionalSceneBanner("assets/scenes/workshop-interior.webp", "✨ Мастерская праздника")}
       <section class="card-panel">
         <article class="soon"><span class="status">С 1 декабря · языки</span><h2>Разминки и 8 новых уроков</h2><p>Адвент-разминки и обновлённые рождественские и новогодние уроки для разных уровней, плюс резервная копия на Google-сайте.</p></article>
         <article class="soon"><span class="status">С 1 декабря · начальная школа</span><h2>Комиксы, распечатки и раскраски</h2><p>Тематический поиск подарков и комиксов внутри уроков и карточки с распечатками для праздничных занятий.</p></article>
@@ -714,6 +751,7 @@ function render() {
   } else if (page === "bureau") {
     main.innerHTML = `<div class="shell">
       ${pageHeader("Бюро добрых дел", "Можно подарить не только вещь, но и внимание, время и поддержку.")}
+      ${optionalSceneBanner("assets/scenes/bureau-interior.webp", "✉ Бюро добрых дел")}
       <section class="card-panel">
         <article class="soon">
           <span class="status">Проверенная инициатива</span>
