@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101b38">
+  <title>Министерство добрых дел</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="top"><div class="seal">✧</div><div><p class="eyebrow">ЗИМНЯЯ СЛУЖБА ВОЛШЕБСТВА</p><h1>Министерство<br>добрых дел</h1></div></header>
+    <section class="welcome panel">
+      <p class="eyebrow">ВАШ ЛИЧНЫЙ ПРОПУСК</p>
+      <h2 id="hello">Добро пожаловать!</h2>
+      <p class="muted">Здесь начинаются маленькие добрые дела, полезные находки и немного зимнего волшебства.</p>
+      <div class="pass"><div><span class="eyebrow">ЗВАНИЕ</span><strong id="rank">Новичок</strong></div><div><span class="eyebrow">БАЛЛЫ</span><strong id="points">0</strong></div><div><span class="eyebrow">СТАТУС</span><strong>Активен</strong></div></div>
+    </section>
+    <section class="panel">
+      <p class="eyebrow">ПЕРВАЯ МИССИЯ</p><h2>Зимняя загадка</h2>
+      <p>Без кисти, без красок, а узор рисует. Без рук, без ног, а на окнах танцует. Что это?</p>
+      <form id="riddleForm"><input id="answer" autocomplete="off" placeholder="Ваш ответ" aria-label="Ответ на загадку"><button>Ответить</button></form>
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+    </section>
+    <section class="panel">
+      <p class="eyebrow">КОМНАТЫ МИНИСТЕРСТВА</p><h2>Карта пока открывает одну дверь</h2>
+      <div class="room"><span class="room-icon">❄</span><div><strong>Зал первого снега</strong><small>Загадка и первое достижение</small></div><span class="open">ОТКРЫТО</span></div>
+      <div class="room locked"><span class="room-icon">✧</span><div><strong>Архив полезных находок</strong><small>Скоро откроется</small></div><span>СКОРО</span></div>
+      <div class="room locked"><span class="room-icon">✧</span><div><strong>Мастерская добрых дел</strong><small>Скоро откроется</small></div><span>СКОРО</span></div>
+    </section>
+    <footer>Министерство добрых дел · Зима 2026</footer>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
