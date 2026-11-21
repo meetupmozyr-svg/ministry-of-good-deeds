@@ -299,7 +299,20 @@ function riddleKeyboard() {
     ]
   };
 }
+const recentStarts = new Map();
 
+function isDuplicateStart(userId) {
+  const now = Date.now();
+  const last = recentStarts.get(userId) || 0;
+  if (recentStarts.size > 500) {
+    for (const [k, v] of recentStarts.entries()) {
+      if (now - v > 10000) recentStarts.delete(k);
+    }
+  }
+  if (now - last < 4000) return true;
+  recentStarts.set(userId, now);
+  return false;
+}
 async function handleTelegram(request, env) {
   const supplied = request.headers.get("X-Telegram-Bot-Api-Secret-Token");
   if (!env.TELEGRAM_WEBHOOK_SECRET || !supplied || !timingSafeEqualStr(supplied, env.TELEGRAM_WEBHOOK_SECRET)) {
@@ -374,6 +387,7 @@ async function handleTelegram(request, env) {
 const message = update.message;
   if (message?.text?.startsWith("/start") || message?.text?.startsWith("/help")) {
     const userId = String(message.from?.id || "");
+    if (isDuplicateStart(userId)) return new Response("ok");
     const solved = await env.DB.prepare("SELECT 1 FROM progress WHERE telegram_id = ? AND task_id = 'first-riddle'")
       .bind(userId)
       .first();
