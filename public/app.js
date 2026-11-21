@@ -149,7 +149,7 @@ let loaded = demo;
 let loadError = false;
 let gateOpen = loadGateOpen();
 let passOnboarded = loadPassOnboarded();
-let onboardStep = "intro"; // "intro" | "quiz" | "done"
+let onboardStep = "intro";
 let gateHint = "";
 let filter = "Все";
 let search = "";
@@ -255,7 +255,12 @@ function route() {
 }
 
 function pageHeader(title, subtitle, showBack = true) {
-  return `<div class="page-head">${showBack ? '<a class="back" href="#map">← На карту Министерства</a>' : ""}<h1>${title}</h1>${subtitle ? `<p class="intro">${subtitle}</p>` : ""}</div>`;
+  return `<div class="page-head">
+    ${showBack ? '<a class="back" href="#map">← На карту Министерства</a>' : ""}
+    ${decorImg("gold-star-ornament", "decor-star")}
+    <h1>${title}</h1>
+    ${subtitle ? `<p class="intro">${subtitle}</p>` : ""}
+  </div>`;
 }
 
 function passNumber() {
@@ -266,6 +271,10 @@ function passNumber() {
 
 function sceneImg(primary, fallback, alt, cls = "", priority = false) {
   return `<img${cls ? ` class="${cls}"` : ""} src="${primary}" alt="${esc(alt)}"${priority ? ' fetchpriority="high"' : ""} onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${fallback}';}">`;
+}
+
+function decorImg(name, cls) {
+  return `<img class="${cls}" src="assets/decorations/${name}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/${name}.webp';}else{this.remove();}">`;
 }
 
 function snowflakeSvg() {
@@ -299,10 +308,6 @@ function postmarkSvg() {
   </svg>`;
 }
 
-function optionalDecorImg(path, cls) {
-  return `<img class="${cls}" src="${path}" alt="" hidden onload="this.hidden=false" onerror="this.remove()">`;
-}
-
 function optionalSceneBanner(path, pillLabel) {
   return `<div class="scene-banner" hidden>
     <img src="${path}" alt="" onload="this.parentElement.hidden=false" onerror="this.parentElement.remove()">
@@ -313,17 +318,17 @@ function optionalSceneBanner(path, pillLabel) {
 function passCardHtml() {
   const riddleDone = state.completed.includes("first-riddle");
   const meta = getRoleMeta(state.title);
-  return `<article class="pass-card">
-    <div class="pass-hanger" aria-hidden="true">
-      <div class="pass-ribbon-top"></div>
-      <div class="pass-slot"></div>
-    </div>
+  return `
+  <div class="pass-lanyard-strap" aria-hidden="true"><div class="pass-lanyard-clip"></div></div>
+  ${decorImg("burgundy-bow", "pass-bow-img")}
+  <article class="pass-card">
+    <div class="pass-slot" aria-hidden="true"></div>
     <div class="pass-title-main">Пропуск</div>
     <div class="pass-subtitle">Министерство добрых дел</div>
     <div class="pass-portrait-row">
       ${laurelSvg()}
       <div class="pass-arch" aria-hidden="true">
-        <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" onerror="this.hidden=true">
+        <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='avatars/${esc(meta.key)}.webp';}else{this.remove();}">
         <span class="pass-emoji">${esc(meta.emoji)}</span>
       </div>
       ${laurelSvg("right")}
@@ -335,7 +340,7 @@ function passCardHtml() {
     <div class="pass-bottom-row">
       ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
     </div>
-    <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.hidden=true" onerror="this.remove()">
+    <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.setAttribute('hidden','')" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
     ${postmarkSvg()}
   </article>`;
 }
@@ -357,6 +362,14 @@ function loadImageOptional(url) {
     img.onerror = () => resolve(null);
     img.src = url;
   });
+}
+
+async function loadImageAny(paths) {
+  for (const p of paths) {
+    const img = await loadImageOptional(p);
+    if (img) return img;
+  }
+  return null;
 }
 
 function closePngModal() {
@@ -401,8 +414,8 @@ async function downloadPassPng() {
   try {
     const meta = getRoleMeta(state.title);
     const [avatarImg, waxSealImg] = await Promise.all([
-      loadImageOptional(`avatars/${meta.key}.png`),
-      loadImageOptional("assets/decorations/wax-seal-snowflake.png")
+      loadImageAny([`avatars/${meta.key}.png`, `avatars/${meta.key}.webp`]),
+      loadImageAny(["assets/decorations/wax-seal-snowflake.png", "assets/decorations/wax-seal-snowflake.webp"])
     ]);
 
     const canvas = document.createElement("canvas");
@@ -422,13 +435,13 @@ async function downloadPassPng() {
     ctx.fill();
 
     const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
-    cardGrad.addColorStop(0, "#fcf5e7");
-    cardGrad.addColorStop(1, "#f0dfc1");
+    cardGrad.addColorStop(0, "#fdf9f0");
+    cardGrad.addColorStop(1, "#f4e8d1");
     ctx.fillStyle = cardGrad;
     roundRectPath(ctx, 110, 118, 680, 1030, 46);
     ctx.fill();
 
-    ctx.strokeStyle = "#c59d62";
+    ctx.strokeStyle = "#cfa96e";
     ctx.lineWidth = 4;
     ctx.stroke();
 
@@ -437,7 +450,7 @@ async function downloadPassPng() {
     roundRectPath(ctx, 134, 142, 632, 982, 32);
     ctx.stroke();
 
-    ctx.fillStyle = "#23463a";
+    ctx.fillStyle = "#1c3d32";
     roundRectPath(ctx, 386, 174, 128, 22, 11);
     ctx.fill();
 
@@ -453,8 +466,8 @@ async function downloadPassPng() {
     ctx.save();
     roundRectPath(ctx, 336, 345, 228, 255, 114);
     const archGrad = ctx.createLinearGradient(0, 345, 0, 600);
-    archGrad.addColorStop(0, "#e7d8b9");
-    archGrad.addColorStop(1, "#d7c39c");
+    archGrad.addColorStop(0, "#ebe0c8");
+    archGrad.addColorStop(1, "#dfd0af");
     ctx.fillStyle = archGrad;
     ctx.fill();
     if (avatarImg) {
@@ -464,7 +477,7 @@ async function downloadPassPng() {
     ctx.restore();
 
     roundRectPath(ctx, 336, 345, 228, 255, 114);
-    ctx.strokeStyle = "#c59d62";
+    ctx.strokeStyle = "#c9a366";
     ctx.lineWidth = 4;
     ctx.stroke();
 
@@ -604,8 +617,8 @@ function renderGate() {
     <section class="gate-stage">
       <div class="gate-banner">
         ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Волшебные двери приёмной Министерства добрых дел", "gate-bg", true)}
-        ${optionalDecorImg("assets/decorations/paper-snowflake.png", "decor-corner tl")}
-        ${optionalDecorImg("assets/decorations/paper-snowflake.png", "decor-corner tr")}
+        ${decorImg("paper-snowflake", "decor-corner tl")}
+        ${decorImg("paper-snowflake", "decor-corner tr")}
         <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
       </div>
       <div class="gate-body">
@@ -663,7 +676,7 @@ function renderOnboarding() {
     main.innerHTML = `<div class="shell">
       <section class="card-panel onboard-card">
         <div class="section-head">
-          <h2>Ваше звание в Министерстве</h2>
+          <div class="section-title-row">${decorImg("vintage-lantern", "decor-inline")}<h2>Ваше звание</h2></div>
           <span class="eyebrow-dark">Пропуск</span>
         </div>
         ${renderQuizMarkup(quizStep ?? 0, "onboard-skip-quiz")}
@@ -707,8 +720,9 @@ function renderOnboarding() {
   if (onboardStep === "done") {
     main.innerHTML = `<div class="shell">
       <div class="page-head">
+        ${decorImg("gold-star-ornament", "decor-star")}
         <h1>Ваш пропуск готов!</h1>
-        <p class="intro">Сохраните карточку на память или сразу отправляйтесь на карту Министерства.</p>
+        <p class="intro">Сохраните карточку на память или откройте карту Министерства.</p>
       </div>
       <div class="pass-wrap">
         ${passCardHtml()}
@@ -734,16 +748,18 @@ function renderOnboarding() {
     return;
   }
 
-  // onboardStep === "intro"
   main.innerHTML = `<div class="shell">
     <section class="gate-stage">
       <div class="gate-banner">
         ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Приёмная Министерства добрых дел", "gate-bg", true)}
+        ${decorImg("evergreen-sprig", "decor-corner tl")}
+        ${decorImg("evergreen-sprig", "decor-corner tr")}
         <span class="gate-key-badge">▣ Личный пропуск · ${esc(passNumber())}</span>
       </div>
       <div class="gate-body">
+        ${decorImg("vintage-lantern", "decor-star")}
         <h1>Оформите ваш пропуск</h1>
-        <p class="intro">Добро пожаловать внутрь! Ответьте на 6 быстрых зимних вопросов, чтобы получить свой уникальный значок и номер сотрудника — или пропустите пока этот шаг.</p>
+        <p class="intro">Добро пожаловать внутрь! Пройдите 6 быстрых вопросов, чтобы получить личное звание, значок и номер сотрудника — или пропустите пока этот шаг.</p>
         <form id="onboard-name-form" class="onboard-form">
           <label for="onboard-name">Как подписать ваш пропуск?</label>
           <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
@@ -809,8 +825,8 @@ function render() {
     main.innerHTML = `<div class="shell">
       <section class="hero-stage">
         ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном", "hero-bg", true)}
-        ${optionalDecorImg("assets/decorations/evergreen-sprig.png", "decor-corner tl")}
-        ${optionalDecorImg("assets/decorations/evergreen-sprig.png", "decor-corner tr")}
+        ${decorImg("evergreen-sprig", "decor-corner tl")}
+        ${decorImg("evergreen-sprig", "decor-corner tr")}
         <div class="hero-scrim">
           <span class="eyebrow">Бюро тёплых писем</span>
           <h1>Добро пожаловать,<br>коллега.</h1>
@@ -822,7 +838,10 @@ function render() {
         </div>
       </section>
       <section class="card-panel">
-        <div class="section-head"><h2>На доске объявлений</h2><span class="eyebrow-dark">План зимы</span></div>
+        <div class="section-head">
+          <div class="section-title-row">${decorImg("sealed-envelope", "decor-inline")}<h2>На доске объявлений</h2></div>
+          <span class="eyebrow-dark">План зимы</span>
+        </div>
         <div class="notice-grid">
           <article class="notice"><span class="date">1 декабря</span><h3>Праздник начинается</h3><p>Запуск языковых разминок (адвент-формат) и новогодних активностей для начальной школы.</p></article>
           <article class="notice"><span class="date">7 декабря</span><h3>Большой дайджест</h3><p>Релиз IT-викторины по алгоритмам, обновлённые уроки и единый новогодний анонс.</p></article>
@@ -850,6 +869,8 @@ function render() {
       ${pageHeader("Библиотека находок", "38 интерактивных веб-ресурсов по школьным предметам и языкам — с честными заметками о лицензиях.")}
       <div class="scene-banner">
         ${sceneImg("assets/scenes/library-interior.png", "library.jpg", "Книжные полки, зелёная книга и золотая лампа в библиотеке")}
+        ${decorImg("paper-snowflake", "decor-corner tl")}
+        ${decorImg("vintage-lantern", "decor-corner tr")}
         <span class="scene-pill">📖 Библиотека · 38 находок</span>
         <button class="button red book-button" id="open-book">Открыть книгу находок</button>
       </div>
@@ -923,19 +944,19 @@ function render() {
       ${optionalSceneBanner("assets/scenes/bureau-interior.webp", "✉ Бюро добрых дел")}
       <section class="card-panel">
         <article class="soon">
-          <span class="status">Проверенная инициатива</span>
+          <div class="soon-head"><span class="status">Проверенная инициатива</span>${decorImg("evergreen-sprig", "decor-inline")}</div>
           <h2>Ёлка желаний</h2>
           <p>Всероссийская акция, где можно выбрать открытку и исполнить новогоднюю мечту ребёнка из уязвимой категории.</p>
           <div class="actions"><a class="button" href="https://xn--80aanbeohciex.xn--p1ai/" target="_blank" rel="noopener noreferrer">Открыть проект</a></div>
         </article>
         <article class="soon">
-          <span class="status">Проверенная инициатива</span>
+          <div class="soon-head"><span class="status">Проверенная инициатива</span>${decorImg("sealed-envelope", "decor-inline")}</div>
           <h2>Подари Подарок</h2>
           <p>Публикуют реальные истории и списки необходимых вещей для семей, оказавшихся в тяжёлой ситуации.</p>
           <div class="actions"><a class="button" href="https://podaripodarok.org/families" target="_blank" rel="noopener noreferrer">Посмотреть истории</a></div>
         </article>
         <article class="soon">
-          <span class="status">Добровольное участие</span>
+          <div class="soon-head"><span class="status">Добровольное участие</span>${decorImg("wax-seal-snowflake", "decor-inline")}</div>
           <h2>Поделиться своей инициативой</h2>
           <p>Мы собираем проверенные проекты в разных странах, где живут преподаватели. Участие полностью добровольное — без баллов и рейтингов.</p>
         </article>
@@ -985,206 +1006,4 @@ function renderResults(savedOnly = false) {
     return;
   }
 
-  const query = search.trim().toLocaleLowerCase("ru-RU");
-  const list = resources.filter(r =>
-    (!savedOnly || state.saved.includes(r.id)) &&
-    (savedOnly || filter === "Все" || r.category === filter) &&
-    (savedOnly || !query || `${r.title} ${r.description} ${r.tag} ${r.access} ${r.terms}`.toLocaleLowerCase("ru-RU").includes(query))
-  );
-
-  const countEl = document.querySelector("#result-count");
-  if (countEl) countEl.textContent = `Показано ${list.length} из ${resources.length}`;
-
-  target.innerHTML = list.length
-    ? list.map(r => card(r, savedOnly)).join("")
-    : `<div class="empty"><h2>${savedOnly ? "Пока ни одной находки" : "Ничего не нашлось"}</h2><p>${savedOnly ? "Загляните в библиотеку и сохраните то, что пригодится на уроках." : "Попробуйте изменить запрос или выбрать раздел «Все»."}</p>${savedOnly ? '<div class="actions"><a class="button" href="#library">В библиотеку</a></div>' : ""}</div>`;
-}
-
-function bindActions() {
-  const form = document.querySelector("#name-form");
-  if (form) {
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-      const name = document.querySelector("#display-name").value.trim().slice(0, 40);
-      if (!name) {
-        toast("Введите имя.");
-        return;
-      }
-      const b = form.querySelector("button");
-      b.disabled = true;
-      try {
-        if (!demo) await api("/api/profile", "POST", { displayName: name });
-        state.name = name;
-        if (demo) persistDemo();
-        render();
-        toast("Имя сохранено");
-      } catch (err) {
-        toast(err.message);
-        b.disabled = false;
-      }
-    });
-  }
-
-  const dlBtn = document.querySelector("#download-pass");
-  if (dlBtn) dlBtn.addEventListener("click", downloadPassPng);
-
-  const replayBtn = document.querySelector("#replay-riddle-btn");
-  if (replayBtn) {
-    replayBtn.addEventListener("click", () => {
-      gateOpen = false;
-      try { localStorage.removeItem(GATE_KEY); } catch {}
-      render();
-    });
-  }
-
-  const startQuiz = document.querySelector("#start-quiz");
-  if (startQuiz) {
-    startQuiz.addEventListener("click", () => {
-      quizStep = 0;
-      quizAnswers = [];
-      render();
-    });
-  }
-
-  const skipQuiz = document.querySelector("#skip-quiz");
-  if (skipQuiz) {
-    skipQuiz.addEventListener("click", () => {
-      quizStep = null;
-      quizAnswers = [];
-      render();
-    });
-  }
-
-  document.querySelectorAll("[data-quiz-choice]").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const idx = Number(btn.dataset.quizChoice);
-      const picked = quizQuestions[quizStep]?.options[idx]?.role;
-      if (picked) quizAnswers.push(picked);
-      if (quizStep + 1 < quizQuestions.length) {
-        quizStep += 1;
-        render();
-      } else {
-        const newTitle = computeQuizWinner(quizAnswers);
-        const meta = getRoleMeta(newTitle);
-        state.title = newTitle;
-        saveTitleLocal(newTitle);
-        quizStep = null;
-        quizAnswers = [];
-        render();
-        if (!demo) {
-          try { await api("/api/profile", "POST", { rank: newTitle }); } catch {}
-        }
-        toast(`Ваше звание: ${meta.emoji} ${newTitle}`);
-      }
-    });
-  });
-}
-
-modal.addEventListener("click", e => {
-  if (e.target === modal) closePngModal();
-});
-window.addEventListener("keydown", e => {
-  if (e.key === "Escape" && !modal.hidden) closePngModal();
-});
-
-main.addEventListener("click", async event => {
-  const category = event.target.closest("[data-filter]");
-  if (category) {
-    filter = category.dataset.filter;
-    document.querySelectorAll("[data-filter]").forEach(el => el.setAttribute("aria-pressed", el.dataset.filter === filter));
-    renderResults();
-    return;
-  }
-
-  const save = event.target.closest("[data-save]");
-  if (save && !save.disabled) {
-    const id = save.dataset.save;
-    save.disabled = true;
-    save.textContent = "Сохраняем…";
-    try {
-      if (!demo) await api("/api/save", "POST", { materialId: id });
-      if (!state.saved.includes(id)) state.saved.push(id);
-      if (demo) persistDemo();
-      renderResults(route() === "saved");
-      toast(demo ? "Добавлено в демо-подборку" : "Добавлено в сохранённое");
-    } catch (err) {
-      save.disabled = false;
-      save.textContent = "Повторить";
-      toast(err.message);
-    }
-    return;
-  }
-
-  const unsave = event.target.closest("[data-unsave]");
-  if (unsave && !unsave.disabled) {
-    const id = unsave.dataset.unsave;
-    unsave.disabled = true;
-    unsave.textContent = "Убираем…";
-    try {
-      if (!demo) await api(`/api/save?materialId=${encodeURIComponent(id)}`, "DELETE");
-      state.saved = state.saved.filter(x => x !== id);
-      if (demo) persistDemo();
-      renderResults(route() === "saved");
-      toast("Убрано из сохранённого");
-    } catch (err) {
-      unsave.disabled = false;
-      unsave.textContent = route() === "saved" ? "Убрать" : "✓ Сохранено";
-      toast(err.message);
-    }
-  }
-});
-
-async function loadProfile() {
-  if (demo) {
-    mode.textContent = "Демо-режим · сохранения остаются только в этом браузере";
-    render();
-    return;
-  }
-  loadError = false;
-  mode.textContent = "Загружаем ваш профиль…";
-  try {
-    const data = await api("/api/me");
-    const dbRank = data.profile?.rank;
-    const validRank = dbRank && roleMeta[dbRank] ? dbRank : state.title;
-    const completed = Array.isArray(data.completed) ? data.completed : [];
-    if (completed.includes("first-riddle")) saveGateOpen();
-    state = {
-      ...state,
-      name: data.profile?.display_name || "Гость",
-      title: validRank,
-      saved: Array.isArray(data.saved) ? data.saved : [],
-      completed
-    };
-    loaded = true;
-    loadError = false;
-    mode.textContent = "";
-    if (document.activeElement?.id === "search") {
-      renderResults(false);
-    } else {
-      render();
-    }
-  } catch (err) {
-    loadError = true;
-    mode.textContent = "";
-    const msg = document.createElement("span");
-    msg.textContent = err.message;
-    const retry = document.createElement("button");
-    retry.type = "button";
-    retry.className = "mode-retry";
-    retry.textContent = "Повторить";
-    retry.addEventListener("click", loadProfile);
-    mode.append(msg, retry);
-    render();
-    toast(err.message);
-  }
-}
-
-window.addEventListener("hashchange", () => {
-  closePngModal();
-  render();
-  window.scrollTo(0, 0);
-  main.focus({ preventScroll: true });
-});
-
-render();
-loadProfile();
+  const query = search.trim().toLo
