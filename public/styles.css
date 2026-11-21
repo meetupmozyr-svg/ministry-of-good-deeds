@@ -329,8 +329,16 @@ input[type=search],input[type=text]{
 .pass-card.has-pass-bg .pass-arch{width:106px;height:118px;border-radius:50%}
 .pass-card.has-pass-bg h2{font-size:1.75rem}
 .pass-card.has-pass-bg .rank-ribbon{min-width:74%;justify-content:center}
-.pass-card.has-pass-bg .pass-num{margin-top:14px}
-.pass-season{font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--muted);margin-top:46px}
+.pass-card.has-pass-bg .pass-role-desc{
+  display:block;
+  font-size:.82rem;
+  line-height:1.45;
+  color:var(--muted);
+  max-width:32ch;
+  margin:10px auto 0;
+}
+.pass-card.has-pass-bg .pass-num{margin-top:10px}
+.pass-season{font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--muted);margin-top:16px}
 .pass-card.has-pass-bg .pass-wax-img{right:20px;bottom:34px;width:62px;height:62px}
 .pass-card::before{
   content:"";position:absolute;inset:10px;border-radius:18px;
