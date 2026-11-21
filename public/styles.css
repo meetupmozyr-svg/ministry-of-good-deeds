@@ -460,10 +460,11 @@ input[type=search],input[type=text]{
   .notice-grid,.room-list,.resource-grid{grid-template-columns:1fr}
   .card-panel{padding:18px;border-radius:20px}
   .decor-corner{width:56px;height:56px}
-  .room-label{padding:7px 11px;font-size:.76rem;max-width:44%}
-  .room-label.lib{top:38%;left:3%}
-  .room-label.work{top:38%;right:3%}
-  .room-label.bureau{bottom:3%}
+.room-label{font-size:.76rem;padding:2px 4px}
+  .map-pin{width:20px;height:20px;font-size:.68rem}
+  .room-label.lib{top:43%;left:6%}
+  .room-label.work{top:43%;right:6%}
+  .room-label.bureau{bottom:0}
   .bottom-nav a{font-size:.69rem;padding:7px 2px}
 }
 @media(prefers-reduced-motion:no-preference){
