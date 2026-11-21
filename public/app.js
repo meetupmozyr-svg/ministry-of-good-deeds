@@ -13,9 +13,47 @@ const DEMO_KEY = "ministry-warm-letters-demo-v1";
 const TITLE_KEY = "ministry-pass-title-v1";
 
 const resources = [
-  { id: "phet", title: "PhET", category: "Школьные предметы", tag: "Эксперименты", description: "Виртуальные эксперименты по физике, химии, биологии и математике.", url: "https://phet.colorado.edu/ru/", terms: "Условия использования смотрите на сайте проекта." },
-  { id: "geogebra", title: "GeoGebra", category: "Школьные предметы", tag: "Математика", description: "Интерактивная геометрия, графики и трёхмерные модели для наглядного объяснения.", url: "https://www.geogebra.org/", terms: "Бесплатно для некоммерческого использования; для коммерческого нужна лицензия." },
-  { id: "python-tutor", title: "Python Tutor", category: "Школьные предметы", tag: "Информатика", description: "Пошаговая визуализация выполнения кода: видно, как меняются переменные и объекты.", url: "https://pythontutor.com/", terms: "Условия и доступные режимы смотрите на сайте проекта." }
+  { id: "tutoriko-lab", title: "Лаборатория Tutoriko", category: "Для разных уроков", tag: "Все предметы", access: "Бесплатно", accessTone: "free", description: "Интерактивные симуляции и тренажёры по математике, физике, биологии, химии, информатике, обществознанию, английскому и русскому.", url: "https://lab.tutoriko.ru/", terms: "Открывается без регистрации. Не путать с платформой Tutoriko для репетиторов (там отдельные тарифы).", termsUrl: "https://lab.tutoriko.ru/" },
+  { id: "neuroom", title: "Нейрум", category: "Для разных уроков", tag: "Подготовка уроков", access: "Freemium", accessTone: "limit", description: "ИИ-помощник учителя: рабочие листы, планы уроков, презентации, контрольные и проверка домашних заданий.", url: "https://neuroom.ru/", terms: "Есть бесплатный тариф с пополняемыми токенами; платные планы от 990 ₽/мес.", termsUrl: "https://neuroom.ru/tariffs/" },
+  { id: "lichess-practice", title: "Lichess Practice", category: "Для разных уроков", tag: "Шахматы", access: "Бесплатно", accessTone: "free", description: "Интерактивные уроки по тактике и базовым шахматным приёмам: матовые конструкции, вилки, связки, эндшпиль.", url: "https://lichess.org/practice", terms: "Бесплатная платформа; раздел Practice подходит для урока и самостоятельной тренировки. Интерфейс на русском.", termsUrl: "https://lichess.org/practice" },
+  { id: "chesstactics", title: "ChessTactics.app", category: "Для разных уроков", tag: "Шахматы", access: "Ограниченный доступ", accessTone: "limit", description: "Анализирует партии с Lichess или Chess.com и показывает пропущенные тактические возможности ученика.", url: "https://chesstactics.app/ru", terms: "Проверьте текущий бесплатный лимит партий на сайте перед рекомендацией ученикам. Интерфейс на русском.", termsUrl: "https://chesstactics.app/ru" },
+
+  { id: "mersibo", title: "Мерсибо", category: "Дошкольникам и младшим", tag: "Дошкольное · речь", access: "Подписка / 10 игр", accessTone: "limit", description: "Развивающие игры для речи, внимания, памяти, логики, чтения и подготовки к школе.", url: "https://mersibo.ru/online-games", terms: "10 игр бесплатно после регистрации; требуется установка приложения «Студия Мерсибо» на компьютер.", termsUrl: "https://mersibo.ru/tariffs" },
+  { id: "teach-your-monster", title: "Teach Your Monster", category: "Дошкольникам и младшим", tag: "Английский · чтение", access: "Бесплатно в браузере", accessTone: "limit", description: "Игровое обучение фонетике, буквам и раннему чтению на английском через игровой маршрут.", url: "https://www.teachyourmonster.org/", terms: "Браузерная версия на компьютере бесплатна после регистрации; мобильные приложения могут быть платными.", termsUrl: "https://help.teachyourmonster.org/en/articles/15925215-can-i-try-your-apps-for-free" },
+  { id: "toy-theater", title: "Toy Theater", category: "Дошкольникам и младшим", tag: "Математика · игры", access: "Бесплатно / членство", accessTone: "limit", description: "Виртуальные инструменты и игры: часы, дроби, числовые модели, фигуры, кости, счёт и головоломки.", url: "https://toytheater.com/", terms: "Основные игры бесплатны; платное членство добавляет настройки для учителя. Интерфейс на английском.", termsUrl: "https://toytheater.com/about/" },
+  { id: "topmarks", title: "Topmarks", category: "Дошкольникам и младшим", tag: "Начальная школа", access: "Бесплатно", accessTone: "free", description: "Браузерные игры для счёта, арифметики, форм, времени, букв и фонетики для коротких разминок.", url: "https://www.topmarks.co.uk/", terms: "Публичные игры доступны бесплатно; интерфейс на английском.", termsUrl: "https://www.topmarks.co.uk/" },
+  { id: "math-learning-center", title: "Math Learning Center", category: "Дошкольникам и младшим", tag: "Математика", access: "Бесплатно", accessTone: "free", description: "Числовая прямая, дроби, геодоска, часы, счётные модели и разрядные блоки в браузере.", url: "https://www.mathlearningcenter.org/apps", terms: "Бесплатные веб-приложения; модели понятны интуитивно, интерфейс на английском.", termsUrl: "https://www.mathlearningcenter.org/apps" },
+
+  { id: "phet", title: "PhET Simulations", category: "Школьные предметы", tag: "Физика · химия · био", access: "Некоммерчески бесплатно", accessTone: "license", description: "Виртуальные эксперименты: электрические цепи, движение, волны, атомы, реакции, дроби.", url: "https://phet.colorado.edu/", terms: "Бесплатно для некоммерческого обучения; для платных уроков нужна проверка лицензии. Есть русский интерфейс.", termsUrl: "https://phet.colorado.edu/en/licensing/" },
+  { id: "python-tutor", title: "Python Tutor", category: "Школьные предметы", tag: "Информатика", access: "Бесплатно", accessTone: "free", description: "Пошаговая визуализация выполнения кода: переменные, циклы, списки, вызовы функций.", url: "https://pythontutor.com/", terms: "Бесплатный веб-инструмент для разбора коротких программ. Интерфейс на английском.", termsUrl: "https://pythontutor.com/" },
+  { id: "codemonkey-cs", title: "CodeMonkey CS Tools", category: "Школьные предметы", tag: "Информатика", access: "Бесплатно", accessTone: "free", description: "Четыре инструмента: сортировки, симулятор логических элементов, структуры данных и поиск.", url: "https://www.codemonkey.com/interactive-cs-tools", terms: "Эти 4 инструмента бесплатны без регистрации; другие курсы CodeMonkey платные.", termsUrl: "https://www.codemonkey.com/interactive-cs-tools" },
+  { id: "ruscorpora", title: "Национальный корпус русского языка", category: "Школьные предметы", tag: "Русский · литература", access: "Бесплатно", accessTone: "free", description: "Конструктор исследовательских заданий: реальное употребление, история и изменение значений слов.", url: "https://education.yandex.ru/projects/culture/ruscorpora", terms: "Бесплатно; лучше всего подходит для средних и старших классов.", termsUrl: "https://education.yandex.ru/projects/culture/ruscorpora" },
+  { id: "polypad", title: "Mathigon Polypad", category: "Школьные предметы", tag: "Математика", access: "Некоммерчески бесплатно", accessTone: "license", description: "Виртуальные манипулятивы: дроби, алгебраические плитки, геометрия, графики и кубики.", url: "https://polypad.amplify.com/", terms: "Бесплатно для некоммерческих образовательных целей; для коммерции нужна лицензия. Есть русский язык.", termsUrl: "https://mathigon.org/faqs" },
+  { id: "geogebra", title: "GeoGebra", category: "Школьные предметы", tag: "Математика · 3D", access: "Некоммерчески бесплатно", accessTone: "license", description: "Интерактивная геометрия, графики, алгебра, статистика и 3D-модели в реальном времени.", url: "https://www.geogebra.org/", terms: "Бесплатно для некоммерческого использования; коммерческое требует отдельной лицензии. Есть русский.", termsUrl: "https://www.geogebra.org/license" },
+  { id: "gapminder", title: "Gapminder", category: "Школьные предметы", tag: "География · экономика", access: "Бесплатно", accessTone: "free", description: "Интерактивные графики по странам и эпохам, а также проект Dollar Street о быте семей по миру.", url: "https://www.gapminder.org/tools/", terms: "Бесплатно онлайн и офлайн; интерфейс на английском.", termsUrl: "https://www.gapminder.org/about/about-gapminder/faq/" },
+  { id: "falstad", title: "Falstad Circuit", category: "Школьные предметы", tag: "Физика · схемы", access: "Бесплатно", accessTone: "free", description: "Симулятор электрических цепей: сборка схем, изменение напряжения, сопротивления и наблюдение тока.", url: "https://www.falstad.com/circuit/", terms: "Бесплатный браузерный симулятор; интерфейс на английском.", termsUrl: "https://www.falstad.com/circuit/" },
+  { id: "chemcollective", title: "ChemCollective", category: "Школьные предметы", tag: "Химия", access: "Бесплатно", accessTone: "free", description: "Виртуальная химическая лаборатория: реактивы, смешивание растворов, концентрации и стехиометрия.", url: "https://chemcollective.org/vlabs", terms: "Бесплатно для преподавателей и учеников; интерфейс на английском.", termsUrl: "https://chemcollective.org/help/FAQ" },
+  { id: "molview", title: "MolView", category: "Школьные предметы", tag: "Химия · 3D", access: "Бесплатно (базово)", accessTone: "free", description: "Рисование структурной формулы и просмотр 3D-модели молекулы для объяснения геометрии веществ.", url: "https://molview.com/", terms: "Основные функции бесплатны; отдельные данные зависят от внешних сервисов. На английском.", termsUrl: "https://molview.com/" },
+
+  { id: "languageguide", title: "LanguageGuide", category: "Языки", tag: "Много языков", access: "Бесплатно", accessTone: "free", description: "Иллюстрированные словари с озвучкой, аудиозаданиями и тренировкой произношения.", url: "https://www.languageguide.org/", terms: "Бесплатно для всех; поддерживает русский и множество иностранных языков.", termsUrl: "https://www.languageguide.org/" },
+  { id: "youglish", title: "YouGlish", category: "Языки", tag: "Произношение", access: "Freemium", accessTone: "limit", description: "Поиск реальных видеороликов, где носители произносят нужное слово или фразу в контексте.", url: "https://youglish.com/", terms: "Есть дневной лимит бесплатных запросов; видео работают через YouTube.", termsUrl: "https://youglish.com/terms" },
+  { id: "forvo", title: "Forvo", category: "Языки", tag: "Произношение", access: "Некоммерчески · лимит", accessTone: "license", description: "Словарь произношения с живыми аудиозаписями носителей для проверки ударения и звучания.", url: "https://forvo.com/", terms: "Бесплатно для личных/академических некоммерческих целей (до 500 запросов/день).", termsUrl: "https://forvo.com/terms-and-conditions/" },
+  { id: "conjuguemos", title: "Conjuguemos", category: "Языки", tag: "Европейские языки", access: "Freemium", accessTone: "limit", description: "Тренажёры грамматики, спряжения глаголов, лексики, аудирования и игры для учеников.", url: "https://www.conjuguemos.com/", terms: "Публичные активности бесплатны; бесплатный план учителя — до 5 активностей и 25 оценок.", termsUrl: "https://conjuguemos.com/auth/pricing" },
+  { id: "skell", title: "SKELL", category: "Языки", tag: "Английский", access: "Бесплатно", accessTone: "free", description: "Корпусный поиск естественных фраз, коллокаций и близких по смыслу слов.", url: "https://skell.sketchengine.eu/", terms: "Упрощённый интерфейс SKELL бесплатен; расширенный Sketch Engine требует подписку.", termsUrl: "https://www.sketchengine.eu/skell/" },
+  { id: "elllo", title: "ELLLO", category: "Языки", tag: "Английский", access: "Бесплатно", accessTone: "free", description: "Библиотека аудио и видео с разными акцентами, транскриптами, словарём и заданиями.", url: "https://elllo.org/", terms: "Основная библиотека уроков бесплатна; интерфейс на английском.", termsUrl: "https://elllo.org/" },
+  { id: "profedeele", title: "ProfeDeELE", category: "Языки", tag: "Испанский", access: "Бесплатные материалы", accessTone: "free", description: "Коллекция заданий по грамматике, лексике, песням, видео и культуре по уровням CEFR.", url: "https://www.profedeele.es/actividades/", terms: "Основная библиотека бесплатна; проверяйте условия отдельных материалов.", termsUrl: "https://www.profedeele.es/actividades/" },
+  { id: "123teachme", title: "123TeachMe", category: "Языки", tag: "Испанский", access: "Базово бесплатно", accessTone: "free", description: "Упражнения по испанской грамматике, спряжению глаголов, лексике и чтению.", url: "https://www.123teachme.com/", terms: "Публичные упражнения бесплатны; на сайте есть реклама.", termsUrl: "https://www.123teachme.com/" },
+  { id: "tv5monde", title: "TV5MONDE", category: "Языки", tag: "Французский", access: "Бесплатно", accessTone: "free", description: "Тысячи заданий для уровней A1–B2 на основе подлинных видеосюжетов и репортажей.", url: "https://apprendre.tv5monde.com/", terms: "Бесплатный ресурс без рекламы.", termsUrl: "https://support-apprendre.tv5monde.com/support/solutions/articles/61000298831-warum-franz%C3%B6sisch-mit-tv5monde-lernen-" },
+  { id: "rfi-francais", title: "RFI – Le français facile", category: "Языки", tag: "Французский", access: "Бесплатно", accessTone: "free", description: "Аутентичные новости, аудио с транскриптами и упражнения для актуальных тем.", url: "https://francaisfacile.rfi.fr/fr/", terms: "Основные учебные материалы доступны бесплатно.", termsUrl: "https://francaisfacile.rfi.fr/fr/" },
+  { id: "dw-nicos-weg", title: "DW – Nicos Weg", category: "Языки", tag: "Немецкий", access: "Бесплатно", accessTone: "free", description: "Сюжетный видеокурс уровней A1–B1 о жизни в Германии с упражнениями и лексикой.", url: "https://learngerman.dw.com/", terms: "Курс предоставляется бесплатно; есть поддержка на русском языке.", termsUrl: "https://learngerman.dw.com/" },
+  { id: "goethe-uebungen", title: "Goethe – Deutsch für dich", category: "Языки", tag: "Немецкий", access: "Бесплатно", accessTone: "free", description: "Более 260 интерактивных упражнений по немецкому для разных уровней и сообщество.", url: "https://www.goethe.de/ins/gb/en/spr/ueb.html", terms: "Бесплатно; для сообщества может понадобиться регистрация.", termsUrl: "https://www.goethe.de/ins/gb/en/spr/ueb.html" },
+  { id: "nhk-japanese", title: "NHK Easy Japanese", category: "Языки", tag: "Японский", access: "Бесплатно", accessTone: "free", description: "Курс для начинающих: короткие видеодиалоги, аудио и фразы для повседневных ситуаций.", url: "https://www.nhk.or.jp/lesson/en/", terms: "Базовый курс бесплатен; есть многоязычная поддержка.", termsUrl: "https://www.nhk.or.jp/lesson/en/" },
+  { id: "kanji-alive", title: "Kanji alive", category: "Языки", tag: "Японский", access: "Бесплатно", accessTone: "free", description: "Поиск кандзи, анимация порядка черт, радикалы и примеры для отработки письма.", url: "https://app.kanjialive.com/", terms: "Веб-приложение бесплатно; при повторном использовании данных действует лицензия CC BY.", termsUrl: "https://kanjialive.com/" },
+  { id: "hanzi-writer", title: "Hanzi Writer", category: "Языки", tag: "Китайский", access: "Бесплатно", accessTone: "free", description: "Анимация порядка черт китайских иероглифов и интерактивная тренировка письма.", url: "https://hanziwriter.org/demo.html", terms: "Демо и open-source библиотека бесплатны.", termsUrl: "https://hanziwriter.org/" },
+  { id: "mandarin-bean", title: "Mandarin Bean", category: "Языки", tag: "Китайский", access: "Freemium", accessTone: "limit", description: "Градуированные тексты: переключение пиньиня, подсказки к словам и озвучка по уровням.", url: "https://mandarinbean.com/", terms: "Базовый доступ бесплатен с ограничениями; полный контент в Premium.", termsUrl: "https://mandarinbean.com/subscription-plan/" },
+  { id: "yee-turkish", title: "Yunus Emre Institute", category: "Языки", tag: "Турецкий", access: "Бесплатно", accessTone: "free", description: "Официальный портал изучения турецкого языка: учебные блоки и видео по уровням.", url: "https://turkce.yee.org.tr/en", terms: "Бесплатный доступ к материалам; для части курсов нужна регистрация.", termsUrl: "https://turkce.yee.org.tr/en" },
+  { id: "yasar-turkish", title: "Yaşar University Turkish", category: "Языки", tag: "Турецкий", access: "Бесплатно", accessTone: "free", description: "Интерактивный курс A1 с видеоуроками и заданиями; есть русские субтитры.", url: "https://turkish.yasar.edu.tr/?l=en", terms: "Обучение доступно бесплатно; основной уровень — A1.", termsUrl: "https://turkish.yasar.edu.tr/?l=en" },
+  { id: "pame-greek", title: "Pame! Modern Greek", category: "Языки", tag: "Греческий", access: "Бесплатно", accessTone: "free", description: "Открытый учебник современного греческого для начинающих: диалоги, аудио и упражнения.", url: "https://pressbooks.cuny.edu/moderngreek1/", terms: "Открытый доступ к электронной книге.", termsUrl: "https://pressbooks.cuny.edu/moderngreek1/" }
 ];
 
 const quizQuestions = [
@@ -147,6 +185,121 @@ function passNumber() {
   return `№ ${String(tgId).slice(-6).padStart(6, "0")}`;
 }
 
+function roundRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function downloadPassPng() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 900;
+  canvas.height = 1240;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const bg = ctx.createRadialGradient(450, 180, 60, 450, 620, 760);
+  bg.addColorStop(0, "#215042");
+  bg.addColorStop(1, "#122c24");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 900, 1240);
+
+  ctx.fillStyle = "#9d3443";
+  roundRectPath(ctx, 412, 58, 76, 80, 18);
+  ctx.fill();
+
+  const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
+  cardGrad.addColorStop(0, "#fcf5e7");
+  cardGrad.addColorStop(1, "#f0dfc1");
+  ctx.fillStyle = cardGrad;
+  roundRectPath(ctx, 110, 118, 680, 1030, 46);
+  ctx.fill();
+
+  ctx.strokeStyle = "#c59d62";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  ctx.strokeStyle = "rgba(181,142,83,0.45)";
+  ctx.lineWidth = 2;
+  roundRectPath(ctx, 134, 142, 632, 982, 32);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(30,58,49,0.2)";
+  roundRectPath(ctx, 396, 174, 108, 20, 10);
+  ctx.fill();
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#9d3443";
+  ctx.font = "bold 22px sans-serif";
+  ctx.fillText("ПРОПУСК · МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 265);
+
+  ctx.beginPath();
+  ctx.arc(450, 435, 116, 0, Math.PI * 2);
+  ctx.fillStyle = "#e4d5b7";
+  ctx.fill();
+  ctx.strokeStyle = "#c59d62";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  ctx.fillStyle = "#1e3a31";
+  ctx.font = "92px Georgia, serif";
+  ctx.fillText((state.name || "Г").slice(0, 1).toUpperCase(), 450, 468);
+
+  ctx.fillStyle = "#1e3a31";
+  ctx.font = "56px Georgia, serif";
+  ctx.fillText((state.name || "Гость").slice(0, 24), 450, 645);
+
+  ctx.fillStyle = "#9d3443";
+  roundRectPath(ctx, 225, 695, 450, 68, 34);
+  ctx.fill();
+
+  ctx.fillStyle = "#fff9ee";
+  ctx.font = "bold 30px sans-serif";
+  ctx.fillText(state.title, 450, 739);
+
+  ctx.fillStyle = "#665b4c";
+  ctx.font = "30px Georgia, serif";
+  ctx.fillText(passNumber(), 450, 845);
+
+  ctx.fillStyle = "#665b4c";
+  ctx.font = "bold 22px sans-serif";
+  ctx.fillText("ЗИМА · 2026", 450, 1055);
+
+  ctx.save();
+  ctx.translate(640, 975);
+  ctx.rotate(-0.2);
+  ctx.strokeStyle = "rgba(157,52,67,0.55)";
+  ctx.lineWidth = 4;
+  ctx.setLineDash([10, 6]);
+  ctx.beginPath();
+  ctx.arc(0, 0, 66, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(157,52,67,0.7)";
+  ctx.font = "48px Georgia, serif";
+  ctx.fillText("❄", 0, 16);
+  ctx.restore();
+
+  canvas.toBlob(blob => {
+    if (!blob) {
+      toast("Не удалось создать PNG.");
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ministry-pass.png";
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast("Пропуск сохранён в PNG");
+  }, "image/png");
+}
+
 function renderQuizSection() {
   if (quizStep === null) {
     return `<div class="quiz-box"><p class="note">Хотите подобрать особое звание для пропуска? Это короткая зимняя мини-викторина из 3 вопросов — можно пройти или пропустить.</p><div class="actions"><button type="button" class="button red" id="start-quiz">Получить звание</button></div></div>`;
@@ -174,7 +327,7 @@ function render() {
         <div class="hero-scrim">
           <span class="eyebrow">Бюро тёплых писем</span>
           <h1>Добро пожаловать,<br>коллега.</h1>
-          <p class="intro">Здесь находят полезное для уроков, готовят праздник и делятся теплом. Начните с любой двери.</p>
+          <p class="intro">Здесь собраны 38 полезных ресурсов для уроков, праздничные идеи и тёплые инициативы. Начните с любой двери.</p>
           <div class="hero-actions">
             <a class="button red" href="#map">◇ Карта Министерства</a>
             <a class="button secondary" href="#pass">Мой пропуск</a>
@@ -182,12 +335,12 @@ function render() {
         </div>
       </section>
       <section class="card-panel">
-        <div class="section-head"><h2>На доске объявлений</h2><span class="eyebrow-dark">Скоро</span></div>
+        <div class="section-head"><h2>На доске объявлений</h2><span class="eyebrow-dark">План зимы</span></div>
         <div class="notice-grid">
-          <article class="notice"><span class="date">1 декабря</span><h3>Праздник начинается</h3><p>Языковые разминки и новогодние активности для начальной школы.</p></article>
-          <article class="notice"><span class="date">7 декабря</span><h3>Новая почта</h3><p>IT-викторина, обновлённые материалы и общий праздничный дайджест.</p></article>
+          <article class="notice"><span class="date">1 декабря</span><h3>Праздник начинается</h3><p>Запуск языковых разминок (адвент-формат) и новогодних активностей для начальной школы.</p></article>
+          <article class="notice"><span class="date">7 декабря</span><h3>Большой дайджест</h3><p>Релиз IT-викторины по алгоритмам, обновлённые уроки и единый новогодний анонс.</p></article>
         </div>
-        <p class="note">Материалы и ссылки будут появляться по мере готовности.</p>
+        <p class="note">Материалы в Мастерской обновляются по мере готовности команд.</p>
       </section>
     </div>`;
   } else if (page === "map") {
@@ -200,26 +353,28 @@ function render() {
         <a class="room-label bureau" href="#bureau">✉ Бюро добрых дел</a>
       </div>
       <div class="room-list">
-        <a class="room-card" href="#library"><h2>Библиотека находок</h2><p>Инструменты и сервисы для уроков</p></a>
-        <a class="room-card" href="#workshop"><h2>Мастерская праздника</h2><p>Занятия, оформление и челленджи</p></a>
-        <a class="room-card" href="#bureau"><h2>Бюро добрых дел</h2><p>Тёплые инициативы и поддержка</p></a>
+        <a class="room-card" href="#library"><h2>Библиотека находок</h2><p>38 проверенных инструментов для уроков</p></a>
+        <a class="room-card" href="#workshop"><h2>Мастерская праздника</h2><p>Занятия, оформление и челлендж Скайхаба</p></a>
+        <a class="room-card" href="#bureau"><h2>Бюро добрых дел</h2><p>Проверенные благотворительные инициативы</p></a>
       </div>
     </div>`;
   } else if (page === "library") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Библиотека находок", "Проверенные инструменты для обычных и праздничных уроков.")}
+      ${pageHeader("Библиотека находок", "38 интерактивных веб-ресурсов по школьным предметам и языкам — с честными заметками о лицензиях.")}
       <div class="scene-banner">
         <img src="library.jpg" alt="Книжные полки, зелёная книга и золотая лампа в библиотеке">
-        <span class="scene-pill">📖 Библиотека</span>
+        <span class="scene-pill">📖 Библиотека · 38 находок</span>
         <button class="button red book-button" id="open-book">Открыть книгу находок</button>
       </div>
       <section class="card-panel" id="catalog">
         <label class="search-label" for="search">Найти ресурс</label>
-        <input id="search" type="search" placeholder="Название, предмет или задача" value="${esc(search)}">
+        <input id="search" type="search" placeholder="Название, предмет, язык или «бесплатно»" value="${esc(search)}">
         <div class="filters" aria-label="Разделы библиотеки">
           ${["Все", "Языки", "Школьные предметы", "Дошкольникам и младшим", "Для разных уроков"].map(f => `<button class="filter" data-filter="${esc(f)}" aria-pressed="${filter === f}">${esc(f)}</button>`).join("")}
         </div>
+        <div class="catalog-meta"><span id="result-count"></span><span>Проверено 07.11.2026</span></div>
         <div id="results" class="resource-grid"></div>
+        <div class="license-callout"><strong>О лицензиях:</strong> не все бесплатные сайты разрешают коммерческое использование. У <strong>PhET</strong>, <strong>GeoGebra</strong>, <strong>Mathigon Polypad</strong> и <strong>Forvo</strong> коммерческое применение на платных уроках требует проверки условий.</div>
       </section>
     </div>`;
     renderResults();
@@ -241,6 +396,7 @@ function render() {
     </div>`;
     renderResults(true);
   } else if (page === "pass") {
+    const riddleDone = state.completed.includes("first-riddle");
     main.innerHTML = `<div class="shell">
       ${pageHeader("Личный пропуск", "Вы уже часть Министерства. Здесь нет экзаменов — только тёплая атмосфера.")}
       <div class="pass-layout">
@@ -253,8 +409,10 @@ function render() {
             <h2>${esc(state.name)}</h2>
             <span class="rank-ribbon">${esc(state.title)}</span>
             <p class="pass-num">${esc(passNumber())}</p>
+            ${riddleDone ? `<span class="pass-achievement">❄ Первая загадка разгадана</span>` : ""}
             <div class="pass-stamp" aria-hidden="true">❄</div>
           </article>
+          <div class="actions"><button type="button" class="button secondary" id="download-pass">⬇ Сохранить PNG</button></div>
         </div>
         <div class="card-panel">
           <form id="name-form" class="form-box">
@@ -270,19 +428,35 @@ function render() {
     </div>`;
   } else if (page === "workshop") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Мастерская праздника", "Занятия, оформление и праздничные идеи для ваших учеников.")}
+      ${pageHeader("Мастерская праздника", "Новогодние занятия, разминки и активности для ваших учеников.")}
       <section class="card-panel">
-        <article class="soon"><span class="status">Готовится · план на 1 декабря</span><h2>Провести занятие</h2><p>Языковые разминки, рождественские и новогодние уроки. IT-викторина запланирована на 7 декабря.</p></article>
-        <article class="soon"><span class="status">В подготовке</span><h2>Оформить и поздравить</h2><p>Распечатки и раскраски для начальной школы, фоны, открытки и карта пожеланий сообщества.</p></article>
-        <article class="soon"><span class="status">Ожидаем ссылку</span><h2>Предложить ученикам</h2><p>Новогодний челлендж на Скайхабе: цифровые подарки, сайты и проекты на Python.</p></article>
+        <article class="soon"><span class="status">С 1 декабря · языки</span><h2>Разминки и 8 новых уроков</h2><p>Адвент-разминки и обновлённые рождественские и новогодние уроки для разных уровней, плюс резервная копия на Google-сайте.</p></article>
+        <article class="soon"><span class="status">С 1 декабря · начальная школа</span><h2>Комиксы, распечатки и раскраски</h2><p>Тематический поиск подарков и комиксов внутри уроков и карточки с распечатками для праздничных занятий.</p></article>
+        <article class="soon"><span class="status">7 декабря · IT и хоумскулинг</span><h2>Урок-викторина и челлендж Скайхаба</h2><p>Интерактивная викторина по компьютерной грамотности и алгоритмам, а также новогодний челлендж цифровых подарков и Python-проектов до конца января.</p></article>
+        <article class="soon"><span class="status">От сообщества</span><h2>Фоны, открытки и карта пожеланий</h2><p>Дополнительные праздничные материалы для учеников и преподавателей.</p></article>
       </section>
     </div>`;
   } else if (page === "bureau") {
     main.innerHTML = `<div class="shell">
       ${pageHeader("Бюро добрых дел", "Можно подарить не только вещь, но и внимание, время и поддержку.")}
       <section class="card-panel">
-        <article class="soon"><span class="status">На проверке</span><h2>Найти инициативу</h2><p>«Ёлка желаний» и «Подари Подарок» предложены командой. Уточняем условия и актуальные ссылки.</p></article>
-        <article class="soon"><span class="status">Следующий этап</span><h2>Предложить инициативу</h2><p>Пространство для проектов, которые поддерживают педагоги. Участие полностью добровольное.</p></article>
+        <article class="soon">
+          <span class="status">Проверенная инициатива</span>
+          <h2>Ёлка желаний</h2>
+          <p>Всероссийская акция, где можно выбрать открытку и исполнить новогоднюю мечту ребёнка из уязвимой категории.</p>
+          <div class="actions"><a class="button" href="https://xn--80aanbeohciex.xn--p1ai/" target="_blank" rel="noopener noreferrer">Открыть проект</a></div>
+        </article>
+        <article class="soon">
+          <span class="status">Проверенная инициатива</span>
+          <h2>Подари Подарок</h2>
+          <p>Публикуют реальные истории и списки необходимых вещей для семей, оказавшихся в тяжёлой ситуации.</p>
+          <div class="actions"><a class="button" href="https://podaripodarok.org/families" target="_blank" rel="noopener noreferrer">Посмотреть истории</a></div>
+        </article>
+        <article class="soon">
+          <span class="status">Добровольное участие</span>
+          <h2>Поделиться своей инициативой</h2>
+          <p>Мы собираем проверенные проекты в разных странах, где живут преподаватели. Участие полностью добровольное — без баллов и рейтингов.</p>
+        </article>
       </section>
     </div>`;
   } else {
@@ -298,7 +472,24 @@ function card(r, savedOnly = false) {
     ? `<button class="button secondary" data-unsave="${esc(r.id)}" aria-pressed="true" ${!loaded ? "disabled" : ""}>${!loaded ? "Загрузка…" : savedOnly ? "Убрать" : "✓ Сохранено"}</button>`
     : `<button class="button" data-save="${esc(r.id)}" ${!loaded ? "disabled" : ""}>${!loaded ? "Загрузка…" : "Сохранить"}</button>`;
 
-  return `<article class="resource"><span class="tag">${esc(r.tag)}</span><h3>${esc(r.title)}</h3><p>${esc(r.description)}</p><p class="terms">${esc(r.terms)}</p><div class="resource-foot"><a class="button secondary" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Открыть</a>${actionBtn}</div></article>`;
+  const termsLink = r.termsUrl && r.termsUrl !== r.url
+    ? `<a class="terms-link" href="${esc(r.termsUrl)}" target="_blank" rel="noopener noreferrer">Условия и лицензия →</a>`
+    : "";
+
+  return `<article class="resource">
+    <div class="resource-meta">
+      <span class="tag">${esc(r.tag)}</span>
+      <span class="access-badge ${esc(r.accessTone)}">${esc(r.access)}</span>
+    </div>
+    <h3>${esc(r.title)}</h3>
+    <p>${esc(r.description)}</p>
+    <p class="terms">${esc(r.terms)}</p>
+    ${termsLink}
+    <div class="resource-foot">
+      <a class="button secondary" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Открыть</a>
+      ${actionBtn}
+    </div>
+  </article>`;
 }
 
 function renderResults(savedOnly = false) {
@@ -312,16 +503,19 @@ function renderResults(savedOnly = false) {
     return;
   }
 
-  const query = search.toLocaleLowerCase("ru-RU");
+  const query = search.trim().toLocaleLowerCase("ru-RU");
   const list = resources.filter(r =>
     (!savedOnly || state.saved.includes(r.id)) &&
     (savedOnly || filter === "Все" || r.category === filter) &&
-    (savedOnly || `${r.title} ${r.description} ${r.tag}`.toLocaleLowerCase("ru-RU").includes(query))
+    (savedOnly || !query || `${r.title} ${r.description} ${r.tag} ${r.access} ${r.terms}`.toLocaleLowerCase("ru-RU").includes(query))
   );
+
+  const countEl = document.querySelector("#result-count");
+  if (countEl) countEl.textContent = `Показано ${list.length} из ${resources.length}`;
 
   target.innerHTML = list.length
     ? list.map(r => card(r, savedOnly)).join("")
-    : `<div class="empty"><h2>${savedOnly ? "Пока ни одной находки" : filter !== "Все" && !search ? "Эта полка наполняется" : "Ничего не нашлось"}</h2><p>${savedOnly ? "Загляните в библиотеку и сохраните то, что пригодится." : "В первой подборке доступны три ресурса в разделе «Школьные предметы»."}</p>${savedOnly ? '<div class="actions"><a class="button" href="#library">В библиотеку</a></div>' : ""}</div>`;
+    : `<div class="empty"><h2>${savedOnly ? "Пока ни одной находки" : "Ничего не нашлось"}</h2><p>${savedOnly ? "Загляните в библиотеку и сохраните то, что пригодится на уроках." : "Попробуйте изменить запрос или выбрать раздел «Все»."}</p>${savedOnly ? '<div class="actions"><a class="button" href="#library">В библиотеку</a></div>' : ""}</div>`;
 }
 
 function bindActions() {
@@ -349,6 +543,9 @@ function bindActions() {
     });
   }
 
+  const dlBtn = document.querySelector("#download-pass");
+  if (dlBtn) dlBtn.addEventListener("click", downloadPassPng);
+
   const startQuiz = document.querySelector("#start-quiz");
   if (startQuiz) {
     startQuiz.addEventListener("click", () => {
@@ -368,7 +565,7 @@ function bindActions() {
   }
 
   document.querySelectorAll("[data-quiz-choice]").forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       const idx = Number(btn.dataset.quizChoice);
       const picked = quizQuestions[quizStep]?.options[idx]?.role;
       if (picked) quizAnswers.push(picked);
@@ -379,12 +576,16 @@ function bindActions() {
         const counts = {};
         for (const r of quizAnswers) counts[r] = (counts[r] || 0) + 1;
         const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "warm";
-        state.title = roleTitles[winner] || "Хранитель тепла";
-        saveTitleLocal(state.title);
+        const newTitle = roleTitles[winner] || "Хранитель тепла";
+        state.title = newTitle;
+        saveTitleLocal(newTitle);
         quizStep = null;
         quizAnswers = [];
         render();
-        toast(`Новое звание: ${state.title}`);
+        if (!demo) {
+          try { await api("/api/profile", "POST", { rank: newTitle }); } catch {}
+        }
+        toast(`Новое звание: ${newTitle}`);
       }
     });
   });
@@ -432,7 +633,7 @@ main.addEventListener("click", async event => {
     } catch (err) {
       unsave.disabled = false;
       unsave.textContent = route() === "saved" ? "Убрать" : "✓ Сохранено";
-      toast(err.status === 404 ? "Для удаления обновите src/index.js (Шаг 2)." : err.message);
+      toast(err.message);
     }
   }
 });
@@ -447,9 +648,12 @@ async function loadProfile() {
   mode.textContent = "Загружаем ваш профиль…";
   try {
     const data = await api("/api/me");
+    const dbRank = data.profile?.rank;
+    const validRank = dbRank && Object.values(roleTitles).includes(dbRank) ? dbRank : state.title;
     state = {
       ...state,
       name: data.profile?.display_name || "Гость",
+      title: validRank,
       saved: Array.isArray(data.saved) ? data.saved : [],
       completed: Array.isArray(data.completed) ? data.completed : []
     };
