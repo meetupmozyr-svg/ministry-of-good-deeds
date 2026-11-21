@@ -67,42 +67,81 @@ const entranceRiddle = {
   ]
 };
 
+const roleMeta = {
+  "Хранитель тепла": { key: "warm", emoji: "🕯️", desc: "Зажигает на онлайн-уроках уютный свет, к которому хочется возвращаться даже в самую вьюжную неделю." },
+  "Архивариус чудес": { key: "wonder", emoji: "✨", desc: "Находит маленькие открытия в каждой теме и превращает обычный пример в зимнее чудо." },
+  "Мастер тёплых писем": { key: "letter", emoji: "🪶", desc: "Превращает слова, открытки и заметки в настоящую поддержку через экран." },
+  "Маяк поддержки": { key: "care", emoji: "🧭", desc: "Помогает не сбиться с курса и спокойно дойти до любой цели." },
+  "Дежурный по ночным идеям": { key: "owl", emoji: "🦉", desc: "Придумывает лучшие разминки и ходы, когда город уже укутан снегом." },
+  "Хранитель тайных подарков": { key: "gift", emoji: "🎁", desc: "Умеет спрятать в занятии сюрприз, который запомнится ученикам надолго." },
+  "Алхимик зимнего какао": { key: "tea", emoji: "☕", desc: "Смешивает терпение, юмор и знание в идеальный согревающий рецепт урока." },
+  "Смотритель морозных узоров": { key: "crystal", emoji: "❄️", desc: "Замечает тонкую красоту в деталях и бережно собирает её в систему." }
+};
+
+const roleTitleByKey = Object.fromEntries(
+  Object.entries(roleMeta).map(([title, meta]) => [meta.key, title])
+);
+
 const quizQuestions = [
   {
-    q: "Что для вас самое важное в зимнем занятии?",
+    q: "Утро перед зимним уроком. С чего начинается ваше настроение?",
     options: [
-      { label: "Тёплая и уютная атмосфера", role: "warm" },
-      { label: "Маленькое чудо и открытие", role: "wonder" },
-      { label: "История, письмо и слово", role: "letter" },
-      { label: "Чуткая поддержка каждого", role: "care" }
+      { label: "Зажигаю свечу или тёплую настольную лампу", role: "warm" },
+      { label: "Готовлю горячий напиток по особому рецепту", role: "tea" },
+      { label: "Перелистываю идеи, которые пришли ночью", role: "owl" },
+      { label: "Любуюсь морозным узором на окне", role: "crystal" }
     ]
   },
   {
-    q: "Какой волшебный предмет лежит на вашем столе?",
+    q: "До праздника две недели, а ученик устал. Как вы его поддержите?",
     options: [
-      { label: "Кружка горячего какао", role: "warm" },
-      { label: "Снежный шар с идеями", role: "wonder" },
-      { label: "Перьевая ручка и конверт", role: "letter" },
-      { label: "Тёплый золотой фонарик", role: "care" }
+      { label: "Спрячу в уроке маленький игровой сюрприз", role: "gift" },
+      { label: "Дам спокойный и понятный ориентир на сегодня", role: "care" },
+      { label: "Покажу деталь, от которой загорятся глаза", role: "wonder" },
+      { label: "Оставлю тёплую записку с искренней похвалой", role: "letter" }
     ]
   },
   {
-    q: "Что вы отправите в общую почту Министерства?",
+    q: "На вашем столе в Министерстве лежит один особый предмет. Какой?",
     options: [
-      { label: "Доброе пожелание коллегам", role: "warm" },
-      { label: "Загадку для учеников", role: "wonder" },
-      { label: "Тёплое письмо и открытку", role: "letter" },
-      { label: "Полезный совет или помощь", role: "care" }
+      { label: "Перьевая ручка с золотыми чернилами", role: "letter" },
+      { label: "Старинный компас для трудных тем", role: "care" },
+      { label: "Калейдоскоп, собирающий редкие идеи", role: "crystal" },
+      { label: "Медная кружка, которая не остывает", role: "tea" }
+    ]
+  },
+  {
+    q: "В какой момент к вам приходят самые удачные задумки?",
+    options: [
+      { label: "Поздним вечером, когда за окном тишина и снег", role: "owl" },
+      { label: "В разгар тёплого и живого разговора", role: "warm" },
+      { label: "Внезапно — как искра среди обычного дела", role: "wonder" },
+      { label: "Когда хочется порадовать кого-то без повода", role: "gift" }
+    ]
+  },
+  {
+    q: "Какой подарок вы бы передали коллеге через экран?",
+    options: [
+      { label: "Конверт с письмом, от которого становится легче", role: "letter" },
+      { label: "Секретную коробочку с подсказкой для урока", role: "gift" },
+      { label: "Термос уюта на самую загруженную неделю", role: "tea" },
+      { label: "Карту Министерства, где отмечены тихие гавани", role: "care" }
+    ]
+  },
+  {
+    q: "Если бы на вашей двери в Министерстве висела табличка, что там было бы написано?",
+    options: [
+      { label: "«Здесь тепло даже в январе»", role: "warm" },
+      { label: "«Ночная смена волшебных идей»", role: "owl" },
+      { label: "«Каждая мелочь складывается в узор»", role: "crystal" },
+      { label: "«Обычное — только до первого взгляда»", role: "wonder" }
     ]
   }
 ];
 
-const roleTitles = {
-  warm: "Хранитель тепла",
-  wonder: "Архивариус чудес",
-  letter: "Мастер тёплых писем",
-  care: "Маяк поддержки"
-};
+function getRoleMeta(title) {
+  return roleMeta[title] || roleMeta["Хранитель тепла"];
+}
 
 let state = { name: "Гость", saved: [], completed: [], title: loadSavedTitle() };
 let loaded = demo;
@@ -127,7 +166,7 @@ function saveGateOpen() {
 function loadSavedTitle() {
   try {
     const val = localStorage.getItem(TITLE_KEY);
-    return val && Object.values(roleTitles).includes(val) ? val : "Хранитель тепла";
+    return val && roleMeta[val] ? val : "Хранитель тепла";
   } catch {
     return "Хранитель тепла";
   }
@@ -246,6 +285,15 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+function loadAvatarImage(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
 function closePngModal() {
   modal.hidden = true;
   modal.innerHTML = "";
@@ -282,138 +330,169 @@ function openPngModal(dataUrl, blob) {
   document.querySelector("#close-modal-btn").addEventListener("click", closePngModal);
 }
 
-function downloadPassPng() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 900;
-  canvas.height = 1240;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+async function downloadPassPng() {
+  const btn = document.querySelector("#download-pass");
+  if (btn) btn.disabled = true;
+  try {
+    const meta = getRoleMeta(state.title);
+    const avatarImg = await loadAvatarImage(`avatars/${meta.key}.png`);
 
-  const bg = ctx.createRadialGradient(450, 180, 60, 450, 620, 760);
-  bg.addColorStop(0, "#215042");
-  bg.addColorStop(1, "#122c24");
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, 900, 1240);
+    const canvas = document.createElement("canvas");
+    canvas.width = 900;
+    canvas.height = 1240;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  ctx.fillStyle = "#9d3443";
-  roundRectPath(ctx, 412, 48, 76, 86, 18);
-  ctx.fill();
+    const bg = ctx.createRadialGradient(450, 180, 60, 450, 620, 760);
+    bg.addColorStop(0, "#215042");
+    bg.addColorStop(1, "#122c24");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 900, 1240);
 
-  const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
-  cardGrad.addColorStop(0, "#fcf5e7");
-  cardGrad.addColorStop(1, "#f0dfc1");
-  ctx.fillStyle = cardGrad;
-  roundRectPath(ctx, 110, 118, 680, 1030, 46);
-  ctx.fill();
-
-  ctx.strokeStyle = "#c59d62";
-  ctx.lineWidth = 4;
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(181,142,83,0.45)";
-  ctx.lineWidth = 2;
-  roundRectPath(ctx, 134, 142, 632, 982, 32);
-  ctx.stroke();
-
-  ctx.fillStyle = "#23463a";
-  roundRectPath(ctx, 386, 174, 128, 22, 11);
-  ctx.fill();
-
-  ctx.textAlign = "center";
-  ctx.fillStyle = "#1e3a31";
-  ctx.font = "54px Georgia, serif";
-  ctx.fillText("Пропуск", 450, 265);
-
-  ctx.fillStyle = "#665b4c";
-  ctx.font = "bold 20px sans-serif";
-  ctx.fillText("МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 305);
-
-  ctx.save();
-  roundRectPath(ctx, 336, 345, 228, 255, 114);
-  const archGrad = ctx.createLinearGradient(0, 345, 0, 600);
-  archGrad.addColorStop(0, "#e7d8b9");
-  archGrad.addColorStop(1, "#d7c39c");
-  ctx.fillStyle = archGrad;
-  ctx.fill();
-  ctx.strokeStyle = "#c59d62";
-  ctx.lineWidth = 4;
-  ctx.stroke();
-  ctx.restore();
-
-  ctx.fillStyle = "#1e3a31";
-  ctx.font = "102px Georgia, serif";
-  ctx.fillText((state.name || "Г").slice(0, 1).toUpperCase(), 450, 505);
-
-  ctx.fillStyle = "#1e3a31";
-  ctx.font = "56px Georgia, serif";
-  ctx.fillText((state.name || "Гость").slice(0, 24), 450, 685);
-
-  ctx.fillStyle = "#9d3443";
-  roundRectPath(ctx, 215, 730, 470, 68, 34);
-  ctx.fill();
-
-  ctx.fillStyle = "#fff9ee";
-  ctx.font = "bold 30px sans-serif";
-  ctx.fillText(state.title, 450, 774);
-
-  ctx.fillStyle = "#665b4c";
-  ctx.font = "30px Georgia, serif";
-  ctx.fillText(passNumber(), 450, 868);
-
-  if (state.completed.includes("first-riddle")) {
-    ctx.fillStyle = "#e2f0d9";
-    roundRectPath(ctx, 250, 905, 400, 44, 22);
+    ctx.fillStyle = "#9d3443";
+    roundRectPath(ctx, 412, 48, 76, 86, 18);
     ctx.fill();
-    ctx.fillStyle = "#214b2d";
-    ctx.font = "bold 21px sans-serif";
-    ctx.fillText("❄ Первая загадка разгадана", 450, 934);
-  }
 
-  ctx.fillStyle = "#665b4c";
-  ctx.font = "bold 20px sans-serif";
-  ctx.fillText("ЗИМА · 2026", 450, 1080);
+    const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
+    cardGrad.addColorStop(0, "#fcf5e7");
+    cardGrad.addColorStop(1, "#f0dfc1");
+    ctx.fillStyle = cardGrad;
+    roundRectPath(ctx, 110, 118, 680, 1030, 46);
+    ctx.fill();
 
-  ctx.save();
-  ctx.translate(650, 1005);
-  ctx.rotate(-0.18);
-  ctx.strokeStyle = "rgba(157,52,67,0.55)";
-  ctx.lineWidth = 4;
-  ctx.setLineDash([10, 6]);
-  ctx.beginPath();
-  ctx.arc(0, 0, 62, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.fillStyle = "rgba(157,52,67,0.72)";
-  ctx.font = "46px Georgia, serif";
-  ctx.fillText("❄", 0, 16);
-  ctx.restore();
+    ctx.strokeStyle = "#c59d62";
+    ctx.lineWidth = 4;
+    ctx.stroke();
 
-  const dataUrl = canvas.toDataURL("image/png");
-  canvas.toBlob(blob => {
-    if (!blob) {
-      toast("Не удалось создать PNG.");
-      return;
+    ctx.strokeStyle = "rgba(181,142,83,0.45)";
+    ctx.lineWidth = 2;
+    roundRectPath(ctx, 134, 142, 632, 982, 32);
+    ctx.stroke();
+
+    ctx.fillStyle = "#23463a";
+    roundRectPath(ctx, 386, 174, 128, 22, 11);
+    ctx.fill();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#1e3a31";
+    ctx.font = "54px Georgia, serif";
+    ctx.fillText("Пропуск", 450, 265);
+
+    ctx.fillStyle = "#665b4c";
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillText("МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 305);
+
+    ctx.save();
+    roundRectPath(ctx, 336, 345, 228, 255, 114);
+    const archGrad = ctx.createLinearGradient(0, 345, 0, 600);
+    archGrad.addColorStop(0, "#e7d8b9");
+    archGrad.addColorStop(1, "#d7c39c");
+    ctx.fillStyle = archGrad;
+    ctx.fill();
+    if (avatarImg) {
+      ctx.clip();
+      ctx.drawImage(avatarImg, 336, 345, 228, 255);
     }
-    try {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "ministry-pass.png";
-      document.body.append(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
-    } catch {}
-    openPngModal(dataUrl, blob);
-  }, "image/png");
+    ctx.restore();
+
+    roundRectPath(ctx, 336, 345, 228, 255, 114);
+    ctx.strokeStyle = "#c59d62";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    if (!avatarImg) {
+      ctx.font = "108px sans-serif";
+      ctx.fillText(meta.emoji, 450, 505);
+    }
+
+    ctx.fillStyle = "#1e3a31";
+    ctx.font = "56px Georgia, serif";
+    ctx.fillText((state.name || "Гость").slice(0, 24), 450, 680);
+
+    ctx.fillStyle = "#9d3443";
+    roundRectPath(ctx, 165, 720, 570, 68, 34);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff9ee";
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillText(`${meta.emoji} ${state.title}`, 450, 764);
+
+    ctx.fillStyle = "#665b4c";
+    ctx.font = "30px Georgia, serif";
+    ctx.fillText(passNumber(), 450, 855);
+
+    if (state.completed.includes("first-riddle")) {
+      ctx.fillStyle = "#e2f0d9";
+      roundRectPath(ctx, 250, 895, 400, 44, 22);
+      ctx.fill();
+      ctx.fillStyle = "#214b2d";
+      ctx.font = "bold 21px sans-serif";
+      ctx.fillText("❄ Первая загадка разгадана", 450, 924);
+    }
+
+    ctx.fillStyle = "#665b4c";
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillText("ЗИМА · 2026", 450, 1080);
+
+    ctx.save();
+    ctx.translate(650, 1005);
+    ctx.rotate(-0.18);
+    ctx.strokeStyle = "rgba(157,52,67,0.55)";
+    ctx.lineWidth = 4;
+    ctx.setLineDash([10, 6]);
+    ctx.beginPath();
+    ctx.arc(0, 0, 62, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(157,52,67,0.72)";
+    ctx.font = "46px Georgia, serif";
+    ctx.fillText("❄", 0, 16);
+    ctx.restore();
+
+    const dataUrl = canvas.toDataURL("image/png");
+    canvas.toBlob(blob => {
+      if (!blob) {
+        toast("Не удалось создать PNG.");
+        return;
+      }
+      try {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "ministry-pass.png";
+        document.body.append(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+      } catch {}
+      openPngModal(dataUrl, blob);
+    }, "image/png");
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 function renderQuizSection() {
+  const meta = getRoleMeta(state.title);
   if (quizStep === null) {
-    return `<div class="quiz-box"><p class="note">Хотите подобрать особое звание для пропуска? Это короткая зимняя мини-викторина из 3 вопросов — можно пройти или пропустить.</p><div class="actions"><button type="button" class="button red" id="start-quiz">Получить звание</button></div></div>`;
+    return `<div class="quiz-box">
+      <div class="quiz-result">
+        <span class="eyebrow-dark">Ваше звание · 8 вариантов</span>
+        <p style="margin-top:6px"><strong>${esc(meta.emoji)} ${esc(state.title)}</strong></p>
+        <p class="note" style="margin-top:6px">${esc(meta.desc)}</p>
+      </div>
+      <p class="note">Пройдите викторину из 6 зимних вопросов, чтобы узнать своё министерское звание и получить уникальный значок на пропуск.</p>
+      <div class="actions"><button type="button" class="button red" id="start-quiz">Пройти викторину (6 вопросов)</button></div>
+    </div>`;
   }
   const item = quizQuestions[quizStep];
+  const dots = quizQuestions.map((_, i) =>
+    `<span class="quiz-dot ${i < quizStep ? "done" : i === quizStep ? "active" : ""}"></span>`
+  ).join("");
   return `<div class="quiz-box">
-    <span class="eyebrow-dark">Вопрос ${quizStep + 1} из ${quizQuestions.length}</span>
+    <div class="quiz-head">
+      <span class="eyebrow-dark">Вопрос ${quizStep + 1} из ${quizQuestions.length}</span>
+      <div class="quiz-dots" aria-hidden="true">${dots}</div>
+    </div>
     <p class="quiz-q">${esc(item.q)}</p>
     <div class="quiz-options">
       ${item.options.map((opt, idx) => `<button type="button" class="quiz-option" data-quiz-choice="${idx}">${esc(opt.label)}</button>`).join("")}
@@ -577,6 +656,7 @@ function render() {
     renderResults(true);
   } else if (page === "pass") {
     const riddleDone = state.completed.includes("first-riddle");
+    const meta = getRoleMeta(state.title);
     main.innerHTML = `<div class="shell">
       ${pageHeader("Личный пропуск", "Ваша карта сотрудника Министерства.")}
       <div class="pass-layout">
@@ -590,11 +670,15 @@ function render() {
             <div class="pass-subtitle">Министерство добрых дел</div>
             <div class="pass-portrait-row">
               ${laurelSvg()}
-              <div class="pass-arch" aria-hidden="true"><span class="pass-initial">${esc((state.name || "Г").slice(0, 1).toUpperCase())}</span></div>
+              <div class="pass-arch" aria-hidden="true">
+                <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" onerror="this.hidden=true">
+                <span class="pass-emoji">${esc(meta.emoji)}</span>
+              </div>
               ${laurelSvg("right")}
             </div>
             <h2>${esc(state.name)}</h2>
-            <span class="rank-ribbon">${esc(state.title)}</span>
+            <span class="rank-ribbon">${esc(meta.emoji)} ${esc(state.title)}</span>
+            <p class="pass-role-desc">${esc(meta.desc)}</p>
             <p class="pass-num">${esc(passNumber())}</p>
             <div class="pass-bottom-row">
               ${riddleDone
@@ -773,10 +857,18 @@ function bindActions() {
         quizStep += 1;
         render();
       } else {
-        const counts = {};
-        for (const r of quizAnswers) counts[r] = (counts[r] || 0) + 1;
-        const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "warm";
-        const newTitle = roleTitles[winner] || "Хранитель тепла";
+        const scores = {};
+        const lastIndex = {};
+        quizAnswers.forEach((role, stepIdx) => {
+          scores[role] = (scores[role] || 0) + 1;
+          lastIndex[role] = stepIdx;
+        });
+        const winner = Object.keys(scores).sort((a, b) =>
+          (scores[b] - scores[a]) || (lastIndex[b] - lastIndex[a])
+        )[0] || "warm";
+
+        const newTitle = roleTitleByKey[winner] || "Хранитель тепла";
+        const meta = getRoleMeta(newTitle);
         state.title = newTitle;
         saveTitleLocal(newTitle);
         quizStep = null;
@@ -785,7 +877,7 @@ function bindActions() {
         if (!demo) {
           try { await api("/api/profile", "POST", { rank: newTitle }); } catch {}
         }
-        toast(`Новое звание: ${newTitle}`);
+        toast(`Ваше звание: ${meta.emoji} ${newTitle}`);
       }
     });
   });
@@ -856,7 +948,7 @@ async function loadProfile() {
   try {
     const data = await api("/api/me");
     const dbRank = data.profile?.rank;
-    const validRank = dbRank && Object.values(roleTitles).includes(dbRank) ? dbRank : state.title;
+    const validRank = dbRank && roleMeta[dbRank] ? dbRank : state.title;
     const completed = Array.isArray(data.completed) ? data.completed : [];
     if (completed.includes("first-riddle")) saveGateOpen();
     state = {
