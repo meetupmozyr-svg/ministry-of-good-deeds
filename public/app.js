@@ -349,10 +349,10 @@ function passCardHtml() {
       </div>
       ${laurelSvg("right")}
     </div>
-    <h2>${esc(state.name)}</h2>
+<h2>${esc(state.name)}</h2>
     <span class="rank-ribbon">${esc(meta.emoji)} ${esc(state.title)}</span>
-    <p class="pass-role-desc">${esc(meta.desc)}</p>
     <p class="pass-num">${esc(passNumber())}</p>
+    <p class="pass-season">ЗИМА · 2026/2027</p>
 
     <img class="pass-wax-img" src="assets/decorations/wax-seal-snowflake.png" alt="" hidden onload="this.hidden=false;this.nextElementSibling.setAttribute('hidden','')" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
     ${postmarkSvg()}
