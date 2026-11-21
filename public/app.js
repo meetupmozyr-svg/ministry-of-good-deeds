@@ -158,6 +158,8 @@ let loadError = false;
 let gateOpen = loadGateOpen();
 let passOnboarded = loadPassOnboarded();
 let onboardStep = "intro";
+let passBgImg = null;
+let passDeskImg = null;
 let gateHint = "";
 let filter = "Все";
 let search = "";
@@ -334,9 +336,8 @@ function passCardHtml() {
   const riddleDone = state.completed.includes("first-riddle");
   const meta = getRoleMeta(state.title);
   return `
-  <div class="pass-lanyard-strap" aria-hidden="true"><div class="pass-lanyard-clip"></div></div>
   ${decorImg("burgundy-bow", "pass-bow-img")}
-  <article class="pass-card">
+  <article class="pass-card${passBgImg ? " has-pass-bg" : ""}">
     <div class="pass-slot" aria-hidden="true"></div>
     <div class="pass-title-main">Пропуск</div>
     <div class="pass-subtitle">Министерство добрых дел</div>
@@ -387,6 +388,18 @@ async function loadImageAny(paths) {
   return null;
 }
 
+async function preloadPassAssets() {
+  const [cardBg, deskBg] = await Promise.all([
+    loadImageAny(["assets/pass/pass-card-bg.webp", "assets/pass/pass-card-bg.png"]),
+    loadImageAny(["assets/pass/pass-desk-bg.webp", "assets/pass/pass-desk-bg.png"])
+  ]);
+  passBgImg = cardBg;
+  passDeskImg = deskBg;
+  if (cardBg) {
+    document.querySelectorAll(".pass-card").forEach(el => el.classList.add("has-pass-bg"));
+  }
+}
+
 function closePngModal() {
   modal.hidden = true;
   modal.innerHTML = "";
@@ -428,9 +441,11 @@ async function downloadPassPng() {
   if (btn) btn.disabled = true;
   try {
     const meta = getRoleMeta(state.title);
-    const [avatarImg, waxSealImg] = await Promise.all([
+    const [avatarImg, waxSealImg, cardBg, deskBg] = await Promise.all([
       loadImageAny([`avatars/${meta.key}.png`, `avatars/${meta.key}.webp`]),
-      loadImageAny(["assets/decorations/wax-seal-snowflake.png", "assets/decorations/wax-seal-snowflake.webp"])
+      loadImageAny(["assets/decorations/wax-seal-snowflake.png", "assets/decorations/wax-seal-snowflake.webp"]),
+      passBgImg ? Promise.resolve(passBgImg) : loadImageAny(["assets/pass/pass-card-bg.webp", "assets/pass/pass-card-bg.png"]),
+      passDeskImg ? Promise.resolve(passDeskImg) : loadImageAny(["assets/pass/pass-desk-bg.webp", "assets/pass/pass-desk-bg.png"])
     ]);
 
     const canvas = document.createElement("canvas");
@@ -439,35 +454,47 @@ async function downloadPassPng() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const bg = ctx.createRadialGradient(450, 180, 60, 450, 620, 760);
-    bg.addColorStop(0, "#215042");
-    bg.addColorStop(1, "#122c24");
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, 900, 1240);
+    if (deskBg) {
+      const scale = Math.max(900 / deskBg.width, 1240 / deskBg.height);
+      const dw = deskBg.width * scale;
+      const dh = deskBg.height * scale;
+      ctx.drawImage(deskBg, (900 - dw) / 2, (1240 - dh) / 2, dw, dh);
+    } else {
+      const bg = ctx.createRadialGradient(450, 180, 60, 450, 620, 760);
+      bg.addColorStop(0, "#215042");
+      bg.addColorStop(1, "#122c24");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 900, 1240);
+    }
 
-    ctx.fillStyle = "#9d3443";
-    roundRectPath(ctx, 412, 48, 76, 86, 18);
-    ctx.fill();
-
-    const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
-    cardGrad.addColorStop(0, "#fdf9f0");
-    cardGrad.addColorStop(1, "#f4e8d1");
-    ctx.fillStyle = cardGrad;
+    ctx.save();
     roundRectPath(ctx, 110, 118, 680, 1030, 46);
-    ctx.fill();
+    if (cardBg) {
+      ctx.clip();
+      ctx.drawImage(cardBg, 110, 118, 680, 1030);
+    } else {
+      const cardGrad = ctx.createLinearGradient(0, 118, 0, 1150);
+      cardGrad.addColorStop(0, "#fdf9f0");
+      cardGrad.addColorStop(1, "#f4e8d1");
+      ctx.fillStyle = cardGrad;
+      ctx.fill();
+    }
+    ctx.restore();
 
+    roundRectPath(ctx, 110, 118, 680, 1030, 46);
     ctx.strokeStyle = "#cfa96e";
     ctx.lineWidth = 4;
     ctx.stroke();
 
-    ctx.strokeStyle = "rgba(181,142,83,0.45)";
-    ctx.lineWidth = 2;
-    roundRectPath(ctx, 134, 142, 632, 982, 32);
-    ctx.stroke();
-
-    ctx.fillStyle = "#1c3d32";
-    roundRectPath(ctx, 386, 174, 128, 22, 11);
-    ctx.fill();
+    if (!cardBg) {
+      ctx.strokeStyle = "rgba(181,142,83,0.45)";
+      ctx.lineWidth = 2;
+      roundRectPath(ctx, 134, 142, 632, 982, 32);
+      ctx.stroke();
+      ctx.fillStyle = "#1c3d32";
+      roundRectPath(ctx, 386, 174, 128, 22, 11);
+      ctx.fill();
+    }
 
     ctx.textAlign = "center";
     ctx.fillStyle = "#1e3a31";
@@ -628,6 +655,7 @@ function shouldShowGate() {
 
 function renderGate() {
   document.body.classList.add("is-gated");
+  document.body.classList.remove("is-pass");
   main.innerHTML = `<div class="shell">
     <div class="gate-frame">
       ${decorImg("evergreen-sprig", "hero-branch tl")}
@@ -688,6 +716,7 @@ function renderGate() {
 
 function renderOnboarding() {
   document.body.classList.add("is-gated");
+  document.body.classList.toggle("is-pass", onboardStep === "done");
 
   if (onboardStep === "quiz") {
     main.innerHTML = `<div class="shell">
@@ -826,6 +855,7 @@ function render() {
   const gateState = shouldShowGate();
   if (gateState === "loading") {
     document.body.classList.add("is-gated");
+    document.body.classList.remove("is-pass");
     main.innerHTML = `<div class="shell"><div class="card-panel"><p class="intro">Приоткрываем двери Министерства…</p></div></div>`;
     return;
   }
@@ -840,6 +870,7 @@ function render() {
 
   document.body.classList.remove("is-gated");
   const page = route();
+  document.body.classList.toggle("is-pass", page === "pass");
   const active = ["library", "workshop", "bureau"].includes(page) ? "map" : page;
   document.querySelectorAll("[data-nav]").forEach(a => a.setAttribute("aria-current", a.dataset.nav === active ? "page" : "false"));
 
@@ -1255,6 +1286,7 @@ window.addEventListener("hashchange", () => {
 });
 
 try {
+  preloadPassAssets();
   render();
   loadProfile();
 } catch (err) {
