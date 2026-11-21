@@ -5,7 +5,11 @@ const ALLOWED_RANKS = new Set([
   "Хранитель тепла",
   "Архивариус чудес",
   "Мастер тёплых писем",
-  "Маяк поддержки"
+  "Маяк поддержки",
+  "Дежурный по ночным идеям",
+  "Хранитель тайных подарков",
+  "Алхимик зимнего какао",
+  "Смотритель морозных узоров"
 ]);
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
@@ -247,7 +251,7 @@ const RIDDLE_TEXT =
   "Чем щедрее им делятся, тем больше его становится.</i>\n\n" +
   "Что открывает наши двери?";
 
-function riddleKeyboard(appUrl) {
+function riddleKeyboard() {
   return {
     inline_keyboard: [
       [{ text: "❄ Снежинка на варежке", callback_data: "riddle:ans:snow" }],
@@ -275,7 +279,7 @@ async function handleTelegram(request, env) {
 
     if (data === "riddle:start") {
       await telegramCall(env, "answerCallbackQuery", { callback_query_id: cq.id });
-      await editBotCard(env, cq, RIDDLE_TEXT, riddleKeyboard(appUrl));
+      await editBotCard(env, cq, RIDDLE_TEXT, riddleKeyboard());
     } else if (data === "riddle:ans:kindness") {
       await solveFirstRiddle(env, cq.from);
       await telegramCall(env, "answerCallbackQuery", {
