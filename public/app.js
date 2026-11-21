@@ -9,6 +9,7 @@ try {
 
 const initData = tg?.initData || "";
 const demo = !initData;
+const tgFirstName = (tg?.initDataUnsafe?.user?.first_name || "").trim().slice(0, 40);
 const DEMO_KEY = "ministry-warm-letters-demo-v1";
 const TITLE_KEY = "ministry-pass-title-v1";
 const GATE_KEY = "ministry-gate-open-v1";
@@ -144,7 +145,7 @@ function getRoleMeta(title) {
   return roleMeta[title] || roleMeta["Хранитель тепла"];
 }
 
-let state = { name: "Гость", saved: [], completed: [], title: loadSavedTitle() };
+let state = { name: tgFirstName || "Гость", saved: [], completed: [], title: loadSavedTitle() };
 let loaded = demo;
 let loadError = false;
 let gateOpen = loadGateOpen();
@@ -614,25 +615,29 @@ function shouldShowGate() {
 function renderGate() {
   document.body.classList.add("is-gated");
   main.innerHTML = `<div class="shell">
-    <section class="gate-stage">
-      <div class="gate-banner">
-        ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Волшебные двери приёмной Министерства добрых дел", "gate-bg", true)}
-        ${decorImg("paper-snowflake", "decor-corner tl")}
-        ${decorImg("paper-snowflake", "decor-corner tr")}
-        <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
-      </div>
-      <div class="gate-body">
-        ${snowflakeSvg()}
-        <h1>Тайна зимнего входа</h1>
-        <p class="intro">Чтобы зажечь фонари в Холле и открыть комнаты, подберите ключ-отгадку.</p>
-        <blockquote class="gate-riddle">${esc(entranceRiddle.text)}</blockquote>
-        <div class="gate-options">
-          ${entranceRiddle.options.map(opt => `<button type="button" class="gate-option" data-gate-choice="${esc(opt.id)}">${esc(opt.label)}</button>`).join("")}
+    <div class="gate-frame">
+      ${decorImg("evergreen-sprig", "hero-branch tl")}
+      ${decorImg("evergreen-sprig", "hero-branch tr")}
+      <section class="gate-stage">
+        <div class="gate-banner">
+          ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Волшебные двери приёмной Министерства добрых дел", "gate-bg", true)}
+          ${decorImg("paper-snowflake", "decor-corner tl")}
+          ${decorImg("paper-snowflake", "decor-corner tr")}
+          <span class="gate-key-badge">🗝 Ключ от дверей Министерства</span>
         </div>
-        ${gateHint ? `<p class="gate-hint" role="status">${esc(gateHint)}</p>` : ""}
-        <button type="button" class="gate-skip" id="gate-skip-btn">Пропустить загадку и войти</button>
-      </div>
-    </section>
+        <div class="gate-body">
+          ${snowflakeSvg()}
+          <h1>Тайна зимнего входа</h1>
+          <p class="intro">Чтобы зажечь фонари в Холле и открыть комнаты, подберите ключ-отгадку.</p>
+          <blockquote class="gate-riddle">${esc(entranceRiddle.text)}</blockquote>
+          <div class="gate-options">
+            ${entranceRiddle.options.map(opt => `<button type="button" class="gate-option" data-gate-choice="${esc(opt.id)}">${esc(opt.label)}</button>`).join("")}
+          </div>
+          ${gateHint ? `<p class="gate-hint" role="status">${esc(gateHint)}</p>` : ""}
+          <button type="button" class="gate-skip" id="gate-skip-btn">Пропустить загадку и войти</button>
+        </div>
+      </section>
+    </div>
   </div>`;
 
   document.querySelectorAll("[data-gate-choice]").forEach(btn => {
@@ -749,27 +754,29 @@ function renderOnboarding() {
   }
 
   main.innerHTML = `<div class="shell">
-    <section class="gate-stage">
-      <div class="gate-banner">
-        ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Приёмная Министерства добрых дел", "gate-bg", true)}
-        ${decorImg("evergreen-sprig", "decor-corner tl")}
-        ${decorImg("evergreen-sprig", "decor-corner tr")}
-        <span class="gate-key-badge">▣ Личный пропуск · ${esc(passNumber())}</span>
-      </div>
-      <div class="gate-body">
-        ${decorImg("vintage-lantern", "decor-star")}
-        <h1>Оформите ваш пропуск</h1>
-        <p class="intro">Добро пожаловать внутрь! Пройдите 6 быстрых вопросов, чтобы получить личное звание, значок и номер сотрудника — или пропустите пока этот шаг.</p>
-        <form id="onboard-name-form" class="onboard-form">
-          <label for="onboard-name">Как подписать ваш пропуск?</label>
-          <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
-          <div class="onboard-actions">
-            <button type="submit" class="button red">✨ Пройти викторину и получить ID</button>
-            <button type="button" class="button secondary" id="onboard-skip-all">Пропустить и войти в Холл</button>
-          </div>
-        </form>
-      </div>
-    </section>
+    <div class="gate-frame">
+      ${decorImg("evergreen-sprig", "hero-branch tl")}
+      ${decorImg("evergreen-sprig", "hero-branch tr")}
+      <section class="gate-stage">
+        <div class="gate-banner">
+          ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Приёмная Министерства добрых дел", "gate-bg", true)}
+          <span class="gate-key-badge">▣ Личный пропуск · ${esc(passNumber())}</span>
+        </div>
+        <div class="gate-body">
+          ${decorImg("vintage-lantern", "decor-star")}
+          <h1>Оформите ваш пропуск</h1>
+          <p class="intro">Добро пожаловать внутрь! Пройдите 6 быстрых вопросов, чтобы получить личное звание, значок и номер сотрудника — или пропустите пока этот шаг.</p>
+          <form id="onboard-name-form" class="onboard-form">
+            <label for="onboard-name">Как подписать ваш пропуск?</label>
+            <input id="onboard-name" type="text" maxlength="40" required value="${esc(state.name)}">
+            <div class="onboard-actions">
+              <button type="submit" class="button red">✨ Пройти викторину и получить ID</button>
+              <button type="button" class="button secondary" id="onboard-skip-all">Пропустить и войти в Холл</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
   </div>`;
 
   document.querySelector("#onboard-name-form").addEventListener("submit", async e => {
@@ -779,13 +786,11 @@ function renderOnboarding() {
       toast("Введите имя для пропуска.");
       return;
     }
-    if (name !== state.name) {
-      state.name = name;
-      if (demo) {
-        persistDemo();
-      } else {
-        try { await api("/api/profile", "POST", { displayName: name }); } catch {}
-      }
+    state.name = name;
+    if (demo) {
+      persistDemo();
+    } else {
+      try { await api("/api/profile", "POST", { displayName: name }); } catch {}
     }
     quizStep = 0;
     quizAnswers = [];
@@ -794,6 +799,11 @@ function renderOnboarding() {
   });
 
   document.querySelector("#onboard-skip-all").addEventListener("click", () => {
+    const inputName = document.querySelector("#onboard-name")?.value.trim().slice(0, 40);
+    if (inputName) {
+      state.name = inputName;
+      if (demo) persistDemo();
+    }
     savePassOnboarded();
     location.hash = "#hall";
     render();
@@ -822,21 +832,24 @@ function render() {
   document.querySelectorAll("[data-nav]").forEach(a => a.setAttribute("aria-current", a.dataset.nav === active ? "page" : "false"));
 
   if (page === "hall") {
+    const greetingName = state.name && state.name !== "Гость" ? esc(state.name) : "коллега";
     main.innerHTML = `<div class="shell">
-      <section class="hero-stage">
-        ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном", "hero-bg", true)}
-        ${decorImg("evergreen-sprig", "decor-corner tl")}
-        ${decorImg("evergreen-sprig", "decor-corner tr")}
-        <div class="hero-scrim">
-          <span class="eyebrow">Бюро тёплых писем</span>
-          <h1>Добро пожаловать,<br>коллега.</h1>
-          <p class="intro">38 полезных находок, идеи к празднику и тёплые дела.</p>
-          <div class="hero-actions">
-            <a class="button red" href="#map">◇ Карта</a>
-            <a class="button secondary" href="#pass">Мой пропуск</a>
+      <div class="hero-frame">
+        ${decorImg("evergreen-sprig", "hero-branch tl")}
+        ${decorImg("evergreen-sprig", "hero-branch tr")}
+        <section class="hero-stage">
+          ${sceneImg("assets/scenes/hall.jpg", "hall.jpg", "Уютная приёмная Министерства: письма на столе, свет лампы и снег за окном", "hero-bg", true)}
+          <div class="hero-scrim">
+            <span class="eyebrow">Бюро тёплых писем</span>
+            <h1>Добро пожаловать,<br>${greetingName}!</h1>
+            <p class="intro">38 полезных находок, идеи к празднику и тёплые дела.</p>
+            <div class="hero-actions">
+              <a class="button red" href="#map">◇ Карта</a>
+              <a class="button secondary" href="#pass">Мой пропуск</a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
       <section class="card-panel">
         <div class="section-head">
           <div class="section-title-row">${decorImg("sealed-envelope", "decor-inline")}<h2>На доске объявлений</h2></div>
@@ -1171,7 +1184,7 @@ async function loadProfile() {
     if (completed.includes("first-riddle")) saveGateOpen();
     state = {
       ...state,
-      name: data.profile?.display_name || "Гость",
+      name: data.profile?.display_name || tgFirstName || "Гость",
       title: validRank,
       saved: Array.isArray(data.saved) ? data.saved : [],
       completed
