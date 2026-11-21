@@ -19,6 +19,8 @@
 }
 *{box-sizing:border-box}
 body{margin:0;min-height:100dvh}
+body.is-gated .bottom-nav{display:none}
+body.is-gated main{padding-bottom:36px}
 button,input{font:inherit}
 button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 button{cursor:pointer;border:0}
@@ -62,6 +64,51 @@ main{max-width:980px;margin:auto;padding:0 18px calc(108px + env(safe-area-inset
   background:rgba(255,248,233,.1);border:1px solid var(--line);color:#f5ead4;
 }
 .page-head .intro{max-width:36rem;margin:8px auto 0;color:#d6cbb7;font-size:.94rem}
+
+/* Entrance Gate */
+.gate-stage{
+  position:relative;border-radius:28px;overflow:hidden;
+  border:1.5px solid rgba(212,175,112,.5);box-shadow:var(--shadow);
+  background:#15342b;
+}
+.gate-banner{position:relative;height:210px;overflow:hidden}
+.gate-banner img{width:100%;height:100%;object-fit:cover;object-position:center 35%;filter:brightness(.88)}
+.gate-banner::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(16,38,32,.1) 0%,rgba(21,52,43,.92) 100%);
+}
+.gate-key-badge{
+  position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:2;
+  padding:7px 18px;border-radius:999px;white-space:nowrap;
+  background:rgba(252,245,231,.95);color:var(--ink);border:1.5px solid var(--gold);
+  font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+.gate-body{
+  background:linear-gradient(180deg,#fbf4e6 0%,#f2e3c7 100%);
+  color:var(--ink);padding:24px 22px 22px;text-align:center;
+}
+.gate-body h1{font-size:clamp(1.65rem,4vw,2.2rem)}
+.gate-riddle{
+  margin:14px auto 0;max-width:34rem;padding:16px 18px;border-radius:18px;
+  background:var(--card);border:1px solid rgba(197,157,98,.48);
+  font-family:Georgia,serif;font-style:italic;font-size:1.05rem;line-height:1.55;color:var(--ink);
+}
+.gate-options{display:grid;gap:10px;max-width:30rem;margin:18px auto 0}
+.gate-option{
+  width:100%;padding:13px 18px;border-radius:999px;
+  background:var(--card);color:var(--ink);border:1.5px solid rgba(181,142,83,.5);
+  font-weight:600;text-align:center;box-shadow:0 4px 12px rgba(42,30,18,.07);
+}
+.gate-option:hover{background:#f3e4c9;border-color:var(--gold)}
+.gate-hint{
+  margin:14px auto 0;max-width:30rem;padding:10px 14px;border-radius:14px;
+  background:#f8e8e2;color:var(--red-dark);font-size:.88rem;font-weight:500;
+}
+.gate-skip{
+  margin-top:16px;background:transparent;color:var(--muted);
+  font-size:.84rem;text-decoration:underline;text-underline-offset:4px;padding:8px 12px;
+}
 
 /* Hall hero */
 .hero-stage{
@@ -196,7 +243,7 @@ input[type=search],input[type=text]{
 .soon .status{display:inline-block;padding:3px 11px;border-radius:999px;background:#f5e5dc;color:var(--red);font-size:.78rem;font-weight:650;margin-bottom:8px}
 .soon p{color:var(--muted)}
 
-/* Lanyard Pass (Concept Panel 2) */
+/* Lanyard Pass */
 .pass-layout{display:grid;grid-template-columns:minmax(270px,360px) 1fr;gap:22px;align-items:start}
 .pass-wrap{display:flex;flex-direction:column;align-items:center}
 .pass-card{
@@ -208,23 +255,16 @@ input[type=search],input[type=text]{
   content:"";position:absolute;inset:10px;border-radius:18px;
   border:1px solid rgba(181,142,83,.42);pointer-events:none;
 }
-.pass-hanger{
-  display:flex;flex-direction:column;align-items:center;margin-bottom:6px;
-}
+.pass-hanger{display:flex;flex-direction:column;align-items:center;margin-bottom:6px}
 .pass-ribbon-top{
   width:28px;height:18px;border-radius:6px 6px 2px 2px;
   background:linear-gradient(180deg,#b43c4d,#8b2b39);
   box-shadow:0 3px 8px rgba(0,0,0,.22);margin-bottom:-4px;position:relative;z-index:2;
 }
-.pass-slot{
-  width:52px;height:11px;border-radius:999px;
-  background:#23463a;border:1.5px solid #b58e53;opacity:.85;
-}
+.pass-slot{width:52px;height:11px;border-radius:999px;background:#23463a;border:1.5px solid #b58e53;opacity:.85}
 .pass-title-main{font-family:Georgia,serif;font-size:1.7rem;color:var(--ink);line-height:1.05;margin-top:4px}
 .pass-subtitle{font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
-.pass-portrait-row{
-  display:flex;align-items:center;justify-content:center;gap:12px;margin:14px auto 10px;
-}
+.pass-portrait-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px auto 10px}
 .pass-laurel{width:34px;height:58px;color:#b48d52;opacity:.85;flex-shrink:0}
 .pass-laurel.right{transform:scaleX(-1)}
 .pass-arch{
@@ -242,16 +282,12 @@ input[type=search],input[type=text]{
   font-weight:600;font-size:.95rem;box-shadow:0 6px 16px rgba(137,41,55,.32);
 }
 .pass-num{font:600 .95rem Georgia,serif;color:var(--muted);letter-spacing:.08em;margin-top:4px}
-.pass-bottom-row{
-  display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;padding-bottom:6px;
-}
+.pass-bottom-row{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;padding-bottom:6px}
 .pass-achievement{
   display:inline-block;padding:4px 12px;border-radius:999px;
   background:#e2f0d9;color:#214b2d;font-size:.76rem;font-weight:650;position:relative;z-index:2;
 }
-.pass-postmark{
-  position:absolute;right:14px;bottom:10px;width:96px;height:66px;pointer-events:none;opacity:.62;
-}
+.pass-postmark{position:absolute;right:14px;bottom:10px;width:96px;height:66px;pointer-events:none;opacity:.62}
 
 /* Quiz & Form */
 .quiz-box{margin-top:16px;padding-top:16px;border-top:1px solid rgba(181,142,83,.32)}
@@ -334,6 +370,6 @@ input[type=search],input[type=text]{
   .bottom-nav a{font-size:.74rem}
 }
 @media(prefers-reduced-motion:no-preference){
-  .button,.room-label,.room-card{transition:transform .16s,box-shadow .16s,background .16s}
-  .button:hover,.room-label:hover,.room-card:hover{transform:translateY(-1px)}
+  .button,.room-label,.room-card,.gate-option{transition:transform .16s,box-shadow .16s,background .16s}
+  .button:hover,.room-label:hover,.room-card:hover,.gate-option:hover{transform:translateY(-1px)}
 }
