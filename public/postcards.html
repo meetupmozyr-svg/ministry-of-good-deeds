@@ -2040,6 +2040,15 @@ textarea:focus-visible {
 }
 
 
+</style><style>
+/* A compact portrait card on phones; export uses these same proportions. */
+@media(max-width:740px){
+  .postcard-frame{height:auto!important;min-height:0!important;aspect-ratio:4/5!important}
+  .postcard-paper{height:100%!important;min-height:0!important}
+  .greeting-input{line-height:1.15!important}
+  .brand-header{padding-top:46px!important;height:auto!important;min-height:140px!important}
+}
+.postcard-frame:hover{transform:none}
 </style></head><body><main class="workshop-page"><div class="snow-dust"></div><div class="page-shell"><header class="brand-header"><span class="title-star title-star-left">✳</span><h1 class="workshop-title"><span>Создай свою</span><span>новогоднюю открытку!</span></h1><span class="title-star title-star-right">✦</span></header><section class="workspace-grid"><aside class="paper-panel stamp-panel scroll-reveal is-in-view"><div class="panel-heading"><h2>Штампы</h2><span class="panel-rule"></span></div><div class="stamp-grid">
 <button class="stamp-button" type="button" data-stamp="round-ustyug" title="Добавить штамп «Великий Устюг»"><span class="stamp-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#254b8c" stroke-width="2.5" stroke-dasharray="3 1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#254b8c" stroke-width="1.5"/><g fill="#254b8c" font-family="Caveat, cursive" font-weight="700" text-anchor="middle"><text x="50" y="32" font-size="11">ПОЧТА ДЕДА МОРОЗА</text><text x="50" y="52" font-size="14">★ 2026 ★</text><text x="50" y="70" font-size="10">ВЕЛИКИЙ УСТЮГ</text></g></svg></span><span class="stamp-label">Великий Устюг</span></button>
 <button class="stamp-button" type="button" data-stamp="wavy-cancellation" title="Добавить штамп «Волны гашения»"><span class="stamp-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" aria-hidden="true"><rect x="2" y="4" width="46" height="52" fill="none" stroke="#a32828" stroke-width="2"/><g fill="#a32828" font-family="Caveat, cursive" font-weight="700" text-anchor="middle"><text x="25" y="24" font-size="10">СПЕШИТ</text><text x="25" y="38" font-size="8">К ПРАЗДНИКУ</text></g><path d="M54 14 Q68 6 82 14 T110 14 M54 28 Q68 20 82 28 T110 28 M54 42 Q68 34 82 42 T110 42" fill="none" stroke="#a32828" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="stamp-label">Волны гашения</span></button>
@@ -2453,7 +2462,7 @@ textarea:focus-visible {
     }ctx.restore();
   }
   async function makeExportCanvas() {
-    const width=1800,height=1120,canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+    const width=1800,height=Math.round(64+(width-64)*card.clientHeight/Math.max(1,card.clientWidth)),canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
     const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas недоступен');
     const selectedBg=document.querySelector('.background-option.is-selected');
     const selectedArt=selectedBg?.querySelector('.background-preview img')?.src||'';
@@ -2468,7 +2477,7 @@ textarea:focus-visible {
     const cardRect=card.getBoundingClientRect();
     const localBox=el=>{
       const r=el.getBoundingClientRect();
-      return {x:(r.left-cardRect.left)*sx,y:(r.top-cardRect.top)*sy,w:r.width*sx,h:r.height*sy};
+      return {x:px+(r.left-cardRect.left)*sx,y:py+(r.top-cardRect.top)*sy,w:r.width*sx,h:r.height*sy};
     };
     const scaleFont=(el)=>{
       const st=getComputedStyle(el),size=(parseFloat(st.fontSize)||16)*sx;
@@ -2613,8 +2622,7 @@ textarea:focus-visible {
       const canvas=await makeExportCanvas();
       const mime=exportFormat==='png'?'image/png':'image/jpeg';
       const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Не удалось подготовить изображение')),mime,.94));
-      const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`zimnyaya-otkrytka.${exportFormat==='png'?'png':'jpg'}`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
-      announce('Открытка скачана.');
+      showImageExport(blob, `zimnyaya-otkrytka.${exportFormat==='png'?'png':'jpg'}`, 'Ваша открытка готова');
     } catch(error) { console.error(error);announce('Не удалось сохранить открытку. Попробуйте другой браузер.'); }
     finally {button.disabled=false;button.innerHTML=original;}
   }
@@ -2644,4 +2652,54 @@ textarea:focus-visible {
   });
 })();
 </script>
-</body></html>
+<script>
+// Keep generated images inside the Mini App; never navigate to a blob URL.
+function showImageExport(blob, filename, title) {
+  document.querySelector('#image-export-preview')?.remove();
+  const url = URL.createObjectURL(blob);
+  const previousFocus = document.activeElement;
+  const previousOverflow = document.body.style.overflow;
+  const file = new File([blob], filename, {type: blob.type});
+  let canShare = false;
+  try { canShare = !!navigator.share && !!navigator.canShare?.({files:[file]}); } catch {}
+  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+  const overlay = document.createElement('div');
+  overlay.id = 'image-export-preview';
+  overlay.setAttribute('role','dialog'); overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label', title);
+  overlay.innerHTML = `<style>
+  #image-export-preview{position:fixed;inset:0;z-index:2147483647;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;padding: max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));background:#173b31;color:#fff8e9;font:16px/1.4 system-ui,sans-serif;overflow:auto}
+  #image-export-preview *{box-sizing:border-box}
+  #image-export-preview .export-toolbar{flex:none;text-align:center}
+  #image-export-preview h2{font:600 21px/1.2 system-ui,sans-serif;margin:0 0 8px;color:#fff8e9}
+  #image-export-preview p{font:14px/1.4 system-ui,sans-serif;margin:8px 0;color:#fff8e9}
+  #image-export-preview .export-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+  #image-export-preview button{font:600 14px/1.2 system-ui,sans-serif;min-height:44px;padding:10px 16px;border:1px solid #d4bd8c;border-radius:24px;background:#fff4dc;color:#173b31;cursor:pointer}
+  #image-export-preview .export-image{flex:1;min-height:80px;display:flex;align-items:center;justify-content:center}
+  #image-export-preview img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:none;border-radius:0;-webkit-touch-callout:default;user-select:auto}
+  #image-export-preview.capture-mode .export-toolbar{display:none}
+  #image-export-preview.capture-mode{padding:0}
+  </style><div class="export-toolbar"><h2></h2><div class="export-buttons">
+  ${canShare ? '<button data-export="share">Поделиться / Сохранить</button>' : ''}
+  ${!mobile ? '<button data-export="download">Скачать файл</button>' : ''}
+  <button data-export="screenshot">Для скриншота</button><button data-export="close">Вернуться</button></div>
+  <p>Если сохранение недоступно: нажмите «Для скриншота» и сделайте снимок экрана. Коснитесь картинки, чтобы вернуть кнопки.</p><p class="export-status" role="status"></p></div><div class="export-image"><img alt="Готовое изображение"></div>`;
+  overlay.querySelector('h2').textContent = title;
+  overlay.querySelector('img').src = url;
+  document.body.append(overlay); document.body.style.overflow='hidden';
+  const status = text => { overlay.querySelector('.export-status').textContent=text; };
+  const close = () => { overlay.remove(); URL.revokeObjectURL(url); document.body.style.overflow=previousOverflow; document.removeEventListener('keydown',onKey); previousFocus?.focus(); };
+  const onKey = e => { if(e.key==='Escape') close(); if(e.key==='Tab'){ const buttons=[...overlay.querySelectorAll('button')];const first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}} };
+  document.addEventListener('keydown',onKey);
+  overlay.addEventListener('click',async e=>{
+    if(overlay.classList.contains('capture-mode')){overlay.classList.remove('capture-mode');return;}
+    const action=e.target.closest('button')?.dataset.export;
+    if(action==='close')close();
+    if(action==='screenshot')overlay.classList.add('capture-mode');
+    if(action==='share')try{await navigator.share({files:[file],title});}catch(error){if(error.name!=='AbortError')status('Сохранение недоступно в этом приложении. Используйте «Для скриншота».');}
+    if(action==='download'){const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();status('Если загрузка не началась, используйте «Для скриншота».');}
+  });
+  overlay.querySelector('button').focus();
+}
+
+</script></body></html>

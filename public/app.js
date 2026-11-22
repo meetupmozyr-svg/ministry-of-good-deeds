@@ -585,24 +585,11 @@ ctx.fillStyle = "#665b4c";
       ctx.restore();
     }
 
-    const dataUrl = canvas.toDataURL("image/png");
-    canvas.toBlob(blob => {
-      if (!blob) {
-        toast("Не удалось создать PNG.");
-        return;
-      }
-      try {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "ministry-pass.png";
-        document.body.append(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 4000);
-      } catch {}
-      openPngModal(dataUrl, blob);
-    }, "image/png");
+    const blob = await new Promise((resolve, reject) => canvas.toBlob(
+      value => value ? resolve(value) : reject(new Error("Не удалось создать PNG")), "image/png"));
+    showImageExport(blob, "ministry-pass.png", "Ваш пропуск готов");
+  } catch (error) {
+    toast("Не удалось подготовить пропуск. Попробуйте ещё раз.");
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -1306,3 +1293,52 @@ try {
   mode.textContent = "Ошибка запуска: " + (err?.message || err);
 }
 // END OF APP.JS
+
+// Keep generated images inside the Mini App; never navigate to a blob URL.
+function showImageExport(blob, filename, title) {
+  document.querySelector('#image-export-preview')?.remove();
+  const url = URL.createObjectURL(blob);
+  const previousFocus = document.activeElement;
+  const previousOverflow = document.body.style.overflow;
+  const file = new File([blob], filename, {type: blob.type});
+  let canShare = false;
+  try { canShare = !!navigator.share && !!navigator.canShare?.({files:[file]}); } catch {}
+  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+  const overlay = document.createElement('div');
+  overlay.id = 'image-export-preview';
+  overlay.setAttribute('role','dialog'); overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label', title);
+  overlay.innerHTML = `<style>
+  #image-export-preview{position:fixed;inset:0;z-index:2147483647;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;padding: max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));background:#173b31;color:#fff8e9;font:16px/1.4 system-ui,sans-serif;overflow:auto}
+  #image-export-preview *{box-sizing:border-box}
+  #image-export-preview .export-toolbar{flex:none;text-align:center}
+  #image-export-preview h2{font:600 21px/1.2 system-ui,sans-serif;margin:0 0 8px;color:#fff8e9}
+  #image-export-preview p{font:14px/1.4 system-ui,sans-serif;margin:8px 0;color:#fff8e9}
+  #image-export-preview .export-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+  #image-export-preview button{font:600 14px/1.2 system-ui,sans-serif;min-height:44px;padding:10px 16px;border:1px solid #d4bd8c;border-radius:24px;background:#fff4dc;color:#173b31;cursor:pointer}
+  #image-export-preview .export-image{flex:1;min-height:80px;display:flex;align-items:center;justify-content:center}
+  #image-export-preview img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:none;border-radius:0;-webkit-touch-callout:default;user-select:auto}
+  #image-export-preview.capture-mode .export-toolbar{display:none}
+  #image-export-preview.capture-mode{padding:0}
+  </style><div class="export-toolbar"><h2></h2><div class="export-buttons">
+  ${canShare ? '<button data-export="share">Поделиться / Сохранить</button>' : ''}
+  ${!mobile ? '<button data-export="download">Скачать файл</button>' : ''}
+  <button data-export="screenshot">Для скриншота</button><button data-export="close">Вернуться</button></div>
+  <p>Если сохранение недоступно: нажмите «Для скриншота» и сделайте снимок экрана. Коснитесь картинки, чтобы вернуть кнопки.</p><p class="export-status" role="status"></p></div><div class="export-image"><img alt="Готовое изображение"></div>`;
+  overlay.querySelector('h2').textContent = title;
+  overlay.querySelector('img').src = url;
+  document.body.append(overlay); document.body.style.overflow='hidden';
+  const status = text => { overlay.querySelector('.export-status').textContent=text; };
+  const close = () => { overlay.remove(); URL.revokeObjectURL(url); document.body.style.overflow=previousOverflow; document.removeEventListener('keydown',onKey); previousFocus?.focus(); };
+  const onKey = e => { if(e.key==='Escape') close(); if(e.key==='Tab'){ const buttons=[...overlay.querySelectorAll('button')];const first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}} };
+  document.addEventListener('keydown',onKey);
+  overlay.addEventListener('click',async e=>{
+    if(overlay.classList.contains('capture-mode')){overlay.classList.remove('capture-mode');return;}
+    const action=e.target.closest('button')?.dataset.export;
+    if(action==='close')close();
+    if(action==='screenshot')overlay.classList.add('capture-mode');
+    if(action==='share')try{await navigator.share({files:[file],title});}catch(error){if(error.name!=='AbortError')status('Сохранение недоступно в этом приложении. Используйте «Для скриншота».');}
+    if(action==='download'){const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();status('Если загрузка не началась, используйте «Для скриншота».');}
+  });
+  overlay.querySelector('button').focus();
+}
