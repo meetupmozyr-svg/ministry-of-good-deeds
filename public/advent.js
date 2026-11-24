@@ -3,10 +3,10 @@
   const YEAR = 2026;
 
   const departments = {
-    lessons: { name: "Для урока", desc: "Найти идею для занятия", tone: "pine", symbol: "✦" },
-    words: { name: "Хорошие слова", desc: "Сказать спасибо", tone: "crimson", symbol: "♡" },
-    rest: { name: "Отдых", desc: "Выдохнуть", tone: "sage", symbol: "☼" },
-    wins: { name: "Маленькие победы", desc: "Заметить прогресс", tone: "gold", symbol: "✧" }
+    lessons: { name: "Для урока", short: "Урок", desc: "Найти идею для занятия", tone: "pine", symbol: "✦" },
+    words: { name: "Хорошие слова", short: "Слова", desc: "Сказать спасибо", tone: "crimson", symbol: "♡" },
+    rest: { name: "Отдых", short: "Отдых", desc: "Выдохнуть", tone: "sage", symbol: "☼" },
+    wins: { name: "Маленькие победы", short: "Победы", desc: "Заметить прогресс", tone: "gold", symbol: "✧" }
   };
 
   const weeks = [
@@ -227,21 +227,25 @@
       const openCount = entries.filter((_, i) => isOpen(i + 1)).length;
       const statusText = openCount > 0 ? `Открыто ${openCount} из ${entries.length}` : "Старт 1 декабря";
       const filtersHtml = [
-        `<button type="button" class="filter" data-advent-filter="" aria-pressed="${activeFilter === ""}">Все дни</button>`,
+        `<button type="button" class="filter" data-advent-filter="" aria-pressed="${activeFilter === ""}">Все</button>`,
         ...Object.entries(departments).map(([id, d]) =>
-          `<button type="button" class="filter" data-advent-filter="${id}" aria-pressed="${activeFilter === id}">${d.symbol} ${esc(d.name)}</button>`
+          `<button type="button" class="filter" data-advent-filter="${id}" aria-pressed="${activeFilter === id}">${d.symbol} ${esc(d.short)}</button>`
         )
       ].join("");
 
       return `<section class="card-panel advent-panel" id="advent">
         <div class="advent-banner-wrap">
           <img class="advent-banner-img" src="assets/scenes/advent-banner.webp" alt="Новогодний адвент-шкафчик Министерства" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/scenes/advent-banner.png';}else{this.parentElement.remove();}">
-          <span class="advent-status-pill" id="advent-status">${statusText}</span>
         </div>
         <div class="advent-body">
-          <div class="advent-head-text">
-            <h2>Адвент-календарь</h2>
-            <p class="note" style="margin-top:4px">Каждый день декабря — новая карточка для уроков и отдыха.</p>
+          <div class="advent-head-ornate">
+            <span class="advent-status-pill" id="advent-status">${statusText}</span>
+            <div class="advent-title-row">
+              <span class="advent-rule" aria-hidden="true"></span>
+              <h2>Адвент-календарь</h2>
+              <span class="advent-rule" aria-hidden="true"></span>
+            </div>
+            <p class="advent-lead">Каждый день декабря — тёплое письмо, находка или идея для урока</p>
           </div>
           <div class="filters advent-filters" aria-label="Отделы календаря">${filtersHtml}</div>
           <div id="advent-weeks">${renderWeeksHtml()}</div>
