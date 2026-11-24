@@ -496,24 +496,28 @@ input[type=search],input[type=text]{
 }
 /* Advent Calendar */
 .advent-panel{padding:0;overflow:hidden}
-.advent-banner-wrap{position:relative;height:clamp(165px,28vw,245px);overflow:hidden}
+.advent-banner-wrap{position:relative;height:clamp(170px,28vw,250px);overflow:hidden}
 .advent-banner-img{
-  width:100%;height:100%;object-fit:cover;object-position:center 36%;
-  -webkit-mask-image:linear-gradient(180deg,#000 58%,transparent 100%);
-  mask-image:linear-gradient(180deg,#000 58%,transparent 100%);
+  width:100%;height:100%;object-fit:cover;object-position:center 35%;
+  -webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 55%,transparent 100%);
 }
-.advent-body{padding:0 22px 22px;margin-top:-24px;position:relative;z-index:2}
+.advent-body{padding:0 22px 22px;margin-top:-52px;position:relative;z-index:2}
 .advent-head-ornate{text-align:center}
+.advent-title-img{
+  width:min(330px,88%);height:auto;margin:0 auto 8px;
+  filter:drop-shadow(0 8px 18px rgba(8,22,18,.38));
+}
 .advent-status-pill{
-  display:inline-block;padding:4px 14px;border-radius:999px;margin-bottom:10px;
+  display:inline-block;padding:4px 14px;border-radius:999px;margin-bottom:8px;
   background:linear-gradient(180deg,#b43e4f,#892937);color:#fff9ee;border:1px solid rgba(255,225,205,.45);
   font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
   box-shadow:0 6px 14px rgba(120,30,44,.28);
 }
-.advent-title-row{display:flex;align-items:center;justify-content:center;gap:12px}
+.advent-title-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
 .advent-title-row h2{font-size:clamp(1.65rem,4.5vw,2.2rem);color:var(--ink);letter-spacing:-.02em}
 .advent-rule{flex:1;max-width:56px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.advent-lead{font-family:Georgia,serif;font-style:italic;font-size:.94rem;color:var(--muted);margin-top:6px}
+.advent-lead{font-family:Georgia,serif;font-style:italic;font-size:.94rem;color:var(--muted);margin-top:2px}
 .advent-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:14px 0 16px}
 .advent-filters .filter{min-height:36px;padding:6px 12px;font-size:.8rem}
 .advent-week{margin-top:14px}
@@ -521,34 +525,34 @@ input[type=search],input[type=text]{
 .advent-week-head strong{color:var(--ink);font-family:Georgia,serif;font-size:.98rem}
 .advent-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .advent-day{
-  position:relative;min-height:84px;padding:10px;border-radius:16px;text-align:left;
+  position:relative;min-height:84px;padding:10px;border-radius:12px;text-align:left;
   background:var(--card);color:var(--ink);border:1px solid rgba(197,157,98,.48);
   display:flex;flex-direction:column;justify-content:space-between;
   box-shadow:0 4px 12px rgba(42,30,18,.07);
 }
 .advent-day.is-locked{
-  background-color:#fbf3e3;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 38 L120 0' fill='rgba(197,157,98,0.18)' stroke='%23b58c50' stroke-opacity='0.65' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-color:#fbf3e2;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 38 L120 0' fill='rgba(197,157,98,0.22)' stroke='%23a67b3e' stroke-opacity='0.72' stroke-width='1.6'/%3E%3C/svg%3E");
   background-size:100% 42px;background-position:top center;background-repeat:no-repeat;
-  color:var(--muted);border:1.5px solid rgba(181,140,80,.48);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 10px rgba(42,30,18,.08);
+  color:var(--muted);border:1.5px solid rgba(181,140,80,.52);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 4px 10px rgba(42,30,18,.09);
 }
 .advent-day.is-locked::after{
   content:"";position:absolute;left:50%;top:31px;transform:translateX(-50%);
   width:11px;height:11px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%,#c94b5d,#892937);
-  border:1px solid rgba(255,220,200,.45);box-shadow:0 2px 4px rgba(42,20,16,.3);
+  border:1px solid rgba(255,220,200,.5);box-shadow:0 2px 4px rgba(42,20,16,.32);
 }
-.advent-day.is-special{border:1.5px solid var(--gold);background-color:rgba(255,248,226,.88)}
-.advent-day.is-special .advent-day-title{color:var(--red-dark);font-weight:600}
+.advent-day.is-special{border:1.5px solid var(--gold);background-color:rgba(255,246,216,.92)}
+.advent-day.is-special .advent-day-title{color:var(--red-dark);font-weight:650}
 .advent-day.is-today{border:2px solid var(--red);box-shadow:0 6px 18px rgba(157,52,67,.22)}
 .advent-day[data-tone="crimson"] .advent-num,.advent-day[data-tone="crimson"] .advent-badge{color:var(--red)}
 .advent-day[data-tone="pine"] .advent-num,.advent-day[data-tone="pine"] .advent-badge{color:var(--green)}
 .advent-day[data-tone="gold"] .advent-num,.advent-day[data-tone="gold"] .advent-badge{color:#8f682b}
 .advent-day[data-tone="sage"] .advent-num,.advent-day[data-tone="sage"] .advent-badge{color:#2d6a54}
 .advent-day.is-locked .advent-num,.advent-day.is-locked .advent-badge{color:#8a7a63}
-.advent-num{font-family:Georgia,serif;font-size:1.35rem;font-weight:700;line-height:1}
-.advent-badge{position:absolute;top:9px;right:9px;font-size:.82rem}
+.advent-num{font-family:Georgia,serif;font-size:1.3rem;font-weight:700;line-height:1}
+.advent-badge{position:absolute;top:8px;right:8px;font-size:.82rem}
 .advent-lock{width:14px;height:14px;display:block;opacity:.75}
 .advent-day-title{font-size:.75rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .advent-week.is-final .advent-day:last-child{grid-column:span 6;background-color:#fff7e3}
@@ -560,9 +564,9 @@ input[type=search],input[type=text]{
 .advent-dl img{width:100%;height:68px;object-fit:cover;margin:0}
 .advent-dl span{display:block;padding:6px 8px}
 @media(max-width:740px){
-  .advent-body{padding:0 16px 18px}
+  .advent-body{padding:0 16px 18px;margin-top:-42px}
   .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
-  .advent-day{min-height:74px;padding:8px;border-radius:13px}
+  .advent-day{min-height:76px;padding:8px;border-radius:11px}
   .advent-week.is-final .advent-day:last-child{grid-column:1/-1}
 }
 @media(prefers-reduced-motion:no-preference){
