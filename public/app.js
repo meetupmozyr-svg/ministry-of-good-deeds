@@ -891,30 +891,35 @@ function render() {
       </div>
  ${window.MinistryAdvent ? window.MinistryAdvent.renderHtml() : ""}
     </div>`;
-  } else if (page === "map") {
+ } else if (page === "map") {
     main.innerHTML = `<div class="shell">
-      ${pageHeader("Карта Министерства", "Выберите нужную дверь — все пространства открыты без обязательных заданий.", false)}
-      <div class="map-scene">
-        ${sceneImg("assets/scenes/map-ministry.png", "map.jpg", "Библиотека слева, мастерская справа и бюро добрых дел внизу")}
-<a class="room-label lib" href="#library"><span class="map-pin" aria-hidden="true">✦</span><span>Библиотека</span></a>
-        <a class="room-label work" href="#workshop"><span class="map-pin" aria-hidden="true">✦</span><span>Мастерская</span></a>
-        <a class="room-label bureau" href="#bureau"><span class="map-pin" aria-hidden="true">✦</span><span>Бюро добрых дел</span></a>
+      <div class="map-head-wrap">
+        <img class="map-title-img" src="assets/scenes/map-title.png" alt="Карта Министерства" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/scenes/map-title.webp';}else{this.hidden=true;}">
+        <p class="map-subtitle">Выберите дверь — все пространства открыты без обязательных заданий</p>
       </div>
+
+      <div class="map-doors-stage">
+        ${sceneImg("assets/scenes/map-doors.webp", "assets/scenes/map-doors.png", "Три волшебные двери: Библиотека, Мастерская и Бюро добрых дел", "map-doors-img", true)}
+        <a class="door-touch door-lib" href="#library" aria-label="Войти в Библиотеку находок"></a>
+        <a class="door-touch door-work" href="#workshop" aria-label="Войти в Мастерскую праздника"></a>
+        <a class="door-touch door-bureau" href="#bureau" aria-label="Войти в Бюро добрых дел"></a>
+      </div>
+
       <div class="room-list">
         <a class="room-card" href="#library">
-          <div class="room-card-top"><span class="room-card-badge">${ICONS.book}</span><span class="room-card-go">Открыть →</span></div>
+          <div class="room-card-top"><span class="room-card-badge">${ICONS.book}</span><span class="room-card-go">Войти →</span></div>
           <h2>Библиотека находок</h2>
-          <p>38 проверенных инструментов для уроков</p>
+          <p>38 проверенных инструментов и сервисов для уроков</p>
         </a>
         <a class="room-card" href="#workshop">
-          <div class="room-card-top"><span class="room-card-badge">${ICONS.spark}</span><span class="room-card-go">Открыть →</span></div>
+          <div class="room-card-top"><span class="room-card-badge">${ICONS.spark}</span><span class="room-card-go">Войти →</span></div>
           <h2>Мастерская праздника</h2>
-          <p>Занятия, оформление и челлендж Скайхаба</p>
+          <p>Занятия, открытки, оформление и челлендж</p>
         </a>
         <a class="room-card" href="#bureau">
-          <div class="room-card-top"><span class="room-card-badge">${ICONS.mail}</span><span class="room-card-go">Открыть →</span></div>
+          <div class="room-card-top"><span class="room-card-badge">${ICONS.mail}</span><span class="room-card-go">Войти →</span></div>
           <h2>Бюро добрых дел</h2>
-          <p>Проверенные благотворительные инициативы</p>
+          <p>Тёплые инициативы, благотворительность и участие</p>
         </a>
       </div>
     </div>`;
