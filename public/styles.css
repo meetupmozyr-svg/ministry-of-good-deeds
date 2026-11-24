@@ -524,38 +524,93 @@ input[type=search],input[type=text]{
 .advent-week-head{display:flex;justify-content:space-between;align-items:baseline;font-size:.84rem;color:var(--muted);margin-bottom:8px;padding:0 2px}
 .advent-week-head strong{color:var(--ink);font-family:Georgia,serif;font-size:.98rem}
 .advent-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+
+/* Base envelope card */
 .advent-day{
-  position:relative;min-height:84px;padding:10px;border-radius:12px;text-align:left;
-  background:var(--card);color:var(--ink);border:1px solid rgba(197,157,98,.48);
-  display:flex;flex-direction:column;justify-content:space-between;
-  box-shadow:0 4px 12px rgba(42,30,18,.07);
+  position:relative;min-height:86px;padding:8px;border-radius:14px;text-align:center;
+  display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+  box-shadow:0 4px 12px rgba(20,30,24,.14);border:1.5px solid rgba(212,175,112,.45);
+  overflow:hidden;
 }
+
+/* Open days (revealed contents) */
+.advent-day.is-open{
+  background:var(--card);color:var(--ink);text-align:left;align-items:stretch;padding:10px;
+}
+.advent-open-head{display:flex;justify-content:space-between;align-items:baseline}
+.advent-day.is-open .advent-num{color:var(--ink);font-size:1.3rem}
+.advent-day-title{font-size:.74rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Locked colorful envelopes */
 .advent-day.is-locked{
-  background-color:#fbf3e2;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 38 L120 0' fill='rgba(197,157,98,0.22)' stroke='%23a67b3e' stroke-opacity='0.72' stroke-width='1.6'/%3E%3C/svg%3E");
-  background-size:100% 42px;background-position:top center;background-repeat:no-repeat;
-  color:var(--muted);border:1.5px solid rgba(181,140,80,.52);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 4px 10px rgba(42,30,18,.09);
+  background-size:100% 28px;background-position:top center;background-repeat:no-repeat;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 5px 14px rgba(10,24,18,.18);
+  padding:2px 6px 8px;
 }
-.advent-day.is-locked::after{
-  content:"";position:absolute;left:50%;top:31px;transform:translateX(-50%);
-  width:11px;height:11px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#c94b5d,#892937);
-  border:1px solid rgba(255,220,200,.5);box-shadow:0 2px 4px rgba(42,20,16,.32);
+
+/* 4 Holiday Envelope Shades */
+.advent-day.is-locked[data-tone="crimson"]{
+  background-color:#7d2432;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 25 L120 0' fill='rgba(255,248,235,0.08)' stroke='%23f1cb88' stroke-opacity='0.65' stroke-width='1.5'/%3E%3C/svg%3E");
+  border-color:#9e3a49;
 }
-.advent-day.is-special{border:1.5px solid var(--gold);background-color:rgba(255,246,216,.92)}
-.advent-day.is-special .advent-day-title{color:var(--red-dark);font-weight:650}
-.advent-day.is-today{border:2px solid var(--red);box-shadow:0 6px 18px rgba(157,52,67,.22)}
-.advent-day[data-tone="crimson"] .advent-num,.advent-day[data-tone="crimson"] .advent-badge{color:var(--red)}
-.advent-day[data-tone="pine"] .advent-num,.advent-day[data-tone="pine"] .advent-badge{color:var(--green)}
-.advent-day[data-tone="gold"] .advent-num,.advent-day[data-tone="gold"] .advent-badge{color:#8f682b}
-.advent-day[data-tone="sage"] .advent-num,.advent-day[data-tone="sage"] .advent-badge{color:#2d6a54}
-.advent-day.is-locked .advent-num,.advent-day.is-locked .advent-badge{color:#8a7a63}
-.advent-num{font-family:Georgia,serif;font-size:1.3rem;font-weight:700;line-height:1}
-.advent-badge{position:absolute;top:8px;right:8px;font-size:.82rem}
-.advent-lock{width:14px;height:14px;display:block;opacity:.75}
-.advent-day-title{font-size:.75rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.advent-week.is-final .advent-day:last-child{grid-column:span 6;background-color:#fff7e3}
+.advent-day.is-locked[data-tone="pine"]{
+  background-color:#1c483a;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 25 L120 0' fill='rgba(255,248,235,0.08)' stroke='%23f1cb88' stroke-opacity='0.65' stroke-width='1.5'/%3E%3C/svg%3E");
+  border-color:#2a5e4d;
+}
+.advent-day.is-locked[data-tone="sage"]{
+  background-color:#29544c;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 25 L120 0' fill='rgba(255,248,235,0.08)' stroke='%23f1cb88' stroke-opacity='0.65' stroke-width='1.5'/%3E%3C/svg%3E");
+  border-color:#38695f;
+}
+.advent-day.is-locked[data-tone="gold"]{
+  background-color:#dfcb9e;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 25 L120 0' fill='rgba(0,0,0,0.04)' stroke='%239e6e2f' stroke-opacity='0.65' stroke-width='1.5'/%3E%3C/svg%3E");
+  border-color:#bfa774;
+}
+
+/* Real mini wax seal at the tip of the flap */
+.advent-seal-wrap{
+  position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:2;pointer-events:none;
+}
+.advent-mini-seal{
+  width:22px;height:22px;object-fit:contain;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.45));
+  display:block;
+}
+
+/* Number & Lock inside locked envelope */
+.advent-locked-body{
+  margin-top:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;
+}
+.advent-day.is-locked .advent-num{
+  font-family:Georgia,serif;font-size:1.45rem;font-weight:700;line-height:1;letter-spacing:-.02em;
+  color:#f8e7c4;text-shadow:0 1px 4px rgba(0,0,0,.45);
+}
+.advent-day.is-locked[data-tone="gold"] .advent-num{
+  color:#4a2712;text-shadow:0 1px 0 rgba(255,255,255,.5);
+}
+.advent-lock-sub{
+  display:inline-flex;align-items:center;justify-content:center;gap:3px;
+  color:rgba(248,231,196,.82);
+}
+.advent-day.is-locked[data-tone="gold"] .advent-lock-sub{
+  color:rgba(74,39,18,.8);
+}
+.advent-lock{width:12px;height:12px;display:block}
+.advent-star{font-size:.7rem;color:#f3ce85;line-height:1}
+
+/* Special milestone dates */
+.advent-day.is-special{
+  box-shadow:0 0 0 2px #d4a862,0 8px 18px rgba(0,0,0,.35);
+}
+.advent-day.is-today{
+  outline:3px solid #ffcc66;outline-offset:2px;
+}
+.advent-week.is-final .advent-day:last-child{grid-column:span 6}
+
+/* Modal dialog */
 .advent-modal{position:relative}
 .advent-modal::before{content:"";position:absolute;inset:8px;border-radius:17px;border:1px solid rgba(181,142,83,.38);pointer-events:none}
 .advent-modal-decor{width:60px;height:60px;object-fit:contain;margin:0 auto 6px}
@@ -563,13 +618,19 @@ input[type=search],input[type=text]{
 .advent-dl{display:block;border-radius:12px;overflow:hidden;border:1px solid rgba(197,157,98,.45);background:var(--card);text-decoration:none;font-size:.8rem;font-weight:600;color:var(--green)}
 .advent-dl img{width:100%;height:68px;object-fit:cover;margin:0}
 .advent-dl span{display:block;padding:6px 8px}
+
 @media(max-width:740px){
   .advent-body{padding:0 16px 18px;margin-top:-42px}
+  .advent-filters{max-width:320px;margin:12px auto 14px}
   .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
-  .advent-day{min-height:76px;padding:8px;border-radius:11px}
+  .advent-day{min-height:78px;padding:2px 4px 6px;border-radius:12px}
+  .advent-locked-body{margin-top:24px}
+  .advent-day.is-locked .advent-num{font-size:1.3rem}
+  .advent-mini-seal{width:19px;height:19px}
+  .advent-seal-wrap{top:10px}
   .advent-week.is-final .advent-day:last-child{grid-column:1/-1}
 }
 @media(prefers-reduced-motion:no-preference){
   .advent-day{transition:transform .14s,box-shadow .14s}
-  .advent-day:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(42,30,18,.12)}
+  .advent-day:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(10,24,18,.25)}
 }
