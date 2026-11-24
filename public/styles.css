@@ -223,29 +223,42 @@ main{max-width:980px;margin:auto;padding:14px 18px calc(116px + env(safe-area-in
 .notice p,.note{font-size:.88rem;color:var(--muted)}
 .note{margin-top:12px}
 
-/* Map */
-.map-scene{
+/* Map with interactive Doors */
+.map-head-wrap{text-align:center;padding:0 8px}
+.map-title-img{
+  width:min(380px,92%);height:auto;margin:0 auto 6px;
+  filter:drop-shadow(0 8px 20px rgba(7,20,16,.45));
+}
+.map-subtitle{
+  font-family:Georgia,serif;font-style:italic;font-size:.96rem;color:#d8cdb8;
+  max-width:32rem;margin:0 auto 12px;
+}
+.map-doors-stage{
   position:relative;border-radius:26px;overflow:hidden;
-  border:1px solid rgba(212,175,112,.45);box-shadow:var(--shadow);background:#1b3e34;
+  border:1.5px solid rgba(212,175,112,.5);box-shadow:var(--shadow);
+  background:#133328;
 }
-.map-scene img{width:100%}
-.room-label{
-  position:absolute;background:none;border:0;box-shadow:none;padding:4px 6px;
-  color:var(--ink);text-decoration:none;font-weight:750;font-size:.86rem;line-height:1.15;
-  text-shadow:0 0 10px #fff9ee,0 0 6px #fff9ee,0 1px 2px #fff9ee;
-  min-height:44px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  white-space:nowrap;
+.map-doors-img{width:100%;height:auto;display:block}
+
+/* Clickable door areas */
+.door-touch{
+  position:absolute;top:5%;bottom:6%;width:30%;border-radius:18px 18px 0 0;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .2s,box-shadow .2s;
 }
-.map-pin{
-  width:24px;height:24px;border-radius:999px;display:grid;place-items:center;
-  background:radial-gradient(circle at 35% 35%,#d24d60,var(--red-dark));
-  color:#fff6dc;font-size:.78rem;border:1.5px solid #f7e3b5;
-  box-shadow:0 4px 12px rgba(20,45,36,.45),0 0 0 3px rgba(255,248,233,.55);
+.door-touch.door-lib{left:3%}
+.door-touch.door-work{left:35%}
+.door-touch.door-bureau{left:67%}
+
+@media(hover:hover){
+  .door-touch:hover{
+    background:radial-gradient(ellipse at center 40%,rgba(247,222,168,.18) 0%,rgba(247,222,168,0) 72%);
+    box-shadow:0 0 28px rgba(247,222,168,.35);
+  }
 }
-.room-label:hover .map-pin,.room-label:active .map-pin{transform:scale(1.15)}
-.room-label.lib{top:44%;left:10%}
-.room-label.work{top:44%;right:10%}
-.room-label.bureau{bottom:1%;left:50%;transform:translateX(-50%)}
+.door-touch:active{
+  background:radial-gradient(ellipse at center 40%,rgba(247,222,168,.3) 0%,rgba(247,222,168,0) 72%);
+}
 
 .room-list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .room-card{
