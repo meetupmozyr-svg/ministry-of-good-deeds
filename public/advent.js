@@ -151,8 +151,7 @@
         </button>`);
       }
       if (!daysHtml.length) return "";
-      const finalCls = !activeFilter && w.end === 30 ? " is-final" : "";
-      return `<div class="advent-week${finalCls}">
+      return `<div class="advent-week">
         <div class="advent-week-head"><strong>${idx + 1}-я неделя</strong><span>${w.label}</span></div>
         <div class="advent-days">${daysHtml.join("")}</div>
       </div>`;
