@@ -502,16 +502,20 @@ input[type=search],input[type=text]{
   -webkit-mask-image:linear-gradient(180deg,#000 58%,transparent 100%);
   mask-image:linear-gradient(180deg,#000 58%,transparent 100%);
 }
+.advent-body{padding:0 22px 22px;margin-top:-24px;position:relative;z-index:2}
+.advent-head-ornate{text-align:center}
 .advent-status-pill{
-  position:absolute;top:12px;right:12px;padding:5px 12px;border-radius:999px;
-  background:rgba(252,245,231,.94);color:var(--red);border:1px solid var(--gold);
-  font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  box-shadow:0 4px 12px rgba(0,0,0,.25);
+  display:inline-block;padding:4px 14px;border-radius:999px;margin-bottom:10px;
+  background:linear-gradient(180deg,#b43e4f,#892937);color:#fff9ee;border:1px solid rgba(255,225,205,.45);
+  font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  box-shadow:0 6px 14px rgba(120,30,44,.28);
 }
-.advent-body{padding:0 22px 22px;margin-top:-18px;position:relative;z-index:2}
-.advent-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin:12px 0 14px}
-.advent-filters::-webkit-scrollbar{display:none}
-.advent-filters .filter{flex:0 0 auto;white-space:nowrap;min-height:36px;padding:6px 14px;font-size:.82rem}
+.advent-title-row{display:flex;align-items:center;justify-content:center;gap:12px}
+.advent-title-row h2{font-size:clamp(1.65rem,4.5vw,2.2rem);color:var(--ink);letter-spacing:-.02em}
+.advent-rule{flex:1;max-width:56px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.advent-lead{font-family:Georgia,serif;font-style:italic;font-size:.94rem;color:var(--muted);margin-top:6px}
+.advent-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:14px 0 16px}
+.advent-filters .filter{min-height:36px;padding:6px 12px;font-size:.8rem}
 .advent-week{margin-top:14px}
 .advent-week-head{display:flex;justify-content:space-between;align-items:baseline;font-size:.84rem;color:var(--muted);margin-bottom:8px;padding:0 2px}
 .advent-week-head strong{color:var(--ink);font-family:Georgia,serif;font-size:.98rem}
@@ -523,10 +527,17 @@ input[type=search],input[type=text]{
   box-shadow:0 4px 12px rgba(42,30,18,.07);
 }
 .advent-day.is-locked{
-  background-color:rgba(255,251,242,.68);
-  background-image:linear-gradient(155deg,rgba(197,157,98,.13) 0 49%,transparent 50%),linear-gradient(205deg,rgba(197,157,98,.13) 0 49%,transparent 50%);
-  background-size:50% 24px;background-position:top left,top right;background-repeat:no-repeat;
-  color:var(--muted);border-color:rgba(197,157,98,.42);
+  background-color:#fbf3e3;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 38 L120 0' fill='rgba(197,157,98,0.18)' stroke='%23b58c50' stroke-opacity='0.65' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-size:100% 42px;background-position:top center;background-repeat:no-repeat;
+  color:var(--muted);border:1.5px solid rgba(181,140,80,.48);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 10px rgba(42,30,18,.08);
+}
+.advent-day.is-locked::after{
+  content:"";position:absolute;left:50%;top:31px;transform:translateX(-50%);
+  width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#c94b5d,#892937);
+  border:1px solid rgba(255,220,200,.45);box-shadow:0 2px 4px rgba(42,20,16,.3);
 }
 .advent-day.is-special{border:1.5px solid var(--gold);background-color:rgba(255,248,226,.88)}
 .advent-day.is-special .advent-day-title{color:var(--red-dark);font-weight:600}
