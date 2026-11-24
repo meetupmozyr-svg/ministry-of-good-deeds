@@ -121,6 +121,7 @@
 
   function renderWeeksHtml() {
     const today = moscowDate();
+    const lockSvg = `<svg class="advent-lock" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.4"/></svg>`;
     return weeks.map((w, idx) => {
       const daysHtml = [];
       for (let d = w.start; d <= w.end; d++) {
@@ -128,11 +129,12 @@
         if (activeFilter && activeFilter !== entry.dept) continue;
         const open = isOpen(d);
         const isToday = !isPreview() && today === releaseDate(d);
+        const special = [1, 7, 15, 24, 30].includes(d);
         const dept = departments[entry.dept];
-        daysHtml.push(`<button type="button" class="advent-day ${open ? "is-open" : "is-locked"}${isToday ? " is-today" : ""}" data-advent-day="${d}" data-tone="${dept.tone}" aria-label="${d} декабря. ${open ? esc(entry.title) : "Пока закрыто"}">
+        daysHtml.push(`<button type="button" class="advent-day ${open ? "is-open" : "is-locked"}${isToday ? " is-today" : ""}${special ? " is-special" : ""}" data-advent-day="${d}" data-tone="${dept.tone}" aria-label="${d} декабря. ${open ? esc(entry.title) : "Откроется " + d + " декабря"}">
           <span class="advent-num">${String(d).padStart(2, "0")}</span>
-          <span class="advent-badge" aria-hidden="true">${open ? dept.symbol : "🔒"}</span>
-          <span class="advent-day-title">${open ? esc(entry.title) : "Закрыто"}</span>
+          <span class="advent-badge" aria-hidden="true">${open ? dept.symbol : lockSvg}</span>
+          <span class="advent-day-title">${open ? esc(entry.title) : (special ? "✦ " : "") + d + " дек"}</span>
         </button>`);
       }
       if (!daysHtml.length) return "";
@@ -150,6 +152,7 @@
     const entry = entries[day - 1];
     const open = isOpen(day);
     const dept = departments[entry.dept];
+    const decorName = open ? "wax-seal-snowflake" : "sealed-envelope";
 
     let downloadsHtml = "";
     if (open && entry.downloads) {
@@ -168,6 +171,7 @@
     }
 
     modal.innerHTML = `<div class="modal-card advent-modal">
+      <img class="advent-modal-decor" src="assets/decorations/${decorName}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/${decorName}.webp';}else{this.remove();}">
       <span class="eyebrow-dark">${day} декабря${open ? ` · ${esc(dept.name)}` : ""}</span>
       <h2 id="png-modal-title" style="margin-top:6px">${open ? esc(entry.title) : "Карточка пока закрыта"}</h2>
       <p style="margin-top:12px;text-align:left">${open ? esc(entry.text) : `Эта карточка откроется ${day} декабря в 00:00 по Москве.`}</p>
@@ -230,15 +234,18 @@
       ].join("");
 
       return `<section class="card-panel advent-panel" id="advent">
-        <div class="section-head">
-          <div>
+        <div class="advent-banner-wrap">
+          <img class="advent-banner-img" src="assets/scenes/advent-banner.webp" alt="Новогодний адвент-шкафчик Министерства" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/scenes/advent-banner.png';}else{this.parentElement.remove();}">
+          <span class="advent-status-pill" id="advent-status">${statusText}</span>
+        </div>
+        <div class="advent-body">
+          <div class="advent-head-text">
             <h2>Адвент-календарь</h2>
             <p class="note" style="margin-top:4px">Каждый день декабря — новая карточка для уроков и отдыха.</p>
           </div>
-          <span class="eyebrow-dark" id="advent-status">${statusText}</span>
+          <div class="filters advent-filters" aria-label="Отделы календаря">${filtersHtml}</div>
+          <div id="advent-weeks">${renderWeeksHtml()}</div>
         </div>
-        <div class="filters" aria-label="Отделы календаря">${filtersHtml}</div>
-        <div id="advent-weeks">${renderWeeksHtml()}</div>
       </section>`;
     },
 
