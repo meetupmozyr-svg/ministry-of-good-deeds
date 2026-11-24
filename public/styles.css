@@ -325,8 +325,15 @@ input[type=search],input[type=text]{
   padding:74px 28px 34px;
 }
 .pass-card.has-pass-bg .pass-title-main{font-size:1.38rem;letter-spacing:.14em;font-weight:600}
-.pass-card.has-pass-bg .pass-portrait-row{margin:12px auto 10px}
+.pass-card.has-pass-bg .pass-portrait-row{margin:8px auto 6px}
 .pass-card.has-pass-bg .pass-arch{width:106px;height:118px;border-radius:50%}
+.pass-arch.has-avatar,.pass-card.has-pass-bg .pass-arch.has-avatar{
+  width:142px;height:152px;border-radius:0;border:0;background:none;box-shadow:none;overflow:visible;
+}
+.pass-arch.has-avatar .pass-avatar{
+  object-fit:contain;filter:drop-shadow(0 6px 14px rgba(42,30,18,.18));
+}
+.pass-arch.has-avatar .pass-emoji{display:none}
 .pass-card.has-pass-bg h2{font-size:1.75rem}
 .pass-card.has-pass-bg .rank-ribbon{min-width:74%;justify-content:center}
 .pass-card.has-pass-bg .pass-role-desc{
