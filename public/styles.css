@@ -224,25 +224,46 @@ main{max-width:980px;margin:auto;padding:14px 18px calc(116px + env(safe-area-in
 .note{margin-top:12px}
 
 /* Map with interactive Doors */
-.map-head-wrap{text-align:center;padding:0 8px}
-.map-title-img{
-  width:min(380px,92%);height:auto;margin:0 auto 6px;
-  filter:drop-shadow(0 8px 20px rgba(7,20,16,.45));
-}
+/* Map with interactive Doors */
+.map-head-wrap{text-align:center;position:relative;padding:0 8px}
 .map-subtitle{
   font-family:Georgia,serif;font-style:italic;font-size:.96rem;color:#d8cdb8;
-  max-width:32rem;margin:0 auto 12px;
+  max-width:32rem;margin:0 auto 8px;
 }
-.map-doors-stage{
-  position:relative;border-radius:26px;overflow:hidden;
-  border:1.5px solid rgba(212,175,112,.5);box-shadow:var(--shadow);
-  background:#133328;
+.map-title-wrap{
+  position:relative;z-index:4;
+  margin-bottom:-46px;
+  pointer-events:none;
 }
-.map-doors-img{width:100%;height:auto;display:block}
+.map-title-img{
+  width:min(360px,88%);height:auto;margin:0 auto;display:block;
+  filter:drop-shadow(0 14px 30px rgba(0,0,0,.75));
+}
 
-/* Clickable door areas */
+/* Full-bleed doors fading into green background */
+.map-doors-stage{
+  position:relative;
+  width:100vw;
+  margin-left:calc(50% - 50vw);
+  margin-right:calc(50% - 50vw);
+  overflow:hidden;
+  background:transparent;
+  border:none;box-shadow:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 66%,rgba(0,0,0,.45) 84%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 66%,rgba(0,0,0,.45) 84%,transparent 100%);
+}
+.map-doors-inner{
+  position:relative;
+  max-width:1100px;
+  margin:0 auto;
+}
+.map-doors-img{
+  width:100%;height:auto;display:block;
+}
+
+/* Clickable door areas locked to the image */
 .door-touch{
-  position:absolute;top:5%;bottom:6%;width:30%;border-radius:18px 18px 0 0;
+  position:absolute;top:6%;bottom:8%;width:30%;border-radius:24px 24px 0 0;
   cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:background .2s,box-shadow .2s;
 }
@@ -252,14 +273,18 @@ main{max-width:980px;margin:auto;padding:14px 18px calc(116px + env(safe-area-in
 
 @media(hover:hover){
   .door-touch:hover{
-    background:radial-gradient(ellipse at center 40%,rgba(247,222,168,.18) 0%,rgba(247,222,168,0) 72%);
-    box-shadow:0 0 28px rgba(247,222,168,.35);
+    background:radial-gradient(ellipse at center 42%,rgba(247,222,168,.2) 0%,rgba(247,222,168,0) 72%);
+    box-shadow:0 0 32px rgba(247,222,168,.4);
   }
 }
 .door-touch:active{
-  background:radial-gradient(ellipse at center 40%,rgba(247,222,168,.3) 0%,rgba(247,222,168,0) 72%);
+  background:radial-gradient(ellipse at center 42%,rgba(247,222,168,.3) 0%,rgba(247,222,168,0) 72%);
 }
 
+@media(max-width:680px){
+  .map-title-wrap{margin-bottom:-34px}
+  .map-subtitle{font-size:.88rem;margin-bottom:6px}
+}
 .room-list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .room-card{
   background:var(--parchment-bg);background-size:cover,320px 320px,cover;background-repeat:no-repeat,repeat,no-repeat;
