@@ -487,3 +487,38 @@ input[type=search],input[type=text]{
   .button,.room-label,.room-card,.gate-option,.bottom-nav a{transition:transform .16s,box-shadow .16s,background .16s,color .16s}
   .button:hover,.room-label:hover,.room-card:hover,.gate-option:hover{transform:translateY(-1px)}
 }
+/* Advent Calendar */
+.advent-week{margin-top:16px}
+.advent-week-head{display:flex;justify-content:space-between;align-items:baseline;font-size:.86rem;color:var(--muted);margin-bottom:8px;padding:0 2px}
+.advent-week-head strong{color:var(--ink);font-family:Georgia,serif;font-size:1rem}
+.advent-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.advent-day{
+  position:relative;min-height:86px;padding:10px;border-radius:16px;text-align:left;
+  background:var(--card);color:var(--ink);border:1px solid rgba(197,157,98,.45);
+  display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 4px 12px rgba(42,30,18,.06);
+}
+.advent-day.is-locked{background:rgba(255,252,245,.52);color:var(--muted);border-style:dashed}
+.advent-day.is-today{border:2px solid var(--red);box-shadow:0 6px 18px rgba(157,52,67,.22)}
+.advent-day[data-tone="crimson"] .advent-num,.advent-day[data-tone="crimson"] .advent-badge{color:var(--red)}
+.advent-day[data-tone="pine"] .advent-num,.advent-day[data-tone="pine"] .advent-badge{color:var(--green)}
+.advent-day[data-tone="gold"] .advent-num,.advent-day[data-tone="gold"] .advent-badge{color:#8f682b}
+.advent-day[data-tone="sage"] .advent-num,.advent-day[data-tone="sage"] .advent-badge{color:#2d6a54}
+.advent-day.is-locked .advent-num{color:var(--muted)}
+.advent-num{font-family:Georgia,serif;font-size:1.35rem;font-weight:700;line-height:1}
+.advent-badge{position:absolute;top:9px;right:9px;font-size:.8rem}
+.advent-day-title{font-size:.75rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.advent-week.is-final .advent-day:last-child{grid-column:span 6;background:#fff7e3}
+.advent-downloads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.advent-dl{display:block;border-radius:12px;overflow:hidden;border:1px solid rgba(197,157,98,.45);background:var(--card);text-decoration:none;font-size:.8rem;font-weight:600;color:var(--green)}
+.advent-dl img{width:100%;height:68px;object-fit:cover;margin:0}
+.advent-dl span{display:block;padding:6px 8px}
+@media(max-width:740px){
+  .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  .advent-day{min-height:76px;padding:8px;border-radius:13px}
+  .advent-week.is-final .advent-day:last-child{grid-column:1/-1}
+}
+@media(prefers-reduced-motion:no-preference){
+  .advent-day{transition:transform .14s,box-shadow .14s}
+  .advent-day:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(42,30,18,.12)}
+}
