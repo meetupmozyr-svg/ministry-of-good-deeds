@@ -121,7 +121,8 @@
 
   function renderWeeksHtml() {
     const today = moscowDate();
-    const lockSvg = `<svg class="advent-lock" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.4"/></svg>`;
+    const lockSvg = `<svg class="advent-lock" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.5"/></svg>`;
+
     return weeks.map((w, idx) => {
       const daysHtml = [];
       for (let d = w.start; d <= w.end; d++) {
@@ -131,10 +132,23 @@
         const isToday = !isPreview() && today === releaseDate(d);
         const special = [1, 7, 15, 24, 30].includes(d);
         const dept = departments[entry.dept];
-        daysHtml.push(`<button type="button" class="advent-day ${open ? "is-open" : "is-locked"}${isToday ? " is-today" : ""}${special ? " is-special" : ""}" data-advent-day="${d}" data-tone="${dept.tone}" aria-label="${d} декабря. ${open ? esc(entry.title) : "Откроется " + d + " декабря"}">
-          <span class="advent-num">${String(d).padStart(2, "0")}</span>
-          <span class="advent-badge" aria-hidden="true">${open ? dept.symbol : lockSvg}</span>
-          <span class="advent-day-title">${open ? esc(entry.title) : (special ? "✦ " : "") + d + " дек"}</span>
+
+        const innerContent = open
+          ? `<div class="advent-open-head">
+              <span class="advent-num">${String(d).padStart(2, "0")}</span>
+              <span class="advent-badge" aria-hidden="true">${dept.symbol}</span>
+            </div>
+            <span class="advent-day-title">${esc(entry.title)}</span>`
+          : `<span class="advent-seal-wrap" aria-hidden="true">
+              <img class="advent-mini-seal" src="assets/decorations/wax-seal-snowflake.png" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
+            </span>
+            <div class="advent-locked-body">
+              <span class="advent-num">${String(d).padStart(2, "0")}</span>
+              <span class="advent-lock-sub" aria-hidden="true">${special ? '<span class="advent-star">✦</span>' : ""}${lockSvg}</span>
+            </div>`;
+
+        daysHtml.push(`<button type="button" class="advent-day ${open ? "is-open" : "is-locked"}${isToday ? " is-today" : ""}${special ? " is-special" : ""}" data-advent-day="${d}" data-tone="${dept.tone}" aria-label="${d} декабря. ${open ? esc(entry.title) : 'Карточка откроется ' + d + ' декабря'}">
+          ${innerContent}
         </button>`);
       }
       if (!daysHtml.length) return "";
