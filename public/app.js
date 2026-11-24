@@ -891,18 +891,22 @@ function render() {
       </div>
  ${window.MinistryAdvent ? window.MinistryAdvent.renderHtml() : ""}
     </div>`;
- } else if (page === "map") {
+} else if (page === "map") {
     main.innerHTML = `<div class="shell">
       <div class="map-head-wrap">
-        <img class="map-title-img" src="assets/scenes/map-title.png" alt="Карта Министерства" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/scenes/map-title.webp';}else{this.hidden=true;}">
         <p class="map-subtitle">Выберите дверь — все пространства открыты без обязательных заданий</p>
+        <div class="map-title-wrap">
+          <img class="map-title-img" src="assets/scenes/map-title.png" alt="Карта Министерства" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/scenes/map-title.webp';}else{this.hidden=true;}">
+        </div>
       </div>
 
       <div class="map-doors-stage">
-        ${sceneImg("assets/scenes/map-doors.webp", "assets/scenes/map-doors.png", "Три волшебные двери: Библиотека, Мастерская и Бюро добрых дел", "map-doors-img", true)}
-        <a class="door-touch door-lib" href="#library" aria-label="Войти в Библиотеку находок"></a>
-        <a class="door-touch door-work" href="#workshop" aria-label="Войти в Мастерскую праздника"></a>
-        <a class="door-touch door-bureau" href="#bureau" aria-label="Войти в Бюро добрых дел"></a>
+        <div class="map-doors-inner">
+          ${sceneImg("assets/scenes/map-doors.webp", "assets/scenes/map-doors.png", "Три волшебные двери: Библиотека, Мастерская и Бюро добрых дел", "map-doors-img", true)}
+          <a class="door-touch door-lib" href="#library" aria-label="Войти в Библиотеку находок"></a>
+          <a class="door-touch door-work" href="#workshop" aria-label="Войти в Мастерскую праздника"></a>
+          <a class="door-touch door-bureau" href="#bureau" aria-label="Войти в Бюро добрых дел"></a>
+        </div>
       </div>
 
       <div class="room-list">
