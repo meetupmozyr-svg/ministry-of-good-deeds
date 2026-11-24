@@ -344,7 +344,7 @@ function passCardHtml() {
     <div class="pass-portrait-row">
       ${laurelSvg()}
       <div class="pass-arch" aria-hidden="true">
-        <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='avatars/${esc(meta.key)}.webp';}else{this.remove();}">
+       <img class="pass-avatar" src="avatars/${esc(meta.key)}.png" alt="" hidden onload="this.hidden=false;this.parentElement.classList.add('has-avatar')" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='avatars/${esc(meta.key)}.webp';}else{this.remove();}">
         <span class="pass-emoji">${esc(meta.emoji)}</span>
       </div>
       ${laurelSvg("right")}
@@ -503,25 +503,28 @@ ctx.textAlign = "center";
     ctx.font = "bold 17px sans-serif";
     ctx.fillText("МИНИСТЕРСТВО ДОБРЫХ ДЕЛ", 450, 326);
 
-    ctx.save();
-    roundRectPath(ctx, 336, 345, 228, 255, 114);
-    const archGrad = ctx.createLinearGradient(0, 345, 0, 600);
-    archGrad.addColorStop(0, "#ebe0c8");
-    archGrad.addColorStop(1, "#dfd0af");
-    ctx.fillStyle = archGrad;
-    ctx.fill();
-    if (avatarImg) {
-      ctx.clip();
-      ctx.drawImage(avatarImg, 336, 345, 228, 255);
-    }
-    ctx.restore();
-
-    roundRectPath(ctx, 336, 345, 228, 255, 114);
-    ctx.strokeStyle = "#c9a366";
-    ctx.lineWidth = 4;
-    ctx.stroke();
-
-    if (!avatarImg) {
+if (avatarImg) {
+      const s = Math.min(280 / avatarImg.width, 290 / avatarImg.height);
+      const aw = avatarImg.width * s;
+      const ah = avatarImg.height * s;
+      ctx.save();
+      ctx.shadowColor = "rgba(42, 30, 18, 0.18)";
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetY = 6;
+      ctx.drawImage(avatarImg, 450 - aw / 2, 482 - ah / 2, aw, ah);
+      ctx.restore();
+    } else {
+      ctx.save();
+      roundRectPath(ctx, 336, 345, 228, 255, 114);
+      const archGrad = ctx.createLinearGradient(0, 345, 0, 600);
+      archGrad.addColorStop(0, "#ebe0c8");
+      archGrad.addColorStop(1, "#dfd0af");
+      ctx.fillStyle = archGrad;
+      ctx.fill();
+      ctx.strokeStyle = "#c9a366";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.restore();
       ctx.font = "108px sans-serif";
       ctx.fillText(meta.emoji, 450, 505);
     }
