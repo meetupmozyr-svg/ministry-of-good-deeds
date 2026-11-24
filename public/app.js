@@ -886,17 +886,7 @@ function render() {
           </div>
         </section>
       </div>
-      <section class="card-panel">
-        <div class="section-head">
-          <div class="section-title-row">${decorImg("sealed-envelope", "decor-inline")}<h2>На доске объявлений</h2></div>
-          <span class="eyebrow-dark">План зимы</span>
-        </div>
-        <div class="notice-grid">
-          <article class="notice"><span class="date">1 декабря</span><h3>Праздник начинается</h3><p>Запуск языковых разминок (адвент-формат) и новогодних активностей для начальной школы.</p></article>
-          <article class="notice"><span class="date">7 декабря</span><h3>Большой дайджест</h3><p>Релиз IT-викторины по алгоритмам, обновлённые уроки и единый новогодний анонс.</p></article>
-        </div>
-        <p class="note">Материалы в Мастерской обновляются по мере готовности команд.</p>
-      </section>
+ ${window.MinistryAdvent ? window.MinistryAdvent.renderHtml() : ""}
     </div>`;
   } else if (page === "map") {
     main.innerHTML = `<div class="shell">
@@ -1040,11 +1030,12 @@ function render() {
         </article>
       </section>
     </div>`;
-  } else {
+} else {
     main.innerHTML = `<div class="shell">${pageHeader("Такой комнаты пока нет", "Вернитесь на карту и выберите одну из трёх дверей.")}</div>`;
   }
 
   bindActions();
+  window.MinistryAdvent?.bind();
 }
 
 function card(r, savedOnly = false) {
