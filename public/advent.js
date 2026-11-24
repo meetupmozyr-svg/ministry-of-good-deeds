@@ -239,12 +239,13 @@
         </div>
         <div class="advent-body">
           <div class="advent-head-ornate">
-            <span class="advent-status-pill" id="advent-status">${statusText}</span>
-            <div class="advent-title-row">
+            <img class="advent-title-img" src="assets/scenes/advent-title.png" alt="Адвент-календарь" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/scenes/advent-title.webp';}else{this.hidden=true;this.nextElementSibling.hidden=false;}">
+            <div class="advent-title-row" hidden>
               <span class="advent-rule" aria-hidden="true"></span>
               <h2>Адвент-календарь</h2>
               <span class="advent-rule" aria-hidden="true"></span>
             </div>
+            <span class="advent-status-pill" id="advent-status">${statusText}</span>
             <p class="advent-lead">Каждый день декабря — тёплое письмо, находка или идея для урока</p>
           </div>
           <div class="filters advent-filters" aria-label="Отделы календаря">${filtersHtml}</div>
