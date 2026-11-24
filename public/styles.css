@@ -632,15 +632,22 @@ input[type=search],input[type=text]{
 .advent-dl span{display:block;padding:6px 8px}
 
 @media(max-width:740px){
-  .advent-body{padding:0 16px 18px;margin-top:-42px}
-  .advent-filters{max-width:320px;margin:12px auto 14px}
-  .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  .advent-body{padding:0 14px 20px;margin-top:-42px}
+  /* Аккуратная плавная лента в 1 строку без переносов */
+  .advent-filters{
+    display:flex;flex-wrap:nowrap;justify-content:flex-start;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    max-width:100%;padding:4px 6px;margin:10px 0 14px;gap:6px;
+  }
+  .advent-filters::-webkit-scrollbar{display:none}
+  .advent-filters .filter{flex:0 0 auto;padding:6px 11px;font-size:.78rem}
+  .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .advent-day{min-height:78px;border-radius:12px}
   .advent-day.is-locked{padding:20px 4px 8px}
-  .advent-day.is-locked .advent-num{font-size:1.4rem;margin-top:12px}
+  .advent-day.is-locked .advent-num{font-size:1.35rem;margin-top:12px}
   .advent-mini-seal{width:20px;height:20px}
   .advent-seal-wrap{top:13px}
-  .advent-lock-corner{left:6px;bottom:5px}
+  .advent-lock-corner{left:6px;bottom:6px}
   .advent-star-corner{right:6px;bottom:5px}
   .advent-week.is-final .advent-day:last-child{grid-column:1/-1}
 }
