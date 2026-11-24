@@ -525,88 +525,89 @@ input[type=search],input[type=text]{
 .advent-week-head strong{color:var(--ink);font-family:Georgia,serif;font-size:.98rem}
 .advent-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 
-/* Base envelope card */
+/* Base envelope card - strictly horizontal aspect ratio (1.35 : 1) */
 .advent-day{
-  position:relative;min-height:86px;padding:8px;border-radius:14px;text-align:center;
+  position:relative;width:100%;aspect-ratio:1.35/1;min-height:0;
+  padding:6px;border-radius:12px;text-align:center;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  box-shadow:0 4px 12px rgba(20,30,24,.14);border:1.5px solid rgba(212,175,112,.45);
+  box-shadow:0 4px 12px rgba(10,24,18,.16);border:1.5px solid rgba(212,175,112,.48);
   overflow:hidden;
 }
 
 /* Open days (revealed contents) */
 .advent-day.is-open{
-  background:var(--card);color:var(--ink);text-align:left;align-items:stretch;justify-content:space-between;padding:10px;
+  background:var(--card);color:var(--ink);text-align:left;align-items:stretch;justify-content:space-between;padding:8px 10px;
 }
 .advent-open-head{display:flex;justify-content:space-between;align-items:baseline}
-.advent-day.is-open .advent-num{color:var(--ink);font-size:1.3rem}
-.advent-day-title{font-size:.74rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.advent-day.is-open .advent-num{color:var(--ink);font-size:1.25rem}
+.advent-day-title{font-size:.72rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* Locked colorful envelopes with authentic folding crease lines */
+/* Locked envelopes with full folding seams (top flap + matching bottom flaps) */
 .advent-day.is-locked{
   background-size:100% 100%;background-position:center;background-repeat:no-repeat;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 5px 14px rgba(10,24,18,.18);
-  padding:22px 6px 10px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 5px 14px rgba(10,24,18,.2);
+  padding:0;
 }
 
-/* 4 Holiday Envelope Shades with 3D flap + diagonal creases */
+/* 4 Holiday Shades with intersecting envelope folds */
 .advent-day.is-locked[data-tone="crimson"]{
   background-color:#761f2c;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 28 L120 0' fill='rgba(255,255,255,0.06)' stroke='%23f1cb88' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cpath d='M0 0 L60 29 L120 0' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='1.8'/%3E%3Cpath d='M0 80 L52 42 M120 80 L68 42 M52 42 L60 47 L68 42' fill='none' stroke='%23f1cb88' stroke-width='1' stroke-opacity='0.22'/%3E%3C/svg%3E");
-  border-color:#9e3a49;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 85' preserveAspectRatio='none'%3E%3Cpath d='M0 85 L48 46 L72 46 L120 85' fill='none' stroke='%23f1cb88' stroke-width='1.2' stroke-opacity='0.45'/%3E%3Cpath d='M48 46 L60 52 L72 46' fill='none' stroke='%23f1cb88' stroke-width='1.2' stroke-opacity='0.45'/%3E%3Cpath d='M0 0 L60 30 L120 0' fill='rgba(255,255,255,0.07)' stroke='%23f1cb88' stroke-width='1.5' stroke-opacity='0.75'/%3E%3Cpath d='M0 1 L60 31 L120 1' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='2'/%3E%3C/svg%3E");
+  border-color:#993343;
 }
 .advent-day.is-locked[data-tone="pine"]{
   background-color:#164335;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 28 L120 0' fill='rgba(255,255,255,0.06)' stroke='%23f1cb88' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cpath d='M0 0 L60 29 L120 0' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='1.8'/%3E%3Cpath d='M0 80 L52 42 M120 80 L68 42 M52 42 L60 47 L68 42' fill='none' stroke='%23f1cb88' stroke-width='1' stroke-opacity='0.22'/%3E%3C/svg%3E");
-  border-color:#2a5e4d;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 85' preserveAspectRatio='none'%3E%3Cpath d='M0 85 L48 46 L72 46 L120 85' fill='none' stroke='%23f1cb88' stroke-width='1.2' stroke-opacity='0.45'/%3E%3Cpath d='M48 46 L60 52 L72 46' fill='none' stroke='%23f1cb88' stroke-width='1.2' stroke-opacity='0.45'/%3E%3Cpath d='M0 0 L60 30 L120 0' fill='rgba(255,255,255,0.07)' stroke='%23f1cb88' stroke-width='1.5' stroke-opacity='0.75'/%3E%3Cpath d='M0 1 L60 31 L120 1' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='2'/%3E%3C/svg%3E");
+  border-color:#27604d;
 }
 .advent-day.is-locked[data-tone="sage"]{
   background-color:#244b43;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 28 L120 0' fill='rgba(255,255,255,0.06)' stroke='%23f1cb88' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cpath d='M0 0 L60 29 L120 0' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='1.8'/%3E%3Cpath d='M0 80 L52 42 M120 80 L68 42 M52 42 L60 47 L68 42' fill='none' stroke='%23f1cb88' stroke-width='1' stroke-opacity='0.22'/%3E%3C/svg%3E");
-  border-color:#38695f;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 85' preserveAspectRatio='none'%3E%3Cpath d='M0 85 L48 46 L72 46 L120 85' fill='none' stroke='%23f1cb88' stroke-width='1.2' stroke-opacity='0.45'/%3E%3Cpath d='M48 46 L60 52 L72 46' fill='none' stroke='%23f1cb88' stroke-width='1.2' stroke-opacity='0.45'/%3E%3Cpath d='M0 0 L60 30 L120 0' fill='rgba(255,255,255,0.07)' stroke='%23f1cb88' stroke-width='1.5' stroke-opacity='0.75'/%3E%3Cpath d='M0 1 L60 31 L120 1' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='2'/%3E%3C/svg%3E");
+  border-color:#34655b;
 }
 .advent-day.is-locked[data-tone="gold"]{
   background-color:#ebdcb9;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 28 L120 0' fill='rgba(0,0,0,0.03)' stroke='%239e6e2f' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cpath d='M0 0 L60 29 L120 0' fill='none' stroke='rgba(0,0,0,0.18)' stroke-width='1.8'/%3E%3Cpath d='M0 80 L52 42 M120 80 L68 42 M52 42 L60 47 L68 42' fill='none' stroke='%239e6e2f' stroke-width='1' stroke-opacity='0.22'/%3E%3C/svg%3E");
-  border-color:#bfa774;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 85' preserveAspectRatio='none'%3E%3Cpath d='M0 85 L48 46 L72 46 L120 85' fill='none' stroke='%238c622c' stroke-width='1.2' stroke-opacity='0.35'/%3E%3Cpath d='M48 46 L60 52 L72 46' fill='none' stroke='%238c622c' stroke-width='1.2' stroke-opacity='0.35'/%3E%3Cpath d='M0 0 L60 30 L120 0' fill='rgba(0,0,0,0.03)' stroke='%238c622c' stroke-width='1.5' stroke-opacity='0.65'/%3E%3Cpath d='M0 1 L60 31 L120 1' fill='none' stroke='rgba(0,0,0,0.18)' stroke-width='2'/%3E%3C/svg%3E");
+  border-color:#b59a67;
 }
 
-/* Real miniature wax seal centered on the flap tip */
+/* Miniature wax seal bridging upper flap and lower fold */
 .advent-seal-wrap{
-  position:absolute;left:50%;top:16px;transform:translateX(-50%);z-index:2;pointer-events:none;
+  position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:2;pointer-events:none;
 }
 .advent-mini-seal{
-  width:22px;height:22px;object-fit:contain;
-  filter:drop-shadow(0 3px 6px rgba(0,0,0,.42));
+  width:21px;height:21px;object-fit:contain;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.45));
   display:block;
 }
 
 /* Sharp imprinted numbers */
 .advent-day.is-locked .advent-num{
-  font-family:Georgia,serif;font-size:1.55rem;font-weight:700;line-height:1;letter-spacing:-.02em;
+  font-family:Georgia,serif;font-size:1.45rem;font-weight:700;line-height:1;letter-spacing:-.01em;
   color:#fffef8;
   text-shadow:0 1px 2px rgba(0,0,0,.75),0 0 1px rgba(0,0,0,.8);
-  margin-top:14px;
+  margin-top:20px;
 }
 .advent-day.is-locked[data-tone="gold"] .advent-num{
-  color:#244234;
-  text-shadow:0 1px 0 rgba(255,255,255,.9);
+  color:#183e32;
+  text-shadow:0 1px 0 rgba(255,255,255,.95);
 }
 
 /* Lock pinned cleanly to bottom-left corner */
 .advent-lock-corner{
-  position:absolute;left:8px;bottom:7px;
-  width:13px;height:13px;display:flex;align-items:center;justify-content:center;
-  color:rgba(255,250,240,.7);
+  position:absolute;left:7px;bottom:5px;
+  width:12px;height:12px;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,245,225,.75);
 }
 .advent-day.is-locked[data-tone="gold"] .advent-lock-corner{
-  color:rgba(36,66,52,.65);
+  color:rgba(24,62,50,.75);
 }
-.advent-lock{width:12px;height:12px;display:block}
+.advent-lock{width:11px;height:11px;display:block}
 
 /* Star pinned cleanly to bottom-right corner */
 .advent-star-corner{
-  position:absolute;right:8px;bottom:6px;
-  font-size:.75rem;line-height:1;
+  position:absolute;right:7px;bottom:5px;
+  font-size:.72rem;line-height:1;
   color:#f4d08a;text-shadow:0 1px 3px rgba(0,0,0,.45);
 }
 .advent-day.is-locked[data-tone="gold"] .advent-star-corner{
@@ -632,23 +633,21 @@ input[type=search],input[type=text]{
 .advent-dl span{display:block;padding:6px 8px}
 
 @media(max-width:740px){
-  .advent-body{padding:0 14px 20px;margin-top:-42px}
-  /* Аккуратная плавная лента в 1 строку без переносов */
+  .advent-body{padding:0 14px 22px;margin-top:-44px}
   .advent-filters{
     display:flex;flex-wrap:nowrap;justify-content:flex-start;
     overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-    max-width:100%;padding:4px 6px;margin:10px 0 14px;gap:6px;
+    max-width:100%;padding:4px 4px;margin:10px 0 14px;gap:6px;
   }
   .advent-filters::-webkit-scrollbar{display:none}
   .advent-filters .filter{flex:0 0 auto;padding:6px 11px;font-size:.78rem}
   .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-  .advent-day{min-height:78px;border-radius:12px}
-  .advent-day.is-locked{padding:20px 4px 8px}
-  .advent-day.is-locked .advent-num{font-size:1.35rem;margin-top:12px}
-  .advent-mini-seal{width:20px;height:20px}
+  .advent-day{aspect-ratio:1.35/1;min-height:0;border-radius:10px}
+  .advent-day.is-locked .advent-num{font-size:1.24rem;margin-top:14px}
+  .advent-mini-seal{width:17px;height:17px}
   .advent-seal-wrap{top:13px}
-  .advent-lock-corner{left:6px;bottom:6px}
-  .advent-star-corner{right:6px;bottom:5px}
+  .advent-lock-corner{left:5px;bottom:4px}
+  .advent-star-corner{right:5px;bottom:4px}
   .advent-week.is-final .advent-day:last-child{grid-column:1/-1}
 }
 @media(prefers-reduced-motion:no-preference){
