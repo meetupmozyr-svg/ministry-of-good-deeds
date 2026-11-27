@@ -576,9 +576,8 @@ input[type=search],input[type=text]{
 .advent-week{margin-top:14px}
 .advent-week-head{display:flex;justify-content:space-between;align-items:baseline;font-size:.84rem;color:var(--muted);margin-bottom:8px;padding:0 2px}
 .advent-week-head strong{color:var(--ink);font-family:Georgia,serif;font-size:.98rem}
-.advent-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.advent-days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 
-/* Base envelope card - strictly horizontal aspect ratio (1.38 : 1) on all screens */
 .advent-day{
   position:relative;width:100%;aspect-ratio:1.38/1;min-height:0;
   padding:0;border-radius:12px;text-align:center;
@@ -587,21 +586,18 @@ input[type=search],input[type=text]{
   overflow:hidden;
 }
 
-/* Open days (revealed contents) */
 .advent-day.is-open{
-  background:var(--card);color:var(--ink);text-align:left;align-items:stretch;justify-content:space-between;padding:8px 10px;
+  background:var(--card);color:var(--ink);text-align:left;align-items:stretch;justify-content:space-between;padding:9px 11px;
 }
 .advent-open-head{display:flex;justify-content:space-between;align-items:baseline}
-.advent-day.is-open .advent-num{color:var(--ink);font-size:1.25rem}
-.advent-day-title{font-size:.72rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.advent-day.is-open .advent-num{color:var(--ink);font-size:1.25rem;font-family:Georgia,serif;font-weight:700;line-height:1}
+.advent-badge{font-size:.86rem;color:var(--red)}
+.advent-day-title{font-size:.76rem;line-height:1.18;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* Locked envelopes - pure triangular top flap with drop shadow, clean envelope body below */
 .advent-day.is-locked{
   background-position:top center;background-repeat:no-repeat;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 5px 14px rgba(10,24,18,.2);
 }
-
-/* 4 Holiday Shades with clean triangular flap */
 .advent-day.is-locked[data-tone="crimson"]{
   background-color:#761f2c;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L60 32 L120 0' fill='rgba(255,255,255,0.08)' stroke='%23f1cb88' stroke-width='1.5' stroke-opacity='0.8'/%3E%3Cpath d='M0 1 L60 33 L120 1' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='2'/%3E%3C/svg%3E");
@@ -623,65 +619,57 @@ input[type=search],input[type=text]{
   background-size:100% 38px;border-color:#b59a67;
 }
 
-/* Miniature wax seal centered right over the tip of the flap */
-.advent-seal-wrap{
-  position:absolute;left:50%;top:20px;transform:translateX(-50%);z-index:2;pointer-events:none;
-}
-.advent-mini-seal{
-  width:22px;height:22px;object-fit:contain;
-  filter:drop-shadow(0 3px 6px rgba(0,0,0,.45));
-  display:block;
-}
+.advent-seal-wrap{position:absolute;left:50%;top:20px;transform:translateX(-50%);z-index:2;pointer-events:none}
+.advent-mini-seal{width:22px;height:22px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45));display:block}
 
-/* Sharp, light, letterpress-imprinted numbers */
 .advent-day.is-locked .advent-num{
-  font-family:Georgia,serif;font-size:1.45rem;font-weight:700;line-height:1;letter-spacing:-.01em;
-  color:#fffef8;
-  text-shadow:0 1px 2px rgba(0,0,0,.75),0 0 1px rgba(0,0,0,.8);
-  margin-top:20px;
+  font-family:Georgia,serif;font-size:1.5rem;font-weight:700;line-height:1;letter-spacing:-.01em;
+  color:#fffef8;text-shadow:0 1px 2px rgba(0,0,0,.75),0 0 1px rgba(0,0,0,.8);margin-top:20px;
 }
-.advent-day.is-locked[data-tone="gold"] .advent-num{
-  color:#183e32;
-  text-shadow:0 1px 0 rgba(255,255,255,.95);
-}
+.advent-day.is-locked[data-tone="gold"] .advent-num{color:#183e32;text-shadow:0 1px 0 rgba(255,255,255,.95)}
 
-/* Lock pinned cleanly to bottom-left corner */
 .advent-lock-corner{
-  position:absolute;left:7px;bottom:6px;
-  width:12px;height:12px;display:flex;align-items:center;justify-content:center;
-  color:rgba(255,245,225,.75);
+  position:absolute;left:7px;bottom:6px;width:12px;height:12px;
+  display:flex;align-items:center;justify-content:center;color:rgba(255,245,225,.75);
 }
-.advent-day.is-locked[data-tone="gold"] .advent-lock-corner{
-  color:rgba(24,62,50,.75);
-}
+.advent-day.is-locked[data-tone="gold"] .advent-lock-corner{color:rgba(24,62,50,.75)}
 .advent-lock{width:11px;height:11px;display:block}
+.advent-star-corner{position:absolute;right:7px;bottom:5px;font-size:.72rem;line-height:1;color:#f4d08a;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.advent-day.is-locked[data-tone="gold"] .advent-star-corner{color:#9c6c28;text-shadow:none}
+.advent-day.is-special{box-shadow:0 0 0 2px #d4a862,0 8px 18px rgba(0,0,0,.35)}
+.advent-day.is-today{outline:3px solid #ffcc66;outline-offset:2px}
 
-/* Star pinned cleanly to bottom-right corner */
-.advent-star-corner{
-  position:absolute;right:7px;bottom:5px;
-  font-size:.72rem;line-height:1;
-  color:#f4d08a;text-shadow:0 1px 3px rgba(0,0,0,.45);
-}
-.advent-day.is-locked[data-tone="gold"] .advent-star-corner{
-  color:#9c6c28;text-shadow:none;
-}
-
-/* Special milestone dates */
-.advent-day.is-special{
-  box-shadow:0 0 0 2px #d4a862,0 8px 18px rgba(0,0,0,.35);
-}
-.advent-day.is-today{
-  outline:3px solid #ffcc66;outline-offset:2px;
-}
-
-/* Modal dialog */
-.advent-modal{position:relative}
+/* Modal & Schedule & Wallpapers */
+.advent-modal{position:relative;max-height:86vh;overflow-y:auto}
+.advent-modal.is-wide{width:min(100%,560px)}
 .advent-modal::before{content:"";position:absolute;inset:8px;border-radius:17px;border:1px solid rgba(181,142,83,.38);pointer-events:none}
 .advent-modal-decor{width:60px;height:60px;object-fit:contain;margin:0 auto 6px}
 .advent-downloads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
 .advent-dl{display:block;border-radius:12px;overflow:hidden;border:1px solid rgba(197,157,98,.45);background:var(--card);text-decoration:none;font-size:.8rem;font-weight:600;color:var(--green)}
 .advent-dl img{width:100%;height:68px;object-fit:cover;margin:0}
 .advent-dl span{display:block;padding:6px 8px}
+
+.advent-events{margin-top:14px;display:grid;gap:12px;text-align:left}
+.advent-event-group{background:var(--card);border:1px solid rgba(197,157,98,.38);border-radius:14px;padding:12px}
+.advent-event-date{font-family:Georgia,serif;font-weight:700;color:var(--red);font-size:.95rem;margin-bottom:8px}
+.advent-event{display:grid;grid-template-columns:auto 1fr auto;gap:8px 10px;align-items:center;padding:8px 0;border-top:1px solid rgba(197,157,98,.24)}
+.advent-event:first-of-type{border-top:0;padding-top:0}
+.advent-event-time{font-size:.78rem;font-weight:700;color:var(--green);white-space:nowrap}
+.advent-event-info strong{display:block;font-size:.86rem;line-height:1.25}
+.advent-event-info p{font-size:.78rem;color:var(--muted);margin-top:2px}
+.advent-event-join{min-height:34px;padding:5px 12px;font-size:.76rem;white-space:nowrap}
+.advent-event-pending{font-size:.74rem;color:var(--muted)}
+
+.advent-wallpapers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px;text-align:left}
+.advent-wp-card{background:var(--card);border:1px solid rgba(197,157,98,.42);border-radius:14px;padding:10px}
+.advent-wp-card img{width:100%;height:84px;object-fit:cover;border-radius:10px;margin:0 0 8px}
+.advent-wp-title{font-weight:650;font-size:.86rem;margin-bottom:8px}
+.advent-wp-links{display:flex;gap:6px;flex-wrap:wrap}
+.advent-wp-links .button{min-height:34px;padding:5px 11px;font-size:.75rem;flex:1}
+.advent-expert-box{margin-top:14px;text-align:left;background:var(--card);border:1px solid rgba(197,157,98,.4);border-radius:14px;padding:10px 14px}
+.advent-expert-box summary{cursor:pointer;font-weight:650;font-size:.86rem;color:var(--green)}
+.advent-expert-list{margin:10px 0 0;padding-left:18px;display:grid;gap:6px;font-size:.82rem}
+.advent-expert-list a{color:var(--green);text-underline-offset:3px}
 
 @media(max-width:740px){
   .advent-body{padding:0 14px 22px;margin-top:-44px}
@@ -694,14 +682,14 @@ input[type=search],input[type=text]{
   .advent-filters .filter{flex:0 0 auto;padding:6px 11px;font-size:.78rem}
   .advent-days{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .advent-day{aspect-ratio:1.38/1;min-height:0;border-radius:10px}
-  .advent-day.is-locked{
-    background-size:100% 28px;
-  }
+  .advent-day.is-locked{background-size:100% 28px}
   .advent-seal-wrap{top:14px}
   .advent-mini-seal{width:18px;height:18px}
   .advent-day.is-locked .advent-num{font-size:1.32rem;margin-top:14px}
   .advent-lock-corner{left:5px;bottom:4px}
   .advent-star-corner{right:5px;bottom:4px}
+  .advent-event{grid-template-columns:1fr;gap:4px}
+  .advent-wallpapers{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:no-preference){
   .advent-day{transition:transform .14s,box-shadow .14s}
