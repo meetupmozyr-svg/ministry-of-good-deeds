@@ -83,6 +83,7 @@
     ["Дед Мороз с парашютом", "parachute", "UklGRr4DAABXRUJQVlA4ILIDAABQFwCdASqWAGQAPrFWpU2nJKOiI1baaOAWCUAaPZS6MI98NLb2bl/eUPQr6WXIYKphpMbrxFV3GZm+Iz6/BfVGQFWxzLUxEstRabf3MA/A2CI5fiVws11EjwsnBF0S1iwwEE6M13krylgwF3j1T/K9dC6huEq9lcwiLpTkwTXVYkNoItE8OFreRLE/fJ22ljJVpLh4ShQWki9+SvbqJoYbmX75HbBM2xT2QoUGx0owYrMW1giRK5wKVvlW7BHzBt27zCgA/vXPuqpxCwT0megdUiK8+XEcWMHQX8NOvDpHpuWvMcmPBAvSn0M8+2uA1WpVZewItaAZ1aGmyKvn7RHykEbYrYRpfjEz8FHrcF+rsxqN4uPN7Z+gAoAVm/KnZijPN3S3VFW5fHPvYe9VwQ5DClHOiyAZuRzpHvFfJOD2Vk+d0KMqElgU92baxAHQHTFsz/uNZn/Y7U9zAYr+hjDpo3ueqsBT0ZgVCkqly2CcU1tSJVYR/eWEnkz1XVJoRI55QK+zN6gi7720tQB8I4ab1282EiI8we8rK2T/j1yCHDWmGTLLVVuYW8VVwEbW2+tbDNHd/NOWR3v8w8g1uoc5DB68f8oQOFwn6I/rv0T/mvy6XqseTAaIoUy94OXvI4qaFupcqOTPShnlEzHGgOoQ4E11q0CtWSHja451/+VvskPu8EVeHeCoVU+w5XuUpUF4ZZ7HjeyYHRzmEWN5cRM+0bTFftQ4nGFtbT9m3zG/gMPNxkzdTnEhB+QfBDs+x5SPXjUX9aHOF8apnYv7hB0FvuKNA8izg2uOn0aC9vGdYWXLIUtOp4MSkWe5MSi2D/v5n3kw0nUO6foTTfAF0tILxfCeKdgAKIChxdfUYJl+DI5NKIOMv6NTXpelzt6Y6Im3w3dDjmqtqTjJKM2xvwNG/u7UXw3t+KWocmJuvBnm6QAYTYcrIsgGJEYebM2TSzD/gSZYNbPxqkmf1p8KFlcif7Hnvt1m/z/uFBpI7P6YbgLvwsSlEEYuEmFlF7xLaQ06fv2yf9J37AX171CRHWiYJS3hLJ0sw3RvRnLX+NR6ghEcFuMVPzxdLqe6yfTdY0KJ/GczzkOFixKTxRwFjfEygNKCHTeDTgpJjKj+xuLU65NzsUc6gU8rnCOE63YXEsgV8Aysbs3BlclprzNRiikQW+iPyxm4nZ1XOjwMCKRTBIvRpRCbABAIX4Ohj0WT2HHK9Ey7rbVjv8fLgOZ8DXVUs2VNxRqDvcbHrDWvXQgAAAAA"]
   ];
 
+  // Названия для показа приведены к Козлику (символу 2027), пути на Яндекс Диске сохранены точными
   const expertWallpapers = [
     ["Зимние обои 1", "/1.PNG"],
     ["Зимние обои 2", "/2.PNG"],
@@ -90,22 +91,22 @@
     ["Зимние обои 4", "/4.PNG"],
     ["Зимние обои 5", "/5.PNG"],
     ["Зимние обои 6", "/6.PNG"],
-    ["Альпака и зимняя вязка", "/Kuscheliger blauer Winterstrick mit Alpaka.png"],
-    ["Ледяная пещера и снежный зверёк", "/Magische Eishöhle mit blauem Schneewesen.png"],
+    ["Козлик и зимняя вязка", "/Kuscheliger blauer Winterstrick mit Alpaka.png"],
+    ["Ледяная пещера и снежный козлик", "/Magische Eishöhle mit blauem Schneewesen.png"],
     ["Кристальная пещера и синий талисман", "/Magische Eiskristallhöhle mit blauem Maskottchen.png"],
     ["Зимний рассвет и пушистый талисман", "/Зимний рассвет и пушистый талисман.png"],
-    ["Зимний фон с огоньками и альпакой", "/Зимний фон с огоньками и альпакой.png"],
+    ["Зимний фон с огоньками и козликом", "/Зимний фон с огоньками и альпакой.png"],
     ["Праздничный козлик под фейерверками", "/Праздничный козлик под фейерверками.png"],
-    ["Пушистый синий зверёк на санях", "/Пушистый синий зверёк на санях.png"],
+    ["Пушистый синий козлик на санях", "/Пушистый синий зверёк на санях.png"],
     ["Синий козлик под северным сиянием", "/Синий козлик под сиянием северного сияния.png"],
     ["Синий помощник украшает снежную ёлку", "/Синий помощник украшает снежную ёлку.png"],
     ["Снежная игра синего пушистика", "/Снежная игра синего пушистика.png"],
     ["Снежный талисман и снеговик", "/Снежный талисман и снеговик.png"],
-    ["Уютный зимний уголок с пушистым талисманом", "/Уютный зимний уголок с пушистым талисманом.png"]
+    ["Уютный зимний уголок с талисманом", "/Уютный зимний уголок с пушистым талисманом.png"]
   ];
 
   const entries = {
-    1: { title: "Министерство открыто!", dept: "wins", welcome: true, text: "С наступающим Новым годом! Спасибо, что помогаете ученикам разобраться в сложном и замечаете их маленькие победы. Пусть в новом году будет больше поводов радоваться тому, что получилось у вас и у ваших учеников.\n\nЗдесь можно найти идеи для уроков, расписание новогодних встреч, фоны, открытки и подсказки, как подвести итоги года вместе с учениками." },
+    1: { title: "Министерство открыто!", dept: "wins", welcome: true, text: "С наступающим Новым годом! Спасибо, что помогаете ученикам разобраться в сложном и замечаете их маленькие победы. Пусть в новом году будет больше поводов радоваться тому, что получилось у вас и у ваших учеников.\n\nЗдесь собраны идеи для уроков, расписание новогодних встреч, фоны, открытки и подсказки, как подвести итоги года вместе с учениками." },
     2: { title: "Расписание новогодних событий", dept: "rest", text: "В декабре встречаемся в Учительской, книжном клубе, на разговорных встречах и играх. Выберите событие и подключайтесь по ссылке.", events: holidayEvents },
     3: { title: "Фоны для телефона и компьютера", dept: "rest", text: "Выберите обои, чтобы открыть изображение в хорошем качестве на Яндекс Диске.", wallpapers: true },
     4: { title: "Новогодний плейлист Олега", dept: "rest", text: "Музыка для перерыва между занятиями или зимней прогулки. Ссылка на плейлист в Яндекс Музыке появится здесь." },
@@ -192,7 +193,7 @@
     }
     return `<div class="advent-events">${groups.map(g => `
       <div class="advent-event-group">
-        <div class="advent-event-date">${g.day} декабря</div>
+        <span class="date">${g.day} декабря</span>
         ${g.items.map(ev => `<div class="advent-event">
           <span class="advent-event-time">${esc(ev.time)}</span>
           <div class="advent-event-info">
@@ -200,7 +201,7 @@
             ${ev.topic ? `<p>${esc(ev.topic)}</p>` : ""}
           </div>
           ${ev.url
-            ? `<a class="button secondary advent-event-join" href="${esc(ev.url)}" target="_blank" rel="noopener noreferrer">Войти ↗</a>`
+            ? `<a class="button advent-event-join" href="${esc(ev.url)}" target="_blank" rel="noopener noreferrer">Войти ↗</a>`
             : `<span class="advent-event-pending">Скоро ссылка</span>`}
         </div>`).join("")}
       </div>`).join("")}</div>`;
@@ -213,20 +214,20 @@
         <div class="advent-wp-title">${esc(name)}</div>
         <div class="advent-wp-links">
           <a class="button secondary" href="${esc(wallpaperUrl(wallpaperPaths[`${slug}-phone`]))}" target="_blank" rel="noopener noreferrer">Телефон ↗</a>
-          <a class="button secondary" href="${esc(wallpaperUrl(wallpaperPaths[`${slug}-desktop`]))}" target="_blank" rel="noopener noreferrer">ПК ↗</a>
+          <a class="button" href="${esc(wallpaperUrl(wallpaperPaths[`${slug}-desktop`]))}" target="_blank" rel="noopener noreferrer">ПК ↗</a>
         </div>
       </div>`).join("");
 
-    const expertList = expertWallpapers.map(([label, path]) =>
-      `<li><a href="${esc(wallpaperUrl(path))}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a></li>`
+    const expertCards = expertWallpapers.map(([label, path]) =>
+      `<a class="advent-expert-item" href="${esc(wallpaperUrl(path))}" target="_blank" rel="noopener noreferrer"><span>${esc(label)}</span><span class="advent-expert-go">↗</span></a>`
     ).join("");
 
     return `<div class="advent-wallpapers">${cards}</div>
       <details class="advent-expert-box">
         <summary>Обои от эксперта Сергея Смягликова (${expertWallpapers.length})</summary>
-        <ul class="advent-expert-list">${expertList}</ul>
+        <div class="advent-expert-grid">${expertCards}</div>
       </details>
-      <div class="actions" style="margin-top:12px"><a class="button secondary" href="${wallpapersFolder}" target="_blank" rel="noopener noreferrer">Открыть всю папку на Яндекс Диске ↗</a></div>`;
+      <div class="actions" style="justify-content:center;margin-top:14px"><a class="button cream" href="${wallpapersFolder}" target="_blank" rel="noopener noreferrer">Открыть всю папку на Яндекс Диске ↗</a></div>`;
   }
 
   function renderWeeksHtml() {
@@ -244,11 +245,9 @@
         const dept = departments[entry.dept];
 
         const innerContent = open
-          ? `<div class="advent-open-head">
-              <span class="advent-num">${String(d).padStart(2, "0")}</span>
-              <span class="advent-badge" aria-hidden="true">${dept.symbol}</span>
-            </div>
-            <span class="advent-day-title">${esc(entry.title)}</span>`
+          ? `<span class="advent-open-num">${String(d).padStart(2, "0")}</span>
+            <span class="advent-day-title">${esc(entry.title)}</span>
+            <span class="advent-open-mark" aria-hidden="true">${dept.symbol}</span>`
           : `<span class="advent-seal-wrap" aria-hidden="true">
               <img class="advent-mini-seal" src="assets/decorations/wax-seal-snowflake.png" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
             </span>
@@ -300,35 +299,34 @@
 
     const bodyText = open
       ? entry.text.split("\n\n").map(p => `<p style="margin-top:10px;text-align:left">${esc(p)}</p>`).join("")
-      : `<p style="margin-top:12px;text-align:left">Эта карточка откроется ${day} декабря в 00:01 по Москве.</p>`;
+      : `<p style="margin-top:12px;text-align:center">Эта карточка откроется ${day} декабря в 00:01 по Москве.</p>`;
 
     modal.innerHTML = `<div class="modal-card advent-modal${isWide ? " is-wide" : ""}">
-      <img class="advent-modal-decor" src="assets/decorations/${decorName}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/${decorName}.webp';}else{this.remove();}">
-      <span class="eyebrow-dark">${day} декабря${open ? ` · ${esc(dept.name)}` : ""}</span>
-      <h2 id="png-modal-title" style="margin-top:6px">${open ? esc(entry.title) : "Карточка пока закрыта"}</h2>
-      ${bodyText}
-      ${extraHtml}
-      <div class="modal-actions">
-        ${actionHtml}
-        <button type="button" class="button secondary" id="close-advent-modal">Закрыть</button>
+      <button type="button" class="modal-close" id="close-advent-x" aria-label="Закрыть">×</button>
+      <div class="advent-modal-scroll">
+        <img class="advent-modal-decor" src="assets/decorations/${decorName}.png" alt="" hidden onload="this.hidden=false" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/${decorName}.webp';}else{this.remove();}">
+        <span class="eyebrow-dark">${day} декабря${open ? ` · ${esc(dept.name)}` : ""}</span>
+        <h2 id="png-modal-title" style="margin-top:6px">${open ? esc(entry.title) : "Карточка пока закрыта"}</h2>
+        ${bodyText}
+        ${extraHtml}
+        <div class="modal-actions">
+          ${actionHtml}
+          <button type="button" class="button secondary" id="close-advent-modal">Закрыть</button>
+        </div>
       </div>
     </div>`;
     modal.hidden = false;
 
-    document.querySelector("#close-advent-modal").addEventListener("click", () => {
-      modal.hidden = true;
-      modal.innerHTML = "";
-    });
+    const closeAll = () => { modal.hidden = true; modal.innerHTML = ""; };
+    document.querySelector("#close-advent-modal").addEventListener("click", closeAll);
+    document.querySelector("#close-advent-x").addEventListener("click", closeAll);
 
     const schedBtn = document.querySelector("#advent-open-schedule");
     if (schedBtn) schedBtn.addEventListener("click", () => openDayModal(2));
 
     const routeLink = document.querySelector("#advent-route-link");
     if (routeLink && entry.route?.startsWith("#")) {
-      routeLink.addEventListener("click", () => {
-        modal.hidden = true;
-        modal.innerHTML = "";
-      });
+      routeLink.addEventListener("click", closeAll);
     }
 
     modal.querySelectorAll("[data-dl-file]").forEach(link => {
@@ -358,6 +356,8 @@
   }
 
   window.MinistryAdvent = {
+    openDay: openDayModal,
+
     renderHtml() {
       const openCount = Object.keys(entries).filter(d => isOpen(Number(d))).length;
       const statusText = `Открыто ${openCount} из ${totalCount}`;
