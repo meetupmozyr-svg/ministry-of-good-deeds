@@ -909,21 +909,21 @@ function render() {
         </div>
       </div>
 
-      <div class="room-list">
+     <div class="room-list">
         <a class="room-card" href="#library">
-          <div class="room-card-top"><span class="room-card-badge">${ICONS.book}</span><span class="room-card-go">Войти →</span></div>
-          <h2>Библиотека находок</h2>
-          <p>38 проверенных инструментов и сервисов для уроков</p>
+          <span class="door-mini door-mini-lib" aria-hidden="true"></span>
+          <div class="room-card-body"><h2>Библиотека находок</h2><p>38 проверенных сервисов для уроков</p></div>
+          <span class="room-arrow" aria-hidden="true">›</span>
         </a>
         <a class="room-card" href="#workshop">
-          <div class="room-card-top"><span class="room-card-badge">${ICONS.spark}</span><span class="room-card-go">Войти →</span></div>
-          <h2>Мастерская праздника</h2>
-          <p>Занятия, открытки, оформление и челлендж</p>
+          <span class="door-mini door-mini-work" aria-hidden="true"></span>
+          <div class="room-card-body"><h2>Мастерская праздника</h2><p>Занятия, открытки и челлендж</p></div>
+          <span class="room-arrow" aria-hidden="true">›</span>
         </a>
         <a class="room-card" href="#bureau">
-          <div class="room-card-top"><span class="room-card-badge">${ICONS.mail}</span><span class="room-card-go">Войти →</span></div>
-          <h2>Бюро добрых дел</h2>
-          <p>Тёплые инициативы, благотворительность и участие</p>
+          <span class="door-mini door-mini-bureau" aria-hidden="true"></span>
+          <div class="room-card-body"><h2>Бюро добрых дел</h2><p>Тёплые инициативы и поддержка</p></div>
+          <span class="room-arrow" aria-hidden="true">›</span>
         </a>
       </div>
     </div>`;
