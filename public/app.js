@@ -943,8 +943,7 @@ function render() {
         <div class="filters" aria-label="Разделы библиотеки">
           ${["Все", "Языки", "Школьные предметы", "Дошкольникам и младшим", "Для разных уроков"].map(f => `<button class="filter" data-filter="${esc(f)}" aria-pressed="${filter === f}">${esc(f)}</button>`).join("")}
         </div>
-        <div class="catalog-meta"><span id="result-count"></span><span>Проверено 07.11.2026</span></div>
-        <div id="results" class="resource-grid"></div>
+<div class="catalog-meta"><span id="result-count"></span><button type="button" class="random-pill" id="random-resource">✨ Случайная находка</button></div>        <div id="results" class="resource-grid"></div>
         <div class="license-callout"><strong>О лицензиях:</strong> не все бесплатные сайты разрешают коммерческое использование. У <strong>PhET</strong>, <strong>GeoGebra</strong>, <strong>Mathigon Polypad</strong> и <strong>Forvo</strong> коммерческое применение на платных уроках требует проверки условий.</div>
       </section>
     </div>`;
@@ -953,12 +952,37 @@ function render() {
       search = e.target.value;
       renderResults();
     });
-    document.querySelector("#open-book").addEventListener("click", () => {
+document.querySelector("#open-book").addEventListener("click", () => {
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const input = document.querySelector("#search");
       document.querySelector("#catalog").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
-      if (window.matchMedia("(pointer: fine)").matches) {
-        document.querySelector("#search").focus({ preventScroll: true });
-      }
+      input.classList.remove("is-pulsing");
+      void input.offsetWidth;
+      input.classList.add("is-pulsing");
+      input.focus({ preventScroll: true });
+    });
+
+    document.querySelector("#random-resource").addEventListener("click", () => {
+      const r = resources[Math.floor(Math.random() * resources.length)];
+      if (!r) return;
+      modal.innerHTML = `<div class="modal-card advent-modal">
+        <button type="button" class="modal-close" id="close-rand-x" aria-label="Закрыть">×</button>
+        <div class="advent-modal-scroll">
+          <span class="eyebrow-dark">${esc(r.tag)} · ${esc(r.access)}</span>
+          <h2 id="png-modal-title" style="margin-top:6px">${esc(r.title)}</h2>
+          <p style="margin-top:12px;text-align:left">${esc(r.description)}</p>
+          <p class="terms" style="margin-top:10px;text-align:left">${esc(r.terms)}</p>
+          <div class="modal-actions">
+            <a class="button red" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Открыть ресурс ↗</a>
+            <button type="button" class="button secondary" id="another-rand-btn">Другая ↻</button>
+          </div>
+        </div>
+      </div>`;
+      modal.hidden = false;
+      document.querySelector("#close-rand-x").addEventListener("click", closePngModal);
+      document.querySelector("#another-rand-btn").addEventListener("click", () => {
+        document.querySelector("#random-resource").click();
+      });
     });
   } else if (page === "saved") {
     main.innerHTML = `<div class="shell">
@@ -1043,10 +1067,11 @@ function render() {
           <p>Публикуют реальные истории и списки необходимых вещей для семей, оказавшихся в тяжёлой ситуации.</p>
           <div class="actions"><a class="button" href="https://podaripodarok.org/families" target="_blank" rel="noopener noreferrer">Посмотреть истории</a></div>
         </article>
-        <article class="soon">
+<article class="soon">
           <div class="soon-head"><span class="status">Добровольное участие</span>${decorImg("wax-seal-snowflake", "decor-inline")}</div>
           <h2>Поделиться своей инициативой</h2>
           <p>Мы собираем проверенные проекты в разных странах, где живут преподаватели. Участие полностью добровольное — без баллов и рейтингов.</p>
+          <div class="actions"><a class="button" href="https://t.me/+AMZz9UX5grkzZDY6" target="_blank" rel="noopener noreferrer" data-tg-link="https://t.me/+AMZz9UX5grkzZDY6">Поделиться в чате ↗</a></div>
         </article>
       </section>
     </div>`;
@@ -1199,6 +1224,12 @@ window.addEventListener("keydown", e => {
 });
 
 main.addEventListener("click", async event => {
+  const tgLink = event.target.closest("[data-tg-link]");
+  if (tgLink && tg?.openTelegramLink) {
+    event.preventDefault();
+    try { tg.openTelegramLink(tgLink.dataset.tgLink); } catch { window.open(tgLink.href, "_blank"); }
+    return;
+  }
   const category = event.target.closest("[data-filter]");
   if (category) {
     filter = category.dataset.filter;
