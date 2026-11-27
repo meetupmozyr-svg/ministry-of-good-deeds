@@ -4,10 +4,10 @@
   const EARLY_OPEN_THROUGH = 4;
 
   const departments = {
-    lessons: { name: "Для урока", short: "Урок", tone: "pine", symbol: "✦" },
-    words: { name: "Хорошие слова", short: "Слова", tone: "crimson", symbol: "♡" },
-    rest: { name: "Отдых", short: "Отдых", tone: "sage", symbol: "☼" },
-    wins: { name: "Маленькие победы", short: "Победы", tone: "gold", symbol: "✧" }
+    lessons: { name: "Для урока", short: "Урок", tone: "pine" },
+    words: { name: "Хорошие слова", short: "Слова", tone: "crimson" },
+    rest: { name: "Отдых", short: "Отдых", tone: "sage" },
+    wins: { name: "Маленькие победы", short: "Победы", tone: "gold" }
   };
 
   const weeks = [
@@ -83,51 +83,50 @@
     ["Дед Мороз с парашютом", "parachute", "UklGRr4DAABXRUJQVlA4ILIDAABQFwCdASqWAGQAPrFWpU2nJKOiI1baaOAWCUAaPZS6MI98NLb2bl/eUPQr6WXIYKphpMbrxFV3GZm+Iz6/BfVGQFWxzLUxEstRabf3MA/A2CI5fiVws11EjwsnBF0S1iwwEE6M13krylgwF3j1T/K9dC6huEq9lcwiLpTkwTXVYkNoItE8OFreRLE/fJ22ljJVpLh4ShQWki9+SvbqJoYbmX75HbBM2xT2QoUGx0owYrMW1giRK5wKVvlW7BHzBt27zCgA/vXPuqpxCwT0megdUiK8+XEcWMHQX8NOvDpHpuWvMcmPBAvSn0M8+2uA1WpVZewItaAZ1aGmyKvn7RHykEbYrYRpfjEz8FHrcF+rsxqN4uPN7Z+gAoAVm/KnZijPN3S3VFW5fHPvYe9VwQ5DClHOiyAZuRzpHvFfJOD2Vk+d0KMqElgU92baxAHQHTFsz/uNZn/Y7U9zAYr+hjDpo3ueqsBT0ZgVCkqly2CcU1tSJVYR/eWEnkz1XVJoRI55QK+zN6gi7720tQB8I4ab1282EiI8we8rK2T/j1yCHDWmGTLLVVuYW8VVwEbW2+tbDNHd/NOWR3v8w8g1uoc5DB68f8oQOFwn6I/rv0T/mvy6XqseTAaIoUy94OXvI4qaFupcqOTPShnlEzHGgOoQ4E11q0CtWSHja451/+VvskPu8EVeHeCoVU+w5XuUpUF4ZZ7HjeyYHRzmEWN5cRM+0bTFftQ4nGFtbT9m3zG/gMPNxkzdTnEhB+QfBDs+x5SPXjUX9aHOF8apnYv7hB0FvuKNA8izg2uOn0aC9vGdYWXLIUtOp4MSkWe5MSi2D/v5n3kw0nUO6foTTfAF0tILxfCeKdgAKIChxdfUYJl+DI5NKIOMv6NTXpelzt6Y6Im3w3dDjmqtqTjJKM2xvwNG/u7UXw3t+KWocmJuvBnm6QAYTYcrIsgGJEYebM2TSzD/gSZYNbPxqkmf1p8KFlcif7Hnvt1m/z/uFBpI7P6YbgLvwsSlEEYuEmFlF7xLaQ06fv2yf9J37AX171CRHWiYJS3hLJ0sw3RvRnLX+NR6ghEcFuMVPzxdLqe6yfTdY0KJ/GczzkOFixKTxRwFjfEygNKCHTeDTgpJjKj+xuLU65NzsUc6gU8rnCOE63YXEsgV8Aysbs3BlclprzNRiikQW+iPyxm4nZ1XOjwMCKRTBIvRpRCbABAIX4Ohj0WT2HHK9Ey7rbVjv8fLgOZ8DXVUs2VNxRqDvcbHrDWvXQgAAAAA"]
   ];
 
-  // Названия для показа приведены к Козлику (символу 2027), пути на Яндекс Диске сохранены точными
   const expertWallpapers = [
-    ["Зимние обои 1", "/1.PNG"],
-    ["Зимние обои 2", "/2.PNG"],
-    ["Зимние обои 3", "/3.PNG"],
-    ["Зимние обои 4", "/4.PNG"],
-    ["Зимние обои 5", "/5.PNG"],
-    ["Зимние обои 6", "/6.PNG"],
-    ["Козлик и зимняя вязка", "/Kuscheliger blauer Winterstrick mit Alpaka.png"],
-    ["Ледяная пещера и снежный козлик", "/Magische Eishöhle mit blauem Schneewesen.png"],
-    ["Кристальная пещера и синий талисман", "/Magische Eiskristallhöhle mit blauem Maskottchen.png"],
-    ["Зимний рассвет и пушистый талисман", "/Зимний рассвет и пушистый талисман.png"],
-    ["Зимний фон с огоньками и козликом", "/Зимний фон с огоньками и альпакой.png"],
-    ["Праздничный козлик под фейерверками", "/Праздничный козлик под фейерверками.png"],
-    ["Пушистый синий козлик на санях", "/Пушистый синий зверёк на санях.png"],
-    ["Синий козлик под северным сиянием", "/Синий козлик под сиянием северного сияния.png"],
-    ["Синий помощник украшает снежную ёлку", "/Синий помощник украшает снежную ёлку.png"],
-    ["Снежная игра синего пушистика", "/Снежная игра синего пушистика.png"],
-    ["Снежный талисман и снеговик", "/Снежный талисман и снеговик.png"],
-    ["Уютный зимний уголок с талисманом", "/Уютный зимний уголок с пушистым талисманом.png"]
+    ["Зимние обои 1", "/1.PNG", "✨"],
+    ["Зимние обои 2", "/2.PNG", "✨"],
+    ["Зимние обои 3", "/3.PNG", "✨"],
+    ["Зимние обои 4", "/4.PNG", "✨"],
+    ["Зимние обои 5", "/5.PNG", "✨"],
+    ["Зимние обои 6", "/6.PNG", "✨"],
+    ["Козлик и зимняя вязка", "/Kuscheliger blauer Winterstrick mit Alpaka.png", "🐐"],
+    ["Ледяная пещера и снежный козлик", "/Magische Eishöhle mit blauem Schneewesen.png", "🐐"],
+    ["Кристальная пещера и синий талисман", "/Magische Eiskristallhöhle mit blauem Maskottchen.png", "❄️"],
+    ["Зимний рассвет и пушистый талисман", "/Зимний рассвет и пушистый талисман.png", "❄️"],
+    ["Зимний фон с огоньками и козликом", "/Зимний фон с огоньками и альпакой.png", "🐐"],
+    ["Праздничный козлик под фейерверками", "/Праздничный козлик под фейерверками.png", "🐐"],
+    ["Пушистый синий козлик на санях", "/Пушистый синий зверёк на санях.png", "🐐"],
+    ["Синий козлик под северным сиянием", "/Синий козлик под сиянием северного сияния.png", "🐐"],
+    ["Синий помощник украшает снежную ёлку", "/Синий помощник украшает снежную ёлку.png", "🎄"],
+    ["Снежная игра синего пушистика", "/Снежная игра синего пушистика.png", "❄️"],
+    ["Снежный талисман и снеговик", "/Снежный талисман и снеговик.png", "⛄"],
+    ["Уютный зимний уголок с талисманом", "/Уютный зимний уголок с пушистым талисманом.png", "✨"]
   ];
 
   const entries = {
-    1: { title: "Министерство открыто!", dept: "wins", welcome: true, text: "С наступающим Новым годом! Спасибо, что помогаете ученикам разобраться в сложном и замечаете их маленькие победы. Пусть в новом году будет больше поводов радоваться тому, что получилось у вас и у ваших учеников.\n\nЗдесь собраны идеи для уроков, расписание новогодних встреч, фоны, открытки и подсказки, как подвести итоги года вместе с учениками." },
-    2: { title: "Расписание новогодних событий", dept: "rest", text: "В декабре встречаемся в Учительской, книжном клубе, на разговорных встречах и играх. Выберите событие и подключайтесь по ссылке.", events: holidayEvents },
-    3: { title: "Фоны для телефона и компьютера", dept: "rest", text: "Выберите обои, чтобы открыть изображение в хорошем качестве на Яндекс Диске.", wallpapers: true },
-    4: { title: "Новогодний плейлист Олега", dept: "rest", text: "Музыка для перерыва между занятиями или зимней прогулки. Ссылка на плейлист в Яндекс Музыке появится здесь." },
-    7: { title: "Зимняя разминка для урока", dept: "lessons", text: "Попросите ученика описать зимний предмет тремя подсказками, а сами попробуйте его угадать. Потом поменяйтесь ролями. Можно использовать слова и темы, которые вы уже проходили." },
-    8: { title: "Фоны для видеозвонков", dept: "rest", text: "Скачайте понравившийся фон и добавьте его в настройках видеозвонка. Проверьте, как он выглядит, до начала занятия.", downloads: backgrounds },
-    9: { title: "Материалы для уроков", dept: "lessons", text: "Собрали 38 проверенных интерактивных ресурсов для занятий вне платформы в Библиотеке находок.", route: "#library", linkLabel: "Открыть Библиотеку находок →" },
-    10: { title: "Новогодние уроки на платформе", dept: "lessons", text: "Новогодние и рождественские уроки прошлых лет можно найти в каталоге на платформе. Ссылки на новые уроки пока уточняются." },
-    11: { title: "Советы методистов", dept: "lessons", text: "Как подвести итоги года вместе с учеником? Попробуйте начать с вопроса «Что вы теперь можете сделать сами?» и вспомните вместе конкретный пример." },
-    14: { title: "Заметка ученику", dept: "words", text: "Напишите ученику, какой момент с занятий вам запомнился. Назовите конкретное действие, которое заметили, и скажите, чему оно помогло." },
-    15: { title: "Новогодние открытки", dept: "words", text: "Скачайте готовую открытку или соберите свою собственную в нашей Мастерской открыток.", route: "postcards.html", linkLabel: "✨ Сделать открытку →", downloads: [["Спасибо, что вы рядом!", "card-1.jpg"], ["С Новым годом!", "card-4.jpg"]] },
-    16: { title: "Советы психологов", dept: "rest", text: "Здесь запланированы рекомендации психологов о том, как мягко завершить год. Ссылка пока уточняется." },
-    17: { title: "Анонс итоговой встречи", dept: "words", text: "Итоговая встреча — повод поблагодарить друг друга и вспомнить, что получилось за год. Дату, время и формат ещё согласовывают." },
-    18: { title: "Благотворительная подборка", dept: "words", text: "В Бюро добрых дел мы собрали проверенные акции, где можно поддержать детей и семьи перед праздником.", route: "#bureau", linkLabel: "Перейти в Бюро добрых дел →" },
-    21: { title: "Одна находка за год", dept: "wins", text: "Какое объяснение, задание или вопрос особенно помогли вашим ученикам в этом году? Сохраните эту идею и пример, с которым она сработала." },
-    22: { title: "Добрые слова для встречи", dept: "words", text: "Если хотите поздравить коллег на итоговой встрече, начните с одного предложения: за что вы благодарны сообществу преподавателей в этом году?" },
-    23: { title: "Итоговая встреча", dept: "words", text: "Здесь запланированы подробности итоговой встречи. Дату, время и ссылку встречи ещё согласовывают." },
-    24: { title: "Фраза, с которой хочется начать", dept: "lessons", text: "Предложите ученику закончить фразу «В новом году я хочу попробовать…». Запишите ответ вместе, чтобы вернуться к нему на первом занятии после праздников." },
-    25: { title: "День без спешки", dept: "rest", text: "Выберите одно небольшое дело для себя, на которое сегодня есть время: прогуляться, почитать или послушать любимую песню." },
-    28: { title: "Что взять с собой в новый год", dept: "rest", text: "Выберите одну привычку, которая помогала вам чувствовать себя лучше между занятиями. Запишите, когда вам удобно повторить её в январе." },
-    29: { title: "Ваши личные итоги", dept: "wins", text: "В этой карточке запланированы персональные истории с итогами года. Пока можно собрать свою короткую заметку: чему вы научились, кому помогли и какой момент хотите запомнить." },
-    30: { title: "Новогодний дайджест", dept: "wins", text: "Финальный выпуск запланирован на 30 декабря. А все материалы и активности декабря всегда доступны в Мастерской.", route: "#workshop", linkLabel: "Заглянуть в Мастерскую →" }
+    1: { short: "Открытие", title: "Министерство открыто!", dept: "wins", welcome: true, text: "С наступающим Новым годом! Спасибо, что помогаете ученикам разобраться в сложном и замечаете их маленькие победы. Пусть в новом году будет больше поводов радоваться тому, что получилось у вас и у ваших учеников.\n\nЗдесь собраны идеи для уроков, расписание новогодних встреч, фоны, открытки и подсказки, как подвести итоги года вместе с учениками." },
+    2: { short: "События", title: "Расписание новогодних событий", dept: "rest", text: "В декабре встречаемся в Учительской, книжном клубе, на разговорных встречах и играх. Выберите событие и подключайтесь по ссылке.", events: holidayEvents },
+    3: { short: "Обои", title: "Фоны для телефона и компьютера", dept: "rest", text: "Выберите обои, чтобы открыть изображение в хорошем качестве на Яндекс Диске.", wallpapers: true },
+    4: { short: "Плейлист", title: "Новогодний плейлист Олега", dept: "rest", text: "Музыка для перерыва между занятиями или зимней прогулки. Ссылка на плейлист в Яндекс Музыке появится здесь." },
+    7: { short: "Разминка", title: "Зимняя разминка для урока", dept: "lessons", text: "Попросите ученика описать зимний предмет тремя подсказками, а сами попробуйте его угадать. Потом поменяйтесь ролями. Можно использовать слова и темы, которые вы уже проходили." },
+    8: { short: "Фоны", title: "Фоны для видеозвонков", dept: "rest", text: "Скачайте понравившийся фон и добавьте его в настройках видеозвонка. Проверьте, как он выглядит, до начала занятия.", downloads: backgrounds },
+    9: { short: "Находки", title: "Материалы для уроков", dept: "lessons", text: "Собрали 38 проверенных интерактивных ресурсов для занятий вне платформы в Библиотеке находок.", route: "#library", linkLabel: "Открыть Библиотеку находок →" },
+    10: { short: "Уроки", title: "Новогодние уроки на платформе", dept: "lessons", text: "Новогодние и рождественские уроки прошлых лет можно найти в каталоге на платформе. Ссылки на новые уроки пока уточняются." },
+    11: { short: "Советы", title: "Советы методистов", dept: "lessons", text: "Как подвести итоги года вместе с учеником? Попробуйте начать с вопроса «Что вы теперь можете сделать сами?» и вспомните вместе конкретный пример." },
+    14: { short: "Заметка", title: "Заметка ученику", dept: "words", text: "Напишите ученику, какой момент с занятий вам запомнился. Назовите конкретное действие, которое заметили, и скажите, чему оно помогло." },
+    15: { short: "Открытки", title: "Новогодние открытки", dept: "words", text: "Скачайте готовую открытку или соберите свою собственную в нашей Мастерской открыток.", route: "postcards.html", linkLabel: "✨ Сделать открытку →", downloads: [["Спасибо, что вы рядом!", "card-1.jpg"], ["С Новым годом!", "card-4.jpg"]] },
+    16: { short: "Баланс", title: "Советы психологов", dept: "rest", text: "Здесь запланированы рекомендации психологов о том, как мягко завершить год. Ссылка пока уточняется." },
+    17: { short: "Анонс", title: "Анонс итоговой встречи", dept: "words", text: "Итоговая встреча — повод поблагодарить друг друга и вспомнить, что получилось за год. Дату, время и формат ещё согласовывают." },
+    18: { short: "Добро", title: "Благотворительная подборка", dept: "words", text: "В Бюро добрых дел мы собрали проверенные акции, где можно поддержать детей и семьи перед праздником.", route: "#bureau", linkLabel: "Перейти в Бюро добрых дел →" },
+    21: { short: "Идея года", title: "Одна находка за год", dept: "wins", text: "Какое объяснение, задание или вопрос особенно помогли вашим ученикам в этом году? Сохраните эту идею и пример, с которым она сработала." },
+    22: { short: "Слова", title: "Добрые слова для встречи", dept: "words", text: "Если хотите поздравить коллег на итоговой встрече, начните с одного предложения: за что вы благодарны сообществу преподавателей в этом году?" },
+    23: { short: "Встреча", title: "Итоговая встреча", dept: "words", text: "Здесь запланированы подробности итоговой встречи. Дату, время и ссылку встречи ещё согласовывают." },
+    24: { short: "Мечта", title: "Фраза, с которой хочется начать", dept: "lessons", text: "Предложите ученику закончить фразу «В новом году я хочу попробовать…». Запишите ответ вместе, чтобы вернуться к нему на первом занятии после праздников." },
+    25: { short: "Пауза", title: "День без спешки", dept: "rest", text: "Выберите одно небольшое дело для себя, на которое сегодня есть время: прогуляться, почитать или послушать любимую песню." },
+    28: { short: "Привычка", title: "Что взять с собой в новый год", dept: "rest", text: "Выберите одну привычку, которая помогала вам чувствовать себя лучше между занятиями. Запишите, когда вам удобно повторить её в январе." },
+    29: { short: "Итоги", title: "Ваши личные итоги", dept: "wins", text: "В этой карточке запланированы персональные истории с итогами года. Пока можно собрать свою короткую заметку: чему вы научились, кому помогли и какой момент хотите запомнить." },
+    30: { short: "Дайджест", title: "Новогодний дайджест", dept: "wins", text: "Финальный выпуск запланирован на 30 декабря. А все материалы и активности декабря всегда доступны в Мастерской.", route: "#workshop", linkLabel: "Заглянуть в Мастерскую →" }
   };
 
   const totalCount = Object.keys(entries).length;
@@ -218,15 +217,24 @@
         </div>
       </div>`).join("");
 
-    const expertCards = expertWallpapers.map(([label, path]) =>
-      `<a class="advent-expert-item" href="${esc(wallpaperUrl(path))}" target="_blank" rel="noopener noreferrer"><span>${esc(label)}</span><span class="advent-expert-go">↗</span></a>`
+    const expertCards = expertWallpapers.map(([label, path, icon]) =>
+      `<a class="advent-expert-item" href="${esc(wallpaperUrl(path))}" target="_blank" rel="noopener noreferrer">
+        <span class="advent-expert-ico" aria-hidden="true">${icon || "✨"}</span>
+        <span class="advent-expert-name">${esc(label)}</span>
+        <span class="advent-expert-go">↗</span>
+      </a>`
     ).join("");
 
     return `<div class="advent-wallpapers">${cards}</div>
-      <details class="advent-expert-box">
-        <summary>Обои от эксперта Сергея Смягликова (${expertWallpapers.length})</summary>
+      <section class="advent-expert-section">
+        <div class="advent-expert-head">
+          <div>
+            <span class="eyebrow-dark">Особая подборка · ${expertWallpapers.length} фонов</span>
+            <h3>Обои от эксперта Сергея Смягликова</h3>
+          </div>
+        </div>
         <div class="advent-expert-grid">${expertCards}</div>
-      </details>
+      </section>
       <div class="actions" style="justify-content:center;margin-top:14px"><a class="button cream" href="${wallpapersFolder}" target="_blank" rel="noopener noreferrer">Открыть всю папку на Яндекс Диске ↗</a></div>`;
   }
 
@@ -244,13 +252,15 @@
         const special = [1, 2, 15, 18, 24, 30].includes(d);
         const dept = departments[entry.dept];
 
+        const sealHtml = `<span class="advent-seal-wrap" aria-hidden="true">
+          <img class="advent-mini-seal" src="assets/decorations/wax-seal-snowflake.png" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
+        </span>`;
+
         const innerContent = open
-          ? `<span class="advent-open-num">${String(d).padStart(2, "0")}</span>
-            <span class="advent-day-title">${esc(entry.title)}</span>
-            <span class="advent-open-mark" aria-hidden="true">${dept.symbol}</span>`
-          : `<span class="advent-seal-wrap" aria-hidden="true">
-              <img class="advent-mini-seal" src="assets/decorations/wax-seal-snowflake.png" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/decorations/wax-seal-snowflake.webp';}else{this.remove();}">
-            </span>
+          ? `${sealHtml}
+            <span class="advent-open-num">${String(d).padStart(2, "0")}</span>
+            <span class="advent-day-title">${esc(entry.short || entry.title)}</span>`
+          : `${sealHtml}
             <span class="advent-num">${String(d).padStart(2, "0")}</span>
             <span class="advent-lock-corner" aria-hidden="true">${lockSvg}</span>
             ${special ? '<span class="advent-star-corner" aria-hidden="true">✦</span>' : ""}`;
@@ -364,7 +374,7 @@
       const filtersHtml = [
         `<button type="button" class="filter" data-advent-filter="" aria-pressed="${activeFilter === ""}">Все</button>`,
         ...Object.entries(departments).map(([id, d]) =>
-          `<button type="button" class="filter" data-advent-filter="${id}" aria-pressed="${activeFilter === id}">${d.symbol} ${esc(d.short)}</button>`
+          `<button type="button" class="filter" data-advent-filter="${id}" aria-pressed="${activeFilter === id}">${esc(d.short)}</button>`
         )
       ].join("");
 
