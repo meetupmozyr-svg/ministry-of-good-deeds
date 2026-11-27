@@ -731,3 +731,32 @@ input[type=search],input[type=text]{
   .advent-day,.advent-expert-item{transition:transform .14s,box-shadow .14s}
   .advent-day:hover,.advent-expert-item:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(10,24,18,.2)}
 }
+.advent-day.is-open{padding:38px 6px 6px;justify-content:center;gap:3px}
+.advent-open-num{font-family:Georgia,serif;font-size:1.35rem;font-weight:700;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.72)}
+.advent-day[data-tone="gold"] .advent-open-num{text-shadow:0 1px 0 rgba(255,255,255,.92)}
+.advent-day-title{font-size:.78rem;font-weight:600;line-height:1.1;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.advent-club-promo{
+  margin-top:14px;padding:16px;border-radius:18px;text-align:center;
+  background:linear-gradient(180deg,#fff9ec 0%,#f5e7cc 100%);
+  border:1.5px solid rgba(197,157,98,.62);box-shadow:0 6px 16px rgba(42,30,18,.08);
+}
+.advent-club-promo h3{font-size:1.18rem;margin-top:4px;color:var(--ink)}
+.advent-club-promo p{font-size:.86rem;color:var(--muted);margin:8px 0 12px}
+
+.random-pill{
+  padding:5px 13px;border-radius:999px;font-size:.82rem;font-weight:650;
+  background:#f5e5dc;color:var(--red);border:1px solid rgba(157,52,67,.28);
+}
+@keyframes searchPulse{
+  0%{box-shadow:0 0 0 0 rgba(197,157,98,.7);border-color:var(--gold)}
+  70%{box-shadow:0 0 0 10px rgba(197,157,98,0);border-color:var(--red)}
+  100%{box-shadow:0 0 0 0 rgba(197,157,98,0)}
+}
+#search.is-pulsing{animation:searchPulse .9s ease-out 2}
+
+@media(max-width:740px){
+  .advent-day.is-open{padding:26px 4px 5px;gap:1px}
+  .advent-open-num{font-size:1.05rem}
+  .advent-day-title{font-size:.66rem}
+}
