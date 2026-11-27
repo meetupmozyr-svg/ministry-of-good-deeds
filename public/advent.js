@@ -1,7 +1,8 @@
 "use strict";
 (() => {
   const YEAR = 2026;
-  const EARLY_OPEN_THROUGH = 4;
+  const EARLY_OPEN_THROUGH = 1;
+  const RELEASE_TIME = "00:01";
 
   const departments = {
     lessons: { name: "Для урока", short: "Урок", tone: "pine" },
@@ -131,15 +132,21 @@
 
   const totalCount = Object.keys(entries).length;
   const moscowFmt = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Moscow", year: "numeric", month: "2-digit", day: "2-digit"
+    timeZone: "Europe/Moscow", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
   });
-  const moscowDate = () => {
+  const moscowClock = () => {
     const p = Object.fromEntries(moscowFmt.formatToParts().map(x => [x.type, x.value]));
-    return `${p.year}-${p.month}-${p.day}`;
+    return { date: `${p.year}-${p.month}-${p.day}`, released: `${p.hour}:${p.minute}` >= RELEASE_TIME };
   };
   const isPreview = () => location.search.includes("preview=1") || location.hash.includes("preview=1");
   const releaseDate = day => `${YEAR}-12-${String(day).padStart(2, "0")}`;
-  const isOpen = day => isPreview() || day <= EARLY_OPEN_THROUGH || moscowDate() >= releaseDate(day);
+  const isOpen = day => {
+    if (isPreview() || day <= EARLY_OPEN_THROUGH) return true;
+    const now = moscowClock();
+    const target = releaseDate(day);
+    return now.date > target || (now.date === target && now.released);
+  };
   const esc = v => String(v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const wallpaperUrl = path => `${wallpapersFolder}/${encodeURIComponent(path.slice(1))}`;
 
@@ -190,7 +197,14 @@
       }
       groups[groups.length - 1].items.push({ time, title, topic, url });
     }
-    return `<div class="advent-events">${groups.map(g => `
+    const clubPromo = `<aside class="advent-club-promo">
+      <span class="eyebrow-dark">Твой робот-помощник</span>
+      <h3>Хотите напоминания о клубах весь год?</h3>
+      <p>Настраивай уведомления, добавляй встречи в календарь, делись с друзьями. Клубы по интересам для преподавателей и сотрудников Skyeng — место, где строятся мосты и налаживается коммуникация 💞</p>
+      <a class="button red" href="https://t.me/SkyClubsBot" target="_blank" rel="noopener noreferrer" data-tg-link="https://t.me/SkyClubsBot">Открыть @SkyClubsBot ↗</a>
+    </aside>`;
+
+    return `${clubPromo}<div class="advent-events">${groups.map(g => `
       <div class="advent-event-group">
         <span class="date">${g.day} декабря</span>
         ${g.items.map(ev => `<div class="advent-event">
@@ -228,10 +242,8 @@
     return `<div class="advent-wallpapers">${cards}</div>
       <section class="advent-expert-section">
         <div class="advent-expert-head">
-          <div>
-            <span class="eyebrow-dark">Особая подборка · ${expertWallpapers.length} фонов</span>
-            <h3>Обои от эксперта Сергея Смягликова</h3>
-          </div>
+          <span class="eyebrow-dark">Особая подборка · ${expertWallpapers.length} фонов</span>
+          <h3>Обои от эксперта Сергея Смягликова</h3>
         </div>
         <div class="advent-expert-grid">${expertCards}</div>
       </section>
@@ -239,7 +251,7 @@
   }
 
   function renderWeeksHtml() {
-    const today = moscowDate();
+    const today = moscowClock().date;
     const lockSvg = `<svg class="advent-lock" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.5"/></svg>`;
 
     return weeks.map((w, idx) => {
@@ -338,6 +350,16 @@
     if (routeLink && entry.route?.startsWith("#")) {
       routeLink.addEventListener("click", closeAll);
     }
+
+    modal.querySelectorAll("[data-tg-link]").forEach(a => {
+      a.addEventListener("click", e => {
+        const tg = window.Telegram?.WebApp;
+        if (tg?.openTelegramLink) {
+          e.preventDefault();
+          try { tg.openTelegramLink(a.dataset.tgLink); } catch { window.open(a.href, "_blank"); }
+        }
+      });
+    });
 
     modal.querySelectorAll("[data-dl-file]").forEach(link => {
       link.addEventListener("click", async e => {
