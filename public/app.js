@@ -1010,7 +1010,15 @@ function render() {
           </div>
         </article>
         <article class="soon"><span class="status">С 1 декабря · начальная школа</span><h2>Комиксы, распечатки и раскраски</h2><p>Тематический поиск подарков и комиксов внутри уроков и карточки с распечатками для праздничных занятий.</p></article>        <article class="soon"><span class="status">7 декабря · IT и хоумскулинг</span><h2>Урок-викторина и челлендж Скайхаба</h2><p>Интерактивная викторина по компьютерной грамотности и алгоритмам, а также новогодний челлендж цифровых подарков и Python-проектов до конца января.</p></article>
-        <article class="soon"><span class="status">От сообщества</span><h2>Фоны, открытки и карта пожеланий</h2><p>Дополнительные праздничные материалы для учеников и преподавателей.</p></article>
+        <article class="soon">
+          <div class="soon-head"><span class="status">Доступно сейчас</span>${decorImg("paper-snowflake", "decor-inline")}</div>
+          <h2>Фоны и расписание встреч</h2>
+          <p>Новогодние обои для телефона и компьютера (включая серию с козликом — символом 2027) и календарь декабрьских встреч.</p>
+          <div class="actions" style="margin-top:12px">
+            <button type="button" class="button red" id="workshop-wallpapers-btn">Открыть обои</button>
+            <button type="button" class="button secondary" id="workshop-schedule-btn">Расписание встреч</button>
+          </div>
+        </article>
       </section>
     </div>`;
   } else if (page === "bureau") {
@@ -1126,9 +1134,10 @@ function bindActions() {
       }
     });
   }
-
-  const dlBtn = document.querySelector("#download-pass");
-  if (dlBtn) dlBtn.addEventListener("click", downloadPassPng);
+const wsWp = document.querySelector("#workshop-wallpapers-btn");
+  if (wsWp) wsWp.addEventListener("click", () => window.MinistryAdvent?.openDay(3));
+  const wsSch = document.querySelector("#workshop-schedule-btn");
+  if (wsSch) wsSch.addEventListener("click", () => window.MinistryAdvent?.openDay(2));
 
   const replayBtn = document.querySelector("#replay-riddle-btn");
   if (replayBtn) {
